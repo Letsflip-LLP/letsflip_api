@@ -37,11 +37,12 @@ class FormValidation
       switch ($route) { 
         // AUTH
         case 'PostAuthControllerRegister':
-            return [
-              'phone' => 'min:8|unique:users',
-              'email' => 'required|email|unique:users|max:191',      
-              'confirm_password' => 'required',
-              'name' => 'required|max:191'
+            return [ 
+              'email' => 'required|email|unique:users|max:191',  
+              'password' => 'required',     
+              'confirm_password' => 'required|same:password', 
+              'first_name' => 'required|max:191',
+              'last_name' => 'required|max:191'
             ];
         break; 
 
