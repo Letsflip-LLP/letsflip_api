@@ -18,8 +18,8 @@ Route::middleware('auth:api')->get('self', function (Request $request){
     dd(auth()->user()->email);
 });
 
-$router->group(['prefix' => 'auth'], function($router){
-    Route::post('register', [AuthController::class, 'register']);
+$router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
+    Route::post('register', [AuthController::class, 'register'])->name('PostAuthControllerRegister');
 });
  
 
