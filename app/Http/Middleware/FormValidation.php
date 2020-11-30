@@ -45,6 +45,12 @@ class FormValidation
               'last_name' => 'required|max:191'
             ];
         break; 
+        case  'PostAuthControllerLogin':
+          return [
+            'email' => 'required|email|exists:users',  
+            'password' => 'required',   
+          ];
+        break;
 
         default:
           return [];

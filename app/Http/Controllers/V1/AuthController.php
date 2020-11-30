@@ -27,7 +27,7 @@ class AuthController extends Controller
 
             $user->accessToken = $accessToken;
 
-            DB::commit();
+        DB::commit();
 
             return (new AuthTransformer)->detail(200,"Success",$user); 
 
@@ -39,21 +39,30 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $loginData = $request->validate([
-            'email' => 'email|required',
-            'password' => 'required'
-        ]);
+        DB::beginTransaction();
+        try {
+            $loginData = [
+                'email' => $request->email,
+                'password' => $request->password
+            ];
+    
+            if (!auth()->attempt($loginData))
+                return (new ResponseTransformer)->toJson(400,__('validation.password'),false);  
+            
+            if(auth()->user()->email_verified_at == null)
+                return (new ResponseTransformer)->toJson(400,__('passwords.email_verification'),false);  
+    
+            $user = auth()->user();
+            $accessToken = $user->createToken('authToken')->accessToken;
+            $user->accessToken = $accessToken;
 
-        if (!auth()->attempt($loginData))
-            return (new ResponseTransformer)->toJson(400,__('validation.password'),false);  
-        
-        if(auth()->user()->email_verified_at == null)
-            return (new ResponseTransformer)->toJson(400,__('passwords.email_verification'),false);  
+            DB::commit();
 
-        $user = auth()->user();
-        $accessToken = $user->createToken('authToken')->accessToken;
-        $user->accessToken = $accessToken;
+            return (new AuthTransformer)->detail(200,__("messages.200"),$user); 
 
-        return (new AuthTransformer)->detail(200,"Success",$user); 
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     } 
 }
