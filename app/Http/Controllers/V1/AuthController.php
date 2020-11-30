@@ -7,21 +7,34 @@ use Illuminate\Http\Request;
 use App\Http\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Transformers\ResponseTransformer; 
-
+use App\Http\Transformers\V1\AuthTransformer; 
+use DB;
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validatedData['password'] = Hash::make($request->password);
-        $validatedData['first_name'] = $request->first_name;
-        $validatedData['last_name'] = $request->last_name;
-        $validatedData['email'] = $request->email;
+        DB::beginTransaction();
+        try {
 
-        $user = User::create($validatedData);
+            $validatedData['password'] = Hash::make($request->password);
+            $validatedData['first_name'] = $request->first_name;
+            $validatedData['last_name'] = $request->last_name;
+            $validatedData['email'] = $request->email;
 
-         $accessToken = $user->createToken('authToken')->accessToken;
+            $user = User::create($validatedData);
 
-         return (new ResponseTransformer)->toJson(200,"Success",['user' => $user, 'access_token' => $accessToken]); 
+            $accessToken = $user->createToken('authToken')->accessToken; 
+
+            $user->accessToken = $accessToken;
+
+            DB::commit();
+
+            return (new AuthTransformer)->detail(200,"Success",$user); 
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        } 
     }
 
     public function login(Request $request)
@@ -37,8 +50,10 @@ class AuthController extends Controller
         if(auth()->user()->email_verified_at == null)
             return (new ResponseTransformer)->toJson(400,__('passwords.email_verification'),false);  
 
-        $accessToken = auth()->user()->createToken('authToken')->accessToken;
- 
-        return (new ResponseTransformer)->toJson(200,"Success",['user' => auth()->user() , 'access_token' => $accessToken]);  
-    }
+        $user = auth()->user();
+        $accessToken = $user->createToken('authToken')->accessToken;
+        $user->accessToken = $accessToken;
+
+        return (new AuthTransformer)->detail(200,"Success",$user); 
+    } 
 }

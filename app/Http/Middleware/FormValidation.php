@@ -22,7 +22,7 @@ class FormValidation
 
         $route_name = Route::currentRouteName();
         $validation = $this->_selector($route_name);
-
+        
         $validator = app()->make('validator');
         $validate = $validator->make($request->all(),$validation);
 
