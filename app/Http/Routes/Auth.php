@@ -21,6 +21,10 @@ Route::middleware('auth:api')->get('self', function (Request $request){
 $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
     Route::post('register', [AuthController::class, 'register'])->name('PostAuthControllerRegister');
     Route::post('login', [AuthController::class, 'login'])->name('PostAuthControllerLogin');
-});
+
+    $router->get('email-verification', function (Request $request){
+        return view('emails.account-verification',['email' => 'emai@email.com', 'password' => '2222' , 'activate_url' => 'http://www.com.com']);
+    });
+}); 
  
 
