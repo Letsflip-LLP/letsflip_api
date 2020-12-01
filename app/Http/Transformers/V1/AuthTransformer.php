@@ -14,7 +14,7 @@ class AuthTransformer {
         $temp->last_name  = $model->last_name;
         $temp->email      = $model->email;
 
-        $model->accessToken && $temp->accessToken = $model->accessToken;
+        $model->accessToken && $temp->access_token = $model->accessToken;
 
         return (new ResponseTransformer)->toJson($code,$message,$model,$temp);
     }
