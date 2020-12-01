@@ -8,6 +8,7 @@ use App\Http\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\AuthTransformer; 
+use Illuminate\Auth\Events\Registered;
 use DB;
 class AuthController extends Controller
 {
@@ -29,6 +30,7 @@ class AuthController extends Controller
 
         DB::commit();
 
+            event(new Registered($user));
             return (new AuthTransformer)->detail(200,"Success",$user); 
 
         } catch (\exception $exception){
