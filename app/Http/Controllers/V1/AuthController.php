@@ -10,6 +10,8 @@ use App\Http\Transformers\ResponseTransformer;
 use App\Http\Transformers\V1\AuthTransformer; 
 use Illuminate\Auth\Events\Registered;
 use DB;
+use Illuminate\Support\Facades\Crypt;
+
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -24,14 +26,17 @@ class AuthController extends Controller
 
             $user = User::create($validatedData);
 
-            $accessToken = $user->createToken('authToken')->accessToken; 
+            $accessToken = $user->createToken('authToken')->accessToken;
 
             $user->accessToken = $accessToken;
 
-        DB::commit();
+            $validatedData['activate_url'] = env('WEB_PAGE_URL',url('/')).'/account/verification?temporary_token='.Crypt::encryptString($validatedData['email']);
+            $validatedData['password'] = $request->password;
+            $send_mail = \Mail::to($validatedData['email'])->send(new \App\Mail\verificationUserRegister($validatedData));
 
-            event(new Registered($user));
-            return (new AuthTransformer)->detail(200,"Success",$user); 
+        DB::commit();
+ 
+           return (new AuthTransformer)->detail(200,"Success",$user);
 
         } catch (\exception $exception){
             DB::rollBack();
@@ -66,5 +71,40 @@ class AuthController extends Controller
             DB::rollBack();
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
+    }
+
+    public function verificationAccount(Request $request)
+    {        
+        DB::beginTransaction();
+        try {
+        
+            $message = "";
+            
+            $decode = Crypt::decryptString($request->temporary_token);
+
+            $user   = User::where('email',$decode)->first();
+            
+            if($user == null)
+                $message = __('messages.401');
+
+            if($user->email_verified_at != null)
+                $message = "Oops! Your account is already verified";
+
+            if($user->email_verified_at == null){
+                if($user->update(['email_verified_at' => date('Y-m-d H:i:s')]))
+                    $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom";
+            } 
+
+            $data = [];
+            $data['message'] = $message;
+
+            DB::commit(); 
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            $data['message'] = $exception->getMessage(); 
+        }  
+
+        return view('accounts.verification',$data);
     } 
 }

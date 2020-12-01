@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\V1\UserController;
-use App\Http\Controllers\V1\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +11,4 @@ use App\Http\Controllers\V1\AuthController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
-
-$router->group(['middleware'=> ['form'] ], function($router){
-    $router->group(['prefix' => 'account'], function($router){
-        Route::get('verification', [AuthController::class, 'verificationAccount'])->name('GetAuthControllerverificationAccount');
-    });
-}); 
+*/ 
