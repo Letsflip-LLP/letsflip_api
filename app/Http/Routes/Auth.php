@@ -21,9 +21,11 @@ Route::middleware('auth:api')->get('self', function (Request $request){
 $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
     Route::post('register', [AuthController::class, 'register'])->name('PostAuthControllerRegister');
     Route::post('login', [AuthController::class, 'login'])->name('PostAuthControllerLogin');
+    Route::post('request-reset-password', [AuthController::class, 'requestResetPassword'])->name('PostAuthControllerRequestResetPassword');
+    Route::post('submit-reset-password', [AuthController::class, 'submitResetPassword'])->name('PostAuthControllerSubmitResetPassword');
 
     $router->get('email-verification', function (Request $request){
-        return view('emails.account-verification',['email' => 'emai@email.com', 'password' => '2222' , 'activate_url' => 'http://www.com.com']);
+        return view('emails.account-reset-pass-confirmation',['full_name' => 'andhi saputro', 'reset_password_url' => 'http://www.com.com']);
     });
 }); 
  

@@ -16,7 +16,7 @@ class EnsureApiEmailIsVerified
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
+    { 
         if($request->user() && $request->user()->email_verified_at == null)
             return (new ResponseTransformer)->toJson(400,'Account not verification',false);
 

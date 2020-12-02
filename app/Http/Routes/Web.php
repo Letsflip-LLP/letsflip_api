@@ -18,5 +18,6 @@ use App\Http\Controllers\V1\AuthController;
 $router->group(['middleware'=> ['form'] ], function($router){
     $router->group(['prefix' => 'account'], function($router){
         Route::get('verification', [AuthController::class, 'verificationAccount'])->name('GetAuthControllerverificationAccount');
+        Route::get('confirm-reset-password', [AuthController::class, 'confirmResetPassword'])->name('GetAuthControllerConfirmResetPassword');
     });
 }); 

@@ -51,6 +51,18 @@ class FormValidation
             'password' => 'required',   
           ];
         break;
+        case 'PostAuthControllerResetPassword':
+          return [
+            'email' => 'required|email|exists:users'
+          ];
+        break;
+        case 'PostAuthControllerSubmitResetPassword':
+          return [
+            'password'          => 'required|min:8',
+            'confirm_password'  => 'required|same:password|min:8',
+            'temporary_token'   => 'required'
+          ];
+        break;
 
         default:
           return [];
