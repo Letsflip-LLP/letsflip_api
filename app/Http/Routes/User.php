@@ -14,7 +14,7 @@ use App\Http\Controllers\V1\UserController;
 |
 */
  
-$router->group(['middleware'=> ['auth:api'],'prefix' => 'user'], function($router){ 
+$router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], function($router){
     Route::get('self', [UserController::class, 'self'])->name('GetUserControllerSelf');
 });
  
