@@ -16,7 +16,7 @@ if(process.env.REDIS_PASSWORD){
 
 io.sockets
 .on('connection', socketioJwt.authorize({
-  secret: process.env.JWT_KEY,
+  secret: process.env.JWT_SECRET,
   timeout: 15000 // 15 seconds to send the authentication message
 })).on('authenticated', function(socket) {
   //this socket is authenticated, we are good to handle more events from it.
