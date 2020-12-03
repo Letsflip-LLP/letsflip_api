@@ -31,17 +31,13 @@ class AuthController extends Controller
         DB::beginTransaction();
         try {
 
-            $validatedData['password'] = Hash::make($request->password);
+            $validatedData['password'] = bcrypt($request->password);
             $validatedData['first_name'] = $request->first_name;
             $validatedData['last_name'] = $request->last_name;
             $validatedData['email'] = $request->email;
 
             $user = User::create($validatedData);
-
-            $accessToken = $user->createToken('authToken')->accessToken;
-
-            $user->accessToken = $accessToken;
-
+ 
             $validatedData['activate_url'] = env('WEB_PAGE_URL',url('/')).'/account/verification?temporary_token='.Crypt::encryptString($validatedData['email']);
             $validatedData['password'] = $request->password;
             $send_mail = \Mail::to($validatedData['email'])->send(new \App\Mail\verificationUserRegister($validatedData));
@@ -90,16 +86,7 @@ class AuthController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
-
-    protected function _createNewToken($token){
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => 60,
-            'user' => auth()->user()
-        ]);
-    }
-
+ 
     public function verificationAccount(Request $request)
     {        
         DB::beginTransaction();
@@ -228,8 +215,8 @@ class AuthController extends Controller
                 return (new ResponseTransformer)->toJson(400,__('passwords.reset_pass_verification_mail'),false);
             
             $user = User::where('email',$email)->first();
-
-            $new_password = Hash::make($request->password);
+ 
+            $new_password = bcrypt($request->password);
 
             $update_pass = $user->update([
                 "password" => $new_password
