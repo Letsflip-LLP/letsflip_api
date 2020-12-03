@@ -12,6 +12,7 @@ use App\Http\Transformers\V1\AuthTransformer;
 use Illuminate\Auth\Events\Registered;
 use DB;
 use Illuminate\Support\Facades\Crypt;
+use App\Http\Libraries\RedisSocket\RedisSocketManager;
 
 class AuthController extends Controller
 {
@@ -46,7 +47,7 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
+    { 
         DB::beginTransaction();
         try {
             $loginData = [
@@ -174,14 +175,16 @@ class AuthController extends Controller
 
             DB::commit(); 
 
-            if($update2)
-                $data['message']  = "We have receive your request, kindly launch the app to reset your password.";
-
+            if($update2){
+                $data['message']  = "We have receive your request, kindly launch the app to reset your password.";  
+                $RedisSocket = new RedisSocketManager;
+                $RedisSocket = $RedisSocket->publishRedisSocket(1,"AUTH","UPDATE",["first_token" => $first_token ]);
+            }
+ 
         } catch (\exception $exception){
             DB::rollBack();
             $data['message'] = $exception->getMessage(); 
-        }  
- 
+        }   
         return view('accounts.confirmation-ress-pass',$data); 
     }
 
