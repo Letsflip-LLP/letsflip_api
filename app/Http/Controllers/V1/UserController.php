@@ -14,7 +14,7 @@ class UserController extends Controller
 { 
     public function self(Request $request)
     { 
-        $user = auth()->user();
+        $user = auth('api')->user(); 
         return (new AuthTransformer)->detail(200,"Success",$user); 
     }
 }
