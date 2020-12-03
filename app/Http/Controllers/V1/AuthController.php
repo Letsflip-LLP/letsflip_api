@@ -13,9 +13,19 @@ use Illuminate\Auth\Events\Registered;
 use DB;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Libraries\RedisSocket\RedisSocketManager;
+use Validator;
 
 class AuthController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct() {
+        // $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    }
+
     public function register(Request $request)
     {
         DB::beginTransaction();
@@ -54,15 +64,21 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => $request->password
             ];
-    
-            if (!auth()->attempt($loginData))
+
+            $validator = Validator::make($request->all(),[
+                'email' => 'required|email',
+                'password' => 'required|string|min:6',
+            ]);
+ 
+            if (!$token = auth('api')->attempt($loginData))
                 return (new ResponseTransformer)->toJson(400,__('validation.password'),false);  
             
-            if(auth()->user()->email_verified_at == null)
+            $user  =  auth('api')->user(); 
+            
+            if($user->email_verified_at == null)
                 return (new ResponseTransformer)->toJson(400,__('passwords.email_verification'),false);  
-    
-            $user = auth()->user();
-            $accessToken = $user->createToken('authToken')->accessToken;
+     
+            $accessToken       = $token;
             $user->accessToken = $accessToken;
 
             DB::commit();
@@ -73,6 +89,15 @@ class AuthController extends Controller
             DB::rollBack();
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
+    }
+
+    protected function _createNewToken($token){
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => 60,
+            'user' => auth()->user()
+        ]);
     }
 
     public function verificationAccount(Request $request)

@@ -14,10 +14,6 @@ use App\Http\Controllers\V1\AuthController;
 |
 */
 
-Route::middleware('auth:api')->get('self', function (Request $request){
-    Route::post('login', [AuthController::class, 'login'])->name('PostAuthControllerLogin');
-});
-
 $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
     Route::post('register', [AuthController::class, 'register'])->name('PostAuthControllerRegister');
     Route::post('login', [AuthController::class, 'login'])->name('PostAuthControllerLogin');
