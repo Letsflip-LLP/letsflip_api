@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\AuthController;
+use App\Http\Controllers\V1\StorageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,10 @@ $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
 
     $router->get('email-verification', function (Request $request){
         return view('emails.account-reset-pass-confirmation',['full_name' => 'andhi saputro', 'reset_password_url' => 'http://www.com.com']);
+    });
+
+    $router->group(['prefix' => 'storage'], function($router){
+        Route::post('upload', [StorageController::class, 'uploadFile'])->name('PostStorageControlleruploadFile'); 
     });
 }); 
  
