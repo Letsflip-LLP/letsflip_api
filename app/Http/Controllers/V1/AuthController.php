@@ -14,6 +14,7 @@ use DB;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Libraries\RedisSocket\RedisSocketManager;
 use Validator;
+use Ramsey\Uuid\Uuid;
 
 class AuthController extends Controller
 {
@@ -35,6 +36,7 @@ class AuthController extends Controller
             $validatedData['first_name'] = $request->first_name;
             $validatedData['last_name'] = $request->last_name;
             $validatedData['email'] = $request->email;
+            $validatedData['id'] = Uuid::uuid4();
 
             $user = User::create($validatedData);
  

@@ -10,6 +10,7 @@ class AuthTransformer {
 
     public function detail($code,$message,$model){
         $temp = new \stdClass();
+        $temp->id         = $model->id;
         $temp->first_name = $model->first_name;
         $temp->last_name  = $model->last_name;
         $temp->email      = $model->email;

@@ -14,6 +14,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable ;
 
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +26,8 @@ class User extends Authenticatable implements JWTSubject
         'last_name',
         'email',
         'password',
-        'email_verified_at'
+        'email_verified_at',
+        'id'
     ];
 
     /**
