@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Crypt;
 use App\Http\Libraries\RedisSocket\RedisSocketManager;
 use Validator;
 use Ramsey\Uuid\Uuid;
+use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\Redirect;
 
 class AuthController extends Controller
 {
@@ -25,6 +27,7 @@ class AuthController extends Controller
      */
     public function __construct() {
         // $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->agent = new Agent();  
     }
 
     public function register(Request $request)
@@ -93,7 +96,7 @@ class AuthController extends Controller
     {        
         DB::beginTransaction();
         try {
-        
+             
             $message = "";
             
             $decode = Crypt::decryptString($request->temporary_token);
@@ -107,9 +110,13 @@ class AuthController extends Controller
                 $message = "Oops! Your account is already verified";
 
             if($user->email_verified_at == null){
-                if($user->update(['email_verified_at' => date('Y-m-d H:i:s')]))
-                    $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom";
-            } 
+                if($user->update(['email_verified_at' => date('Y-m-d H:i:s')])){
+                    $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom"; 
+                    
+                    if($this->agent->isMobile()) return redirect()->to('letsflip://getletsflip.com/auth/login');
+
+                }
+             } 
 
             $data = [];
             $data['message'] = $message;
@@ -193,6 +200,8 @@ class AuthController extends Controller
                 $data['message']  = "We have receive your request, kindly launch the app to reset your password.";  
                 $RedisSocket = new RedisSocketManager;
                 $RedisSocket = $RedisSocket->publishRedisSocket(1,"AUTH","UPDATE",["first_token" => $first_token ]);
+
+                if($this->agent->isMobile()) return redirect()->to('letsflip://getletsflip.com/auth/confirm-reset-password?temporary_token='.$first_token);
             }
  
         } catch (\exception $exception){
