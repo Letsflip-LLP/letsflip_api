@@ -201,7 +201,7 @@ class AuthController extends Controller
                 $RedisSocket = new RedisSocketManager;
                 $RedisSocket = $RedisSocket->publishRedisSocket(1,"AUTH","UPDATE",["first_token" => $first_token ]);
 
-                if($this->agent->isMobile()) return redirect()->to('letsflip://getletsflip.com/auth/confirm-reset-password?temporary_token='.$first_token);
+                if($this->agent->isMobile()) return redirect()->to('letsflip://getletsflip.com/auth/confirm-reset-password');
             }
  
         } catch (\exception $exception){
