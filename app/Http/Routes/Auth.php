@@ -16,6 +16,9 @@ use App\Http\Controllers\V1\StorageController;
 */
 
 $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
+    Route::get('peoples', [AuthController::class, 'peoples']);
+
+
     Route::post('register', [AuthController::class, 'register'])->name('PostAuthControllerRegister');
     Route::post('login', [AuthController::class, 'login'])->name('PostAuthControllerLogin');
     Route::post('request-reset-password', [AuthController::class, 'requestResetPassword'])->name('PostAuthControllerRequestResetPassword');
