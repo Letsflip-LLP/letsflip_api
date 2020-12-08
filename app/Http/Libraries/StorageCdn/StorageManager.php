@@ -27,8 +27,16 @@ class StorageManager {
         } 
     }  
 
-    private function _videoWithThumUpload(){
+    private function _videoWithThumUpload($path,$file){
+        $filename = $file->getClientOriginalName();
 
+        $save = Storage::disk('gcs')->putFileAs( $path , $file , $filename , 'public'); 
+
+        if($save)
+            return (object) [
+                "file_path" =>  $path,
+                "file_name" =>  $filename
+            ];
     }
 
     private function _resizeMultiUpload($path,$file){
