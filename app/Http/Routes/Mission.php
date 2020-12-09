@@ -23,7 +23,8 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
     });
 
     // Login Not Required
-    Route::get('list', [MissionController::class, 'getMission'])->name('GetMissionControllerGetMission');
+    Route::get('list',   [MissionController::class, 'getMission'])->name('GetMissionControllerGetMission');
+    Route::get('detail', [MissionController::class, 'getMissionDetail'])->name('GetMissionControllerGetMissionDetail');
 });
 
 $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){

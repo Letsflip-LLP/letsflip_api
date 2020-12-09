@@ -24,4 +24,9 @@ class MissionModel extends Model
         return $this->hasOne('App\Http\Models\MissionContentModel','id','default_content_id');
     }
 
+    public function User()
+    {
+        return $this->hasOne('App\Http\Models\User','id','user_id');
+    }
+
 }

@@ -108,4 +108,28 @@ class MissionController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function getMissionDetail(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+
+            $mission = new MissionModel;
+            $mission = $mission->where('id',$request->id)->first();
+ 
+            if($mission == null)
+                return (new MissionTransformer)->list(400,__('message.404'),$mission);
+
+        DB::commit();
+    
+            return (new MissionTransformer)->detail(200,__('message.200'),$mission);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
 }

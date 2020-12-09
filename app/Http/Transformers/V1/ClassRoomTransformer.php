@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Transformers\V1;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Http\JsonResponse;
 use App\Http\Transformers\ResponseTransformer; 
@@ -24,6 +25,7 @@ class ClassRoomTransformer {
     }
 
     public function item($model){ 
+
         $temp = new \stdClass(); 
         $temp->id           = $model->id;
         $temp->title        = $model->title;
@@ -31,6 +33,7 @@ class ClassRoomTransformer {
         $temp->file_path    = $model->file_path;
         $temp->file_name    = $model->file_name;
         $temp->file_mime    = $model->file_mime;
+        $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.'/'.$model->file_name);
         $temp->type         = $this->_type($model->type); 
         $temp->created_at   = dateFormat($model->created_at);
 
