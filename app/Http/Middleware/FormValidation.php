@@ -92,6 +92,12 @@ class FormValidation
           ];
         break;
 
+        case 'GetMissionCommentControllerGetComments':
+          return [
+            'mission_id' => 'required|exists:missions,id' 
+          ];
+        break;
+
         default:
           return [];
       }

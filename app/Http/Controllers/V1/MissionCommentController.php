@@ -74,5 +74,27 @@ class MissionCommentController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function getComments(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $model = new MissionCommentModel;
+            $model = $model->where('mission_id',$request->mission_id)->paginate($request->input('per_page',10)); 
+
+        DB::commit();
+    
+        return (new MissionCommentTransformer)->list(200,__('messages.200'),$model);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    
+    
      
 }
