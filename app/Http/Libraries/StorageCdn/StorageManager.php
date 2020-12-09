@@ -15,9 +15,9 @@ class StorageManager {
             $mime = $file->getMimeType();
             $mime = explode("/",$mime)[0];
             
-            if($mime == 'image') $upload = $this->_resizeMultiUpload($path.'/'.$mime,$file);
+            if($mime == 'image') $upload = $this->_resizeMultiUpload($path.'/'.$mime,$file,$mime);
             
-            if($mime == 'video') $upload = $this->_videoWithThumUpload($path.'/'.$mime,$file);
+            if($mime == 'video') $upload = $this->_videoWithThumUpload($path.'/'.$mime,$file,$mime);
 
 
             return $upload;
@@ -27,19 +27,21 @@ class StorageManager {
         } 
     }  
 
-    private function _videoWithThumUpload($path,$file){
+    private function _videoWithThumUpload($path,$file,$mime){
         $filename = $file->getClientOriginalName();
+        $mime = $file->getMimeType();
 
         $save = Storage::disk('gcs')->putFileAs( $path , $file , $filename , 'public'); 
 
         if($save)
             return (object) [
                 "file_path" =>  $path,
-                "file_name" =>  $filename
+                "file_name" =>  $filename,
+                "file_mime" =>  $mime
             ];
     }
 
-    private function _resizeMultiUpload($path,$file){
+    private function _resizeMultiUpload($path,$file,$mime){
         $originalSize   = getimagesize($file);
         $width = $originalSize[0];
         $height = $originalSize[1];
@@ -83,7 +85,8 @@ class StorageManager {
 
            return (object) [
                "file_path" =>  $path,
-               "file_name" =>  $filename
+               "file_name" =>  $filename,
+               "file_mime" =>  $mime
            ];
 
         }catch(Exception $e) {

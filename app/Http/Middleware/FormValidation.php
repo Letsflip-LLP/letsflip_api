@@ -64,6 +64,14 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerAddMission':
+          return [
+            'title' => 'required|min:3',
+            'text'  => 'required|min:3',
+            'type'  => 'required|in:1,2'
+          ];
+        break;
+
         default:
           return [];
       }
