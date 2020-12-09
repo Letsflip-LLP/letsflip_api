@@ -15,13 +15,25 @@ use App\Http\Controllers\V1\ClassRoomController;
 |
 */
  
-$router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'mission'], function($router){
-    Route::post('add', [MissionController::class, 'addMission'])->name('PostMissionControllerAddMission');
+$router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
+
+    // Need Login
+    $router->group(['middleware'=> ['auth:api','verified']], function($router){
+        Route::post('add', [MissionController::class, 'addMission'])->name('PostMissionControllerAddMission'); 
+    });
+
+    // Login Not Required
     Route::get('list', [MissionController::class, 'getMission'])->name('GetMissionControllerGetMission');
 });
 
-$router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'classroom'], function($router){
-    Route::post('add', [ClassRoomController::class, 'addClassRoom'])->name('PostClassRoomControllerAddClassRoom');
+$router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
+
+    // Need Login
+    $router->group(['middleware'=> ['auth:api','verified']], function($router){
+        Route::post('add', [ClassRoomController::class, 'addClassRoom'])->name('PostClassRoomControllerAddClassRoom');
+    });
+
+    // Login Not Required
     Route::get('list', [ClassRoomController::class, 'getClassRoom'])->name('GetClassRoomControllerGetClassRoom');
 });
  
