@@ -14,6 +14,15 @@ class MissionTransformer {
         return (new ResponseTransformer)->toJson($code,$message,$model,$data);
     }
 
+    public function list($code,$message,$models){
+        $custome_model = []; 
+        foreach($models as $model ){
+            $custome_model[] = $this->item($model);
+        }
+
+        return (new ResponseTransformer)->toJson($code,$message,$models,$custome_model);
+    }
+
     public function item($model){
         $temp = new \stdClass();
         $temp->id                   = $model->id;

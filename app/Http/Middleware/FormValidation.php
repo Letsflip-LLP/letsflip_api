@@ -72,6 +72,12 @@ class FormValidation
           ];
         break;
 
+        case 'GetMissionControllerGetMission':
+          return [
+            'order_by' => 'in:created_at-asc,created_at-desc,trending', 
+          ];
+        break;
+
         default:
           return [];
       }

@@ -69,4 +69,43 @@ class MissionController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function getMission(Request $request){ 
+
+        DB::beginTransaction();
+
+        try {
+
+            $mission = new MissionModel;
+            
+            if($request->filled('search'))
+                $mission = $mission->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
+
+            if($request->filled('order_by')){
+                $order_by = explode('-',$request->order_by); 
+
+                if($order_by[0] == 'created_at')
+                    $mission = $mission->orderBy($order_by[0],$order_by[1]);
+
+                if($order_by[0] == 'trending')
+                    $mission = $mission->orderBy("created_at","DESC");
+ 
+            }else{
+                $mission = $mission->orderBy('created_at','DESC'); 
+            }
+                
+            
+            $mission = $mission->paginate($request->input('per_page',10)); 
+
+        DB::commit();
+    
+            return (new MissionTransformer)->list(200,__('message.200'),$mission);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
 }
