@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\MissionController;
+use App\Http\Controllers\V1\ClassRoomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,10 @@ use App\Http\Controllers\V1\MissionController;
  
 $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'mission'], function($router){
     Route::post('add', [MissionController::class, 'addMission'])->name('PostMissionControllerAddMission');
+});
+
+$router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'classroom'], function($router){
+    Route::post('add', [ClassRoomController::class, 'addClassRoom'])->name('PostClassRoomControllerAddClassRoom');
 });
  
  
