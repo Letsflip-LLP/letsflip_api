@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
+use App\Http\Transformers\V1\MissionTransformer; 
 use App\Http\Models\MissionModel;
 use App\Http\Models\MissionContentModel;
 use Ramsey\Uuid\Uuid;
@@ -54,14 +55,11 @@ class MissionController extends Controller
             $mission_content->file_mime     = $storage->file_mime;
             $save2 = $mission_content->save();
     
-            if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,"Failed",false);
- 
-            $return = $mission;
-            $return->default_content = $mission_content;
+            if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
         DB::commit();
     
-            return (new ResponseTransformer)->toJson(200,__('message.200'),$return);
+            return (new MissionTransformer)->detail(200,__('message.200'),$mission);
 
         } catch (\exception $exception){
          
