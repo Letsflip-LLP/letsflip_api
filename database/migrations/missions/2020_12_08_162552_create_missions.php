@@ -15,7 +15,7 @@ class CreateMissions extends Migration
     {
         Schema::create('missions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id')->index("id in users");
+            $table->uuid('user_id')->index()->comment("id in users");
             $table->string('title',225);
             $table->text('text'); 
             $table->uuid('default_content_id')->comment('id in mission_contents');

@@ -26,6 +26,9 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         // COMMENTS
         Route::post('comment/add',      [MissionCommentController::class, 'addComment'])->name('PostMissionCommentControllerAddComment');
         Route::post('comment/delete',   [MissionCommentController::class, 'deleteComment'])->name('PostMissionCommentControllerDeleteComment');
+
+        // LIKES 
+        Route::post('action-like',      [   MissionController::class, 'likeActionMission'])->name('PostMissionControllerlikeActionMission');
     });
 
     // Login Not Required

@@ -98,6 +98,13 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerlikeActionMission':
+          return [
+            'mission_id' => 'exists:missions,id',
+            'mission_comment_id' => 'exists:mission_comments,id'
+          ];
+        break;
+
         default:
           return [];
       }
