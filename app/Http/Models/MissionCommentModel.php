@@ -10,4 +10,9 @@ class MissionCommentModel extends Model
     use HasFactory;
     public $incrementing = false;
     protected $table = 'mission_comments';
+
+    public function User()
+    {
+        return $this->hasOne('App\Http\Models\User','id','user_id');
+    }
 }

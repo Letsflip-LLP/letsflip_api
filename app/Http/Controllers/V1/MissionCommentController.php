@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer;  
+use App\Http\Transformers\V1\MissionCommentTransformer;  
 use App\Http\Models\MissionCommentModel;
 use Ramsey\Uuid\Uuid;
 use DB;
@@ -38,7 +39,7 @@ class MissionCommentController extends Controller
 
         DB::commit();
     
-            return (new ResponseTransformer)->toJson(200,__('messages.200'),$model);
+            return (new MissionCommentTransformer)->detail(200,__('messages.200'),$model);
 
         } catch (\exception $exception){
            

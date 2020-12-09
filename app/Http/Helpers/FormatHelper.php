@@ -1,7 +1,10 @@
 <?php
   
 function dateFormat($date){
-    return \Carbon\Carbon::parse($date)->format("D ,M Y");   
+    return (object) [
+        "date" =>\Carbon\Carbon::parse($date)->format("D, M Y"),
+        "diff" => $date->diffForHumans()
+    ];
 }
 
 function defaultImage($module){

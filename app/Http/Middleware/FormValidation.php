@@ -82,7 +82,7 @@ class FormValidation
           return [
             'text' => 'required|min:3',
             'mission_id' => 'required|exists:missions,id',
-            'parent_id' => 'required|exists:mission_comments,id' 
+            'parent_id' => 'exists:mission_comments,id' 
           ];
         break;
 
