@@ -9,9 +9,18 @@ use Carbon\Carbon;
 class ClassRoomTransformer {
 
     public function detail($code,$message,$model){
-        $data = $this->item($model);
+        $custome_model = $this->item($model);
 
-        return (new ResponseTransformer)->toJson($code,$message,$model,$data);
+        return (new ResponseTransformer)->toJson($code,$message,$model,$custome_model);
+    }
+
+    public function list($code,$message,$models){
+        $custome_model = []; 
+        foreach($models as $model ){
+            $custome_model[] = $this->item($model);
+        }
+
+        return (new ResponseTransformer)->toJson($code,$message,$models,$custome_model);
     }
 
     public function item($model){ 
@@ -27,7 +36,6 @@ class ClassRoomTransformer {
 
         return $temp;
     }
-
 
     private function _type($type){
         switch ($type) {

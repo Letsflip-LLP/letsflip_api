@@ -21,7 +21,7 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'mission'], f
 
 $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'classroom'], function($router){
     Route::post('add', [ClassRoomController::class, 'addClassRoom'])->name('PostClassRoomControllerAddClassRoom');
-    Route::post('list', [ClassRoomController::class, 'getClassRoom'])->name('PostClassRoomControllerGetClassRoom');
+    Route::get('list', [ClassRoomController::class, 'getClassRoom'])->name('PostClassRoomControllerGetClassRoom');
 });
  
  
