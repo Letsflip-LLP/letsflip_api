@@ -15,6 +15,7 @@ class CreateClassroom extends Migration
     {
         Schema::create('classrooms', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('user_id');
             $table->string('title',225)->nullable();
             $table->text('text')->nullable();
             $table->text('file_path')->nullable();
