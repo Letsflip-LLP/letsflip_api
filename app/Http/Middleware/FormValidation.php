@@ -78,6 +78,20 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionCommentControllerAddComment':
+          return [
+            'text' => 'required|min:3',
+            'mission_id' => 'required|exists:missions,id',
+            'parent_id' => 'required|exists:mission_comments,id' 
+          ];
+        break;
+
+        case 'PostMissionCommentControllerDeleteComment':
+          return [
+            'mission_comment_id' => 'required|exists:mission_comments,id' 
+          ];
+        break;
+
         default:
           return [];
       }

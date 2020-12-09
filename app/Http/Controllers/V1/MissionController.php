@@ -59,7 +59,7 @@ class MissionController extends Controller
 
         DB::commit();
     
-            return (new MissionTransformer)->detail(200,__('message.200'),$mission);
+            return (new MissionTransformer)->detail(200,__('messages.200'),$mission);
 
         } catch (\exception $exception){
          
@@ -99,7 +99,7 @@ class MissionController extends Controller
 
         DB::commit();
     
-            return (new MissionTransformer)->list(200,__('message.200'),$mission);
+            return (new MissionTransformer)->list(200,__('messages.200'),$mission);
 
         } catch (\exception $exception){
            
@@ -123,7 +123,7 @@ class MissionController extends Controller
 
         DB::commit();
     
-            return (new MissionTransformer)->detail(200,__('message.200'),$mission);
+            return (new MissionTransformer)->detail(200,__('messages.200'),$mission);
 
         } catch (\exception $exception){
            

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\MissionController;
 use App\Http\Controllers\V1\ClassRoomController;
+use App\Http\Controllers\V1\MissionCommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,13 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
 
     // Need Login
     $router->group(['middleware'=> ['auth:api','verified']], function($router){
+        // MISSION
         Route::post('add', [MissionController::class, 'addMission'])->name('PostMissionControllerAddMission'); 
+
+        // COMMENTS
+        Route::post('comment/add',      [MissionCommentController::class, 'addComment'])->name('PostMissionCommentControllerAddComment');
+        Route::post('comment/delete',   [MissionCommentController::class, 'deleteComment'])->name('PostMissionCommentControllerDeleteComment');
+
     });
 
     // Login Not Required
