@@ -33,6 +33,7 @@ class ResponseTransformer
                 'total' => $data->total(),
                 'per_page' => (int)$data->perPage(),
                 'last_page' => $data->lastPage(),
+                'current_page' => $data->currentPage(),
                 'next_page_url' => $nextUrl != null ? $nextUrl . $perPage : $nextUrl,
                 'prev_page_url' => $prevUrl != null ? $prevUrl . $perPage : $prevUrl,
                 'from' => $data->firstItem(),
