@@ -80,7 +80,7 @@ class MissionCommentController extends Controller
 
         try {
             $model = new MissionCommentModel;
-            $model = $model->where('mission_id',$request->mission_id)->orderBy('created_at','DESC')->paginate($request->input('per_page',10)); 
+            $model = $model->where('mission_id',$request->mission_id)->orderBy('created_at','ASC')->paginate($request->input('per_page',10)); 
 
         DB::commit();
     
