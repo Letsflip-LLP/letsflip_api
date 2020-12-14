@@ -15,4 +15,14 @@ class MissionCommentModel extends Model
     {
         return $this->hasOne('App\Http\Models\User','id','user_id');
     }
+
+    public function Comment()
+    {
+        return $this->hasMany($this, 'parent_id');
+    }
+
+    public function Like()
+    {
+        return $this->hasMany('App\Http\Models\LikeModel','mission_comment_id','id');
+    }
 }

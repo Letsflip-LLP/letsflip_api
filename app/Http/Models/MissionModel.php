@@ -31,7 +31,7 @@ class MissionModel extends Model
 
     public function Like()
     {
-        return $this->hasOne('App\Http\Models\LikeModel','mission_id','id');
+        return $this->hasMany('App\Http\Models\LikeModel','mission_id','id');
     }
 
     public function Comment()

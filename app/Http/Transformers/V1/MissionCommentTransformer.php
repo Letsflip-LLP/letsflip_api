@@ -28,12 +28,29 @@ class MissionCommentTransformer {
 
         $temp = new \stdClass(); 
         $temp->id           = $model->id; 
-        $temp->text         = $model->text;
+        $temp->text         = $model->text; 
         $temp->user         = $this->_user($model->User);
+        $temp->liked        = false;
+        
+        if(auth('api')->user() !=null && $model->Like)
+            $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
+        
+        $temp->coments      = [];
+
+        foreach($model->Comment as $comm){
+            $temp->coments[] = $this->item($comm);
+        }
+
+        $temp->total_like   = $model->Like->count(); 
         $temp->created_at   = dateFormat($model->created_at);
 
         return $temp;
     } 
+
+    private function _childItem($model){
+        return $this->item($model);
+    }
+
 
     private function _user($model){
         $tmp = new \stdClass;
