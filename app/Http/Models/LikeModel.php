@@ -10,4 +10,10 @@ class LikeModel extends Model
     use HasFactory;
     public $incrementing = false;
     protected $table = 'likes';
+
+
+    public function User()
+    {
+        return $this->hasOne('App\Http\Models\User','id','user_id');
+    }
 }

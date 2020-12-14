@@ -29,4 +29,14 @@ class MissionModel extends Model
         return $this->hasOne('App\Http\Models\User','id','user_id');
     }
 
+    public function Like()
+    {
+        return $this->hasOne('App\Http\Models\LikeModel','mission_id','id');
+    }
+
+    public function Comment()
+    {
+        return $this->hasMany('App\Http\Models\MissionCommentModel','mission_id','id');
+    }
+
 }

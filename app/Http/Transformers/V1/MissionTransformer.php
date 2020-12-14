@@ -34,6 +34,13 @@ class MissionTransformer {
         $temp->type                 = $this->_type($model->type);
         $temp->default_content      = $this->_defaultContent($model->MissionContentDefault);
         $temp->created_at           = dateFormat($model->created_at);
+        $temp->liked                = false;
+        $temp->total_comment        = $model->Comment == null ? 0 : $model->Comment->count();
+        $temp->total_like           = $model->Like == null ? 0 : $model->Like->count();
+
+        if(auth('api')->user() !=null && $model->Like)
+             $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
+
 
         return $temp;
     }
