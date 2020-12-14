@@ -35,10 +35,10 @@ class MissionCommentTransformer {
         if(auth('api')->user() !=null && $model->Like)
             $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
         
-        $temp->coments      = [];
+        $temp->comments      = [];
 
         foreach($model->Comment as $comm){
-            $temp->coments[] = $this->item($comm);
+            $temp->comments[] = $this->item($comm);
         }
 
         $temp->total_like   = $model->Like->count(); 
