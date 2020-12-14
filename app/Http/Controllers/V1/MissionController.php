@@ -11,6 +11,9 @@ use App\Http\Transformers\ResponseTransformer;
 use App\Http\Transformers\V1\MissionTransformer; 
 use App\Http\Models\MissionModel;
 use App\Http\Models\MissionContentModel;
+use App\Http\Models\MissionResponeModel;
+use App\Http\Models\MissionResponeContentModel;
+
 use App\Http\Models\LikeModel;
 use App\Http\Models\MissionReportModel;
 use Ramsey\Uuid\Uuid;
@@ -229,6 +232,54 @@ class MissionController extends Controller
 
         } catch (\exception $exception){
            
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+
+    public function addResponeMission(Request $request){ 
+
+        DB::beginTransaction();
+
+        try {
+            $storage = new StorageManager;
+            $storage = $storage->uploadFile("mission",$request->file('file'));   
+             
+            $mission_respone_id         = Uuid::uuid4();
+            $mission_respone_content_id = Uuid::uuid4();
+    
+            // SAVE MISSION
+            $mission            = new MissionResponeModel; 
+            $mission->id        = $mission_respone_id;
+            $mission->user_id   = $this->user_login->id;
+            $mission->mission_id= $request->mission_id;
+            $mission->title     = $request->title; 
+            $mission->text      = $request->text; 
+            $mission->type      = $request->type;
+            $mission->status    = 1;
+            $mission->default_content_id = $mission_respone_content_id;
+            $save1 = $mission->save();
+    
+            // SAVE DEFAULT CONTENT MISSION 
+            $mission_content                = new MissionResponeContentModel; 
+            $mission_content->id            = $mission_respone_content_id;
+            $mission_content->mission_response_id    = $mission_respone_id;
+            $mission_content->file_path     = $storage->file_path;
+            $mission_content->file_name     = $storage->file_name;
+            $mission_content->file_mime     = $storage->file_mime;
+            $save2 = $mission_content->save();
+    
+            if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
+
+        DB::commit();
+    
+            return (new MissionTransformer)->detail(200,__('messages.200'), $mission );
+
+        } catch (\exception $exception){
+         
+            // Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
             DB::rollBack();
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);

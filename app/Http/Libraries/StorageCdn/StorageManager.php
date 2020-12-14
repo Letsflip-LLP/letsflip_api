@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\StorageCdn\StorageManager;
+use Ramsey\Uuid\Uuid;
 
 class StorageManager {
  
@@ -12,12 +13,17 @@ class StorageManager {
 
     public function uploadFile($path,$file){
         try {
-            $mime = $file->getMimeType();
-            $mime = explode("/",$mime)[0];
+            $m = $file->getMimeType();
+            $mime = explode("/",$m)[0];
+            $extention = explode("/",$m)[1];
+
+            $filename = Uuid::uuid4().'.'.$extention;
+
+            // $filename
+
+            if($mime == 'image') $upload = $this->_resizeMultiUpload($path.'/'.$mime,$file,$mime,$filename);
             
-            if($mime == 'image') $upload = $this->_resizeMultiUpload($path.'/'.$mime,$file,$mime);
-            
-            if($mime == 'video') $upload = $this->_videoWithThumUpload($path.'/'.$mime,$file,$mime);
+            if($mime == 'video') $upload = $this->_videoWithThumUpload($path.'/'.$mime,$file,$mime,$filename);
 
 
             return $upload;
@@ -27,8 +33,7 @@ class StorageManager {
         } 
     }  
 
-    private function _videoWithThumUpload($path,$file,$mime){
-        $filename = $file->getClientOriginalName();
+    private function _videoWithThumUpload($path,$file,$mime,$filename){ 
         $mime = $file->getMimeType();
 
         $save = Storage::disk('gcs')->putFileAs( $path , $file , $filename , 'public'); 
@@ -41,18 +46,17 @@ class StorageManager {
             ];
     }
 
-    private function _resizeMultiUpload($path,$file,$mime){
+    private function _resizeMultiUpload($path,$file,$mime,$filename){
         $originalSize   = getimagesize($file);
         $width = $originalSize[0];
         $height = $originalSize[1];
-        $ratio  = 2;
-        $filename = $file->getClientOriginalName();
+        $ratio  = 2; 
 
         try {
             $thumbnail = static::autoRatio($width,$height);
             $tempPath = 'tmp';
             $deleteTemp = [];
-            Storage::disk('gcs')->put($path, $file);
+            Storage::disk('gcs')->putFileAs($path, $file ,$filename,'public');
 
             foreach ($thumbnail as $key => $size) {
                 $newPath = $tempPath.'/'.$key;

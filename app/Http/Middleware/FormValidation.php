@@ -68,7 +68,7 @@ class FormValidation
           return [
             'title' => 'required|min:3',
             'text'  => 'required|min:3',
-            'type'  => 'required|in:1,2'
+            'type'  => 'required|in:1,2',
           ];
         break;
 
@@ -110,7 +110,16 @@ class FormValidation
             'mission_id' => 'exists:missions,id',
             'mission_comment_id' => 'exists:mission_comments,id',
             'title' => 'required',
-            'text' => 'required'
+            'text' => 'required',
+          ];
+        break;
+
+        case 'PostMissionResponeControllerAddRespone':
+          return [
+            'title' => 'required|min:3',
+            'text'  => 'required|min:3',
+            'type'  => 'required|in:1,2',
+            'mission_id' => 'exists:missions,id'
           ];
         break;
 

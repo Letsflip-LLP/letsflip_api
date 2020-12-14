@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\MissionController;
 use App\Http\Controllers\V1\ClassRoomController;
-use App\Http\Controllers\V1\MissionCommentController;
+use App\Http\Controllers\V1\MissionCommentController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +32,15 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
 
         // REPORT 
         Route::post('report-content',   [MissionController::class, 'reportActionContent'])->name('PostMissionControllerReportActionContent');
+
+        // Response Mission
+        $router->group(['prefix' => 'respone'], function($router){
+            // MISSION
+            Route::post('add', [MissionController::class, 'addResponeMission'])->name('PostMissionResponeControllerAddRespone'); 
+        });
     });
 
+ 
     // Login Not Required
     Route::get('comment/list',   [MissionCommentController::class, 'getComments'])->name('GetMissionCommentControllerGetComments');
     Route::get('list',   [MissionController::class, 'getMission'])->name('GetMissionControllerGetMission');
