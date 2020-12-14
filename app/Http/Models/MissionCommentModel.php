@@ -25,4 +25,9 @@ class MissionCommentModel extends Model
     {
         return $this->hasMany('App\Http\Models\LikeModel','mission_comment_id','id');
     }
+
+    public function Report()
+    {
+        return $this->hasMany('App\Http\Models\MissionReportModel','mission_id','id');
+    }
 }

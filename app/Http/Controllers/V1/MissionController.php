@@ -12,6 +12,7 @@ use App\Http\Transformers\V1\MissionTransformer;
 use App\Http\Models\MissionModel;
 use App\Http\Models\MissionContentModel;
 use App\Http\Models\LikeModel;
+use App\Http\Models\MissionReportModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 
@@ -172,6 +173,59 @@ class MissionController extends Controller
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'),$action);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    public function reportActionContent(Request $request){
+ 
+        DB::beginTransaction();
+
+        try {
+
+            $model1 = new MissionReportModel;
+            $model2 = new MissionReportModel;
+            $model1 = $model1->where('user_id',$this->user_login->id);
+     
+            if($request->filled("mission_id")){
+                  $model1 = $model1->where('mission_id',$request->mission_id);
+                  $model2->mission_id = $request->mission_id;
+            }
+     
+             if($request->filled("mission_comment_id")){
+                 $model1 = $model1->where('mission_comment_id',$request->mission_comment_id);
+                 $model2->mission_comment_id = $request->mission_comment_id;
+             }
+             
+             if($request->filled("mission_respone_id")){
+                 $model1 = $model1->where('mission_respone_id',$request->mission_respone_id);
+                 $model2->mission_respone_id = $request->mission_respone_id;
+             }
+     
+             if($model1->first() == null){
+                 $model2->id      = Uuid::uuid4();
+                 $model2->user_id = $this->user_login->id;
+                 $model2->title   = $request->title;
+                 $model2->text    = $request->text;
+
+                 $model2->save(); 
+             }else{
+                $model1->title   = $request->title;
+                $model1->text    = $request->text;
+                $model1->update([
+                    "title" => $request->title,
+                    "text" => $request->text
+                ]); 
+             }
+        
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
 
         } catch (\exception $exception){
            

@@ -29,6 +29,9 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
 
         // LIKES 
         Route::post('action-like',      [   MissionController::class, 'likeActionMission'])->name('PostMissionControllerlikeActionMission');
+
+        // REPORT 
+        Route::post('report-content',   [MissionController::class, 'reportActionContent'])->name('PostMissionControllerReportActionContent');
     });
 
     // Login Not Required

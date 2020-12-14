@@ -105,6 +105,15 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerReportActionContent':
+          return [
+            'mission_id' => 'exists:missions,id',
+            'mission_comment_id' => 'exists:mission_comments,id',
+            'title' => 'required',
+            'text' => 'required'
+          ];
+        break;
+
         default:
           return [];
       }
