@@ -34,13 +34,13 @@ class MissionController extends Controller
         DB::beginTransaction();
 
         try {
-            $tumbnail  = null; 
+            $thumbnail  = null; 
             $storage = new StorageManager;
 
-            if($request->tumbnail != null){
+            if($request->thumbnail != null){
                 $thumb_upload = new StorageManager;
-                $thumb_upload = $thumb_upload->uploadFile("mission/tumbnail",$request->file('tumbnail'));    
-                $tumbnail = $thumb_upload;
+                $thumb_upload = $thumb_upload->uploadFile("mission/thumbnail",$request->file('thumbnail'));    
+                $thumbnail = $thumb_upload;
             }
 
             $storage = $storage->uploadFile("mission",$request->file('file')); 
@@ -58,9 +58,9 @@ class MissionController extends Controller
             $mission->status    = 1;
             $mission->default_content_id    =  $mission_content_id;
 
-            if($tumbnail != null){
-                $mission->image_path   = $tumbnail->file_path; 
-                $mission->image_file   = $tumbnail->file_name;
+            if($thumbnail != null){
+                $mission->image_path   = $thumbnail->file_path; 
+                $mission->image_file   = $thumbnail->file_name;
             }
 
             $save1 = $mission->save();
@@ -259,13 +259,13 @@ class MissionController extends Controller
 
         try {
            
-            $tumbnail  = null; 
+            $thumbnail  = null; 
             $storage = new StorageManager;
 
-            if($request->tumbnail != null){
+            if($request->thumbnail != null){
                 $thumb_upload = new StorageManager;
-                $thumb_upload = $thumb_upload->uploadFile("mission/tumbnail",$request->file('tumbnail'));    
-                $tumbnail = $thumb_upload;
+                $thumb_upload = $thumb_upload->uploadFile("mission/thumbnail",$request->file('thumbnail'));    
+                $thumbnail = $thumb_upload;
             }
 
             $storage = $storage->uploadFile("mission",$request->file('file'));   
@@ -284,9 +284,9 @@ class MissionController extends Controller
             $mission_respone->status    = 1;
             $mission_respone->default_content_id = $mission_respone_content_id;
 
-            if($tumbnail != null){
-                $mission_respone->image_path   = $tumbnail->file_path; 
-                $mission_respone->image_file   = $tumbnail->file_name;
+            if($thumbnail != null){
+                $mission_respone->image_path   = $thumbnail->file_path; 
+                $mission_respone->image_file   = $thumbnail->file_name;
             }
 
             $save1 = $mission_respone->save();
