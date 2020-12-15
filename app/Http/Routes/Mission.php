@@ -37,6 +37,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         $router->group(['prefix' => 'respone'], function($router){
             // MISSION
             Route::post('add', [MissionController::class, 'addResponeMission'])->name('PostMissionResponeControllerAddRespone'); 
+            Route::get('list', [MissionController::class, 'getResponeMission'])->name('GetMissionControllerGetResponeMission'); 
         });
     });
 

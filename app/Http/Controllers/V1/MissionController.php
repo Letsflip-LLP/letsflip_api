@@ -253,7 +253,7 @@ class MissionController extends Controller
     }
 
 
-    public function addResponeMission(Request $request){ 
+    public function addResponeMission(Request $request){
 
         DB::beginTransaction();
 
@@ -294,7 +294,7 @@ class MissionController extends Controller
             // SAVE DEFAULT CONTENT MISSION 
             $mission_content                = new MissionResponeContentModel; 
             $mission_content->id            = $mission_respone_content_id;
-            $mission_content->mission_response_id    = $mission_respone_id;
+            $mission_content->mission_response_id = $mission_respone_id;
             $mission_content->file_path     = $storage->file_path;
             $mission_content->file_name     = $storage->file_name;
             $mission_content->file_mime     = $storage->file_mime;
@@ -308,7 +308,29 @@ class MissionController extends Controller
 
         } catch (\exception $exception){
          
-            // Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
+            Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    public function getResponeMission(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+             
+            $respone_mission = new MissionResponeModel;
+            $respone_mission = $respone_mission->where('mission_id',$request->mission_id)->get(); 
+
+            DB::commit();
+        
+                return (new MissionTransformer)->list(200,__('messages.200'),$respone_mission);
+
+        } catch (\exception $exception){
+         
+            Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
             DB::rollBack();
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);

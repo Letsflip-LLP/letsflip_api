@@ -31,11 +31,11 @@ class MissionTransformer {
         $temp->title                = $model->title;
         $temp->text                 = $model->text; 
         
-        $temp->thumnail             =$model->image_path && $model->image_file ? (object) [
-            "image_path" => $model->image_path,
-            "image_file" => $model->image_file,
-            "image_fyll_path" => getPublicFile($model->image_path,$model->image_file)
-        ] : null;
+        $temp->thumnail             =  [
+            "image_path" => $image_path =  $model->image_path ? $model->image_path : "mission/tumbnail/image",
+            "image_file" => $image_file =  $model->image_path ? $model->image_file : "d4eb8193-f6f4-4f5e-a3ae-4a83b5ea4cbc.jpeg",
+            "image_fyll_path" => getPublicFile($image_path,$image_file)
+        ];
 
         $temp->user                 = $this->_user($model->User);
         $temp->type                 = $this->_type($model->type);
@@ -47,7 +47,6 @@ class MissionTransformer {
 
         if(auth('api')->user() !=null && $model->Like)
              $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
-
 
         return $temp;
     }
