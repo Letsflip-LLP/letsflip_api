@@ -30,6 +30,13 @@ class MissionTransformer {
         $temp->id                   = $model->id;
         $temp->title                = $model->title;
         $temp->text                 = $model->text; 
+        
+        $temp->thumnail             =$model->image_path && $model->image_file ? (object) [
+            "image_path" => $model->image_path,
+            "image_file" => $model->image_file,
+            "image_fyll_path" => getPublicFile($model->image_path,$model->image_file)
+        ] : null;
+
         $temp->user                 = $this->_user($model->User);
         $temp->type                 = $this->_type($model->type);
         $temp->default_content      = $this->_defaultContent($model->MissionContentDefault);

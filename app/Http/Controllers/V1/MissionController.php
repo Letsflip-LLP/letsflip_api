@@ -34,8 +34,16 @@ class MissionController extends Controller
         DB::beginTransaction();
 
         try {
+            $tumbnail  = null; 
             $storage = new StorageManager;
-            $storage = $storage->uploadFile("mission",$request->file('file'));   
+
+            if($request->tumbnail != null){
+                $thumb_upload = new StorageManager;
+                $thumb_upload = $thumb_upload->uploadFile("mission/tumbnail",$request->file('tumbnail'));    
+                $tumbnail = $thumb_upload;
+            }
+
+            $storage = $storage->uploadFile("mission",$request->file('file')); 
              
             $mission_id         = Uuid::uuid4();
             $mission_content_id = Uuid::uuid4();
@@ -48,7 +56,13 @@ class MissionController extends Controller
             $mission->text      = $request->text; 
             $mission->type      = $request->type;
             $mission->status    = 1;
-            $mission->default_content_id      =  $mission_content_id;
+            $mission->default_content_id    =  $mission_content_id;
+
+            if($tumbnail != null){
+                $mission->image_path   = $tumbnail->file_path; 
+                $mission->image_file   = $tumbnail->file_name;
+            }
+
             $save1 = $mission->save();
     
             // SAVE DEFAULT CONTENT MISSION 
@@ -244,23 +258,38 @@ class MissionController extends Controller
         DB::beginTransaction();
 
         try {
+           
+            $tumbnail  = null; 
             $storage = new StorageManager;
+
+            if($request->tumbnail != null){
+                $thumb_upload = new StorageManager;
+                $thumb_upload = $thumb_upload->uploadFile("mission/tumbnail",$request->file('tumbnail'));    
+                $tumbnail = $thumb_upload;
+            }
+
             $storage = $storage->uploadFile("mission",$request->file('file'));   
              
             $mission_respone_id         = Uuid::uuid4();
             $mission_respone_content_id = Uuid::uuid4();
     
             // SAVE MISSION
-            $mission            = new MissionResponeModel; 
-            $mission->id        = $mission_respone_id;
-            $mission->user_id   = $this->user_login->id;
-            $mission->mission_id= $request->mission_id;
-            $mission->title     = $request->title; 
-            $mission->text      = $request->text; 
-            $mission->type      = $request->type;
-            $mission->status    = 1;
-            $mission->default_content_id = $mission_respone_content_id;
-            $save1 = $mission->save();
+            $mission_respone            = new MissionResponeModel; 
+            $mission_respone->id        = $mission_respone_id;
+            $mission_respone->user_id   = $this->user_login->id;
+            $mission_respone->mission_id= $request->mission_id;
+            $mission_respone->title     = $request->title; 
+            $mission_respone->text      = $request->text; 
+            $mission_respone->type      = $request->type;
+            $mission_respone->status    = 1;
+            $mission_respone->default_content_id = $mission_respone_content_id;
+
+            if($tumbnail != null){
+                $mission_respone->image_path   = $tumbnail->file_path; 
+                $mission_respone->image_file   = $tumbnail->file_name;
+            }
+
+            $save1 = $mission_respone->save();
     
             // SAVE DEFAULT CONTENT MISSION 
             $mission_content                = new MissionResponeContentModel; 
@@ -275,7 +304,7 @@ class MissionController extends Controller
 
         DB::commit();
     
-            return (new MissionTransformer)->detail(200,__('messages.200'), $mission );
+            return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
 
         } catch (\exception $exception){
          

@@ -23,3 +23,7 @@ function defaultImage($module){
             break;
     }
 }
+
+function getPublicFile($path,$file){
+    return  Illuminate\Support\Facades\Storage::disk('gcs')->url($path.'/'.$file);
+}
