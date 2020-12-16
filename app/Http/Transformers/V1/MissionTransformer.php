@@ -44,6 +44,7 @@ class MissionTransformer {
         $temp->liked                = false;
         $temp->total_comment        = $model->Comment == null ? 0 : $model->Comment->count();
         $temp->total_like           = $model->Like == null ? 0 : $model->Like->count();
+        $temp->total_respone        = $model->Respone == null ? 0 : $model->Respone->count();
 
         if(auth('api')->user() !=null && $model->Like)
              $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
