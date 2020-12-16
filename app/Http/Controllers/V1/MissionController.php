@@ -336,4 +336,32 @@ class MissionController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function deleteMission(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+
+            $mission = new MissionModel;
+            $mission = $mission->where('id',$request->mission_id)->where('user_id' , $this->user_login->id)->first();
+             
+            if($mission == null)
+                return (new MissionTransformer)->list(400,__('message.404'),false);
+
+            if(!$mission->delete())
+                return (new MissionTransformer)->list(400,__('message.404'),false);
+
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
 }

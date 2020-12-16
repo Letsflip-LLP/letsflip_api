@@ -22,6 +22,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
     $router->group(['middleware'=> ['auth:api','verified']], function($router){
         // MISSION
         Route::post('add', [MissionController::class, 'addMission'])->name('PostMissionControllerAddMission'); 
+        Route::post('delete', [MissionController::class, 'deleteMission'])->name('PostMissionControllerDeleteMission'); 
 
         // COMMENTS
         Route::post('comment/add',      [MissionCommentController::class, 'addComment'])->name('PostMissionCommentControllerAddComment');
@@ -33,6 +34,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         // REPORT 
         Route::post('report-content',   [MissionController::class, 'reportActionContent'])->name('PostMissionControllerReportActionContent');
 
+ 
         // Response Mission
         $router->group(['prefix' => 'respone'], function($router){
             // MISSION

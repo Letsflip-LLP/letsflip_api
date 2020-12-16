@@ -123,6 +123,18 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerDeleteMission':
+          return [ 
+            'mission_id' => 'exists:missions,id'
+          ];
+        break;
+
+        case 'GetMissionControllerGetMissionDetail':
+          return [ 
+            'id' => 'exists:missions'
+          ];
+        break;
+
         default:
           return [];
       }
