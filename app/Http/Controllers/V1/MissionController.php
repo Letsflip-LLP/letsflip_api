@@ -347,10 +347,10 @@ class MissionController extends Controller
             $mission = $mission->where('id',$request->mission_id)->where('user_id' , $this->user_login->id)->first();
              
             if($mission == null)
-                return (new ResponseTransformer)->list(400,__('message.404'),"ERRDELMIS1");
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS1");
 
             if(!$mission->delete())
-                return (new ResponseTransformer)->list(400,__('message.404'),"ERRDELMIS2");
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS2");
 
 
         DB::commit();
