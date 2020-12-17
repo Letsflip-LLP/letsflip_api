@@ -16,7 +16,10 @@ use App\Http\Libraries\RedisSocket\RedisSocketManager;
 use Validator;
 use Ramsey\Uuid\Uuid;
 use Jenssegers\Agent\Agent;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Redirect; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\MessageBag; 
+use \Firebase\JWT\JWT;
 
 class AuthController extends Controller
 {
@@ -25,9 +28,9 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct(){
         // $this->middleware('auth:api', ['except' => ['login', 'register']]);
-        $this->agent = new Agent();  
+        $this->agent = new Agent();   
     }
 
     public function register(Request $request)
@@ -264,4 +267,71 @@ class AuthController extends Controller
                 return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false); 
         }
     }
+
+    public function loginGoogle(Request $request){
+        DB::beginTransaction();
+ 
+        try {
+
+        // \Firebase\JWT\JWT::$leeway = 180+8;
+        $client = new \Google_Client(['client_id' => env('GOOGLE_CLIENT_ID'),'client_secret' => env('GOOGLE_CLIENT_SECRET')]); 
+        $payload = $client->verifyIdToken($request->google_token_id);
+        do {
+            $attempt = 0;
+            try {
+                $payload = $client->verifyIdToken($request->google_token_id);
+                $retry = false;
+            } catch (Firebase\JWT\BeforeValidException $e) {
+                $attempt++;
+                $retry = $attempt < 10;
+            }
+        } while ($retry);
+
+        if($payload == false)
+            return (new ResponseTransformer)->toJson(400,__('message.401'),'google_token_id : '.__('messages.401'));
+
+        $user = User::where('email',$payload['email'])->first();
+
+
+        if($user == null ){
+            $user = User::create([
+                    "email" => $payload['email'],
+                    "id" => $uuid = Uuid::uuid4(),
+                    "first_name" => isset($payload['given_name']) ? $payload['given_name'] : '',
+                    "last_name" => isset($payload['family_name']) ? $payload['family_name'] : '',
+                    "username" => str_replace("@","",$payload['email']),
+                    "email_verified_at" => date("Y-m-d H:i:s")
+                ]
+            );
+            $user->id = $uuid;
+        }
+        
+        $data = new \stdClass();
+        $data->id = $user->id;
+        $data->first_name = $user->first_name;
+        $data->last_name = $user->last_name;
+        $data->email = $user->email;
+        $data->access_token = $this->createToken($user);
+
+        DB::commit();
+               
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+
+        } catch (\exception $exception){
+            DB::rollBack();
+                return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false); 
+        }
+
+    }
+
+    protected function createToken($user)
+        {
+            $payload = [
+            'sub' => $user->getAuthIdentifier(),
+            'iat' => time(),
+            'exp' => time() + (365 * 24 * 60 * 60), // 1 year
+            ];
+
+            return JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+        }
 }

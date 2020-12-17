@@ -21,6 +21,10 @@ $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
 
     Route::post('register', [AuthController::class, 'register'])->name('PostAuthControllerRegister');
     Route::post('login', [AuthController::class, 'login'])->name('PostAuthControllerLogin');
+
+    Route::post('login/google', [AuthController::class, 'loginGoogle'])->name('PostAuthControllerLoginGoogle');
+
+
     Route::post('request-reset-password', [AuthController::class, 'requestResetPassword'])->name('PostAuthControllerRequestResetPassword');
     Route::post('submit-reset-password', [AuthController::class, 'submitResetPassword'])->name('PostAuthControllerSubmitResetPassword');
 
