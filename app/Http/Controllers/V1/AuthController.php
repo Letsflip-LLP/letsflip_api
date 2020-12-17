@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\MessageBag; 
 use \Firebase\JWT\JWT;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -273,19 +274,23 @@ class AuthController extends Controller
  
         try {
 
+        $driver = Socialite::driver('google'); 
+        $access_token = $driver->getAccessTokenResponse($request->server_auth_code); 
+        $google_token_id = $access_token['id_token'];
+
         // \Firebase\JWT\JWT::$leeway = 180+8;
         $client = new \Google_Client(['client_id' => env('GOOGLE_CLIENT_ID'),'client_secret' => env('GOOGLE_CLIENT_SECRET')]); 
-        $payload = $client->verifyIdToken($request->google_token_id);
-        do {
-            $attempt = 0;
-            try {
-                $payload = $client->verifyIdToken($request->google_token_id);
-                $retry = false;
-            } catch (Firebase\JWT\BeforeValidException $e) {
-                $attempt++;
-                $retry = $attempt < 10;
-            }
-        } while ($retry);
+        $payload = $client->verifyIdToken($google_token_id);
+        // do {
+        //     $attempt = 0;
+        //     try {
+        //         $payload = $client->verifyIdToken($google_token_id);
+        //         $retry = false;
+        //     } catch (Firebase\JWT\BeforeValidException $e) {
+        //         $attempt++;
+        //         $retry = $attempt < 10;
+        //     }
+        // } while ($retry);
 
         if($payload == false)
             return (new ResponseTransformer)->toJson(400,__('message.401'),'google_token_id : '.__('messages.401'));

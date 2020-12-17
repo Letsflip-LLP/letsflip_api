@@ -135,6 +135,12 @@ class FormValidation
           ];
         break;
 
+        case 'PostAuthControllerLoginGoogle':
+          return [
+            'server_auth_code' => 'required'
+          ];
+        break;
+
         default:
           return [];
       }
