@@ -101,7 +101,10 @@ class FormValidation
         case 'PostMissionControllerlikeActionMission':
           return [
             'mission_id' => 'exists:missions,id',
-            'mission_comment_id' => 'exists:mission_comments,id'
+            'mission_comment_id' => 'exists:mission_comments,id',
+            'mission_comment_id' => 'exists:mission_comments,id',
+            'mission_respone_id' => 'exists:mission_responses,id',
+            'mission_comment_respone_id' => 'exists:mission_respone_comments,id',
           ];
         break;
 
