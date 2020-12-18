@@ -10,6 +10,7 @@ use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer;  
 use App\Http\Transformers\V1\MissionCommentTransformer;  
 use App\Http\Models\MissionCommentModel;
+use App\Http\Models\MissionCommentResponeModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 
@@ -93,6 +94,54 @@ class MissionCommentController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+
+    public function addCommentResponeMission(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $model = new MissionCommentResponeModel;
+            $model->id          = Uuid::uuid4();
+            $model->mission_respone_id  = $request->mission_respone_id;
+            $model->text        = $request->text;
+            $model->user_id     = $this->user_login->id;
+            $model->parent_id   = $request->input('parent_id',null);
+            $model->status      = 1;
+
+            if(!$model->save())
+                return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
+
+        DB::commit();
+    
+            return (new MissionCommentTransformer)->detail(200,__('messages.200'),$model);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    public function getCommentResponeMission(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $model = new MissionCommentResponeModel;
+            $model = $model->where('mission_respone_id',$request->mission_respone_id)->orderBy('created_at','ASC')->paginate($request->input('per_page',10)); 
+
+        DB::commit();
+    
+        return (new MissionCommentTransformer)->list(200,__('messages.200'),$model);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
 
     
     

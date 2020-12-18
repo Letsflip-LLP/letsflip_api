@@ -141,6 +141,19 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionCommentControllerAddCommentResponeMission':
+          return [
+            'mission_respone_id' => 'required|exists:mission_responses,id',
+            'parent_id' => 'exists:mission_respone_comments,id'
+          ];
+        break;
+
+        case 'PostMissionCommentControllerGetCommentResponeMission':
+          return [
+            'mission_respone_id' => 'required|exists:mission_responses,id'
+          ];
+        break;
+
         default:
           return [];
       }
