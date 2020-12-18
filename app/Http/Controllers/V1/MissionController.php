@@ -177,6 +177,11 @@ class MissionController extends Controller
             $model2->mission_respone_id = $request->mission_respone_id;
         }
 
+        if($request->filled("mission_comment_respone_id")){
+            $model1 = $model1->where('mission_respone_comment_id',$request->mission_comment_respone_id);
+            $model2->mission_respone_comment_id = $request->mission_comment_respone_id;
+        }
+
         if($model1->first() == null){
             $model2->id      = Uuid::uuid4();
             $model2->user_id = $this->user_login->id;
@@ -292,7 +297,7 @@ class MissionController extends Controller
             $save1 = $mission_respone->save();
     
             // SAVE DEFAULT CONTENT MISSION 
-            $mission_content                = new MissionResponeContentModel; 
+            $mission_content                = new MissionResponeContentModel;
             $mission_content->id            = $mission_respone_content_id;
             $mission_content->mission_response_id = $mission_respone_id;
             $mission_content->file_path     = $storage->file_path;
