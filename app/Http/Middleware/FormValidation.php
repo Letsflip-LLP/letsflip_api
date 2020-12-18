@@ -157,6 +157,14 @@ class FormValidation
           ];
         break;
 
+        case 'PostAuthControllerLoginFacebook':
+          return [
+            'email' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required'
+          ];
+        break;
+
         default:
           return [];
       }

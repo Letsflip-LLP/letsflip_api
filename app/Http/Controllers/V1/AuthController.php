@@ -329,6 +329,44 @@ class AuthController extends Controller
 
     }
 
+
+    public function loginFacebook(Request $request){
+        DB::beginTransaction();
+ 
+        try {
+ 
+        $user = User::where('email',$request->email)->first();
+
+        if($user == null ){
+            $user = User::create([
+                    "email" => $request->email,
+                    "id" => $uuid = Uuid::uuid4(),
+                    "first_name" => $request->first_name,
+                    "last_name" => $request->last_name,
+                    "email_verified_at" => date("Y-m-d H:i:s")
+                ]
+            );
+            $user->id = $uuid;
+        }
+        
+        $data = new \stdClass();
+        $data->id = $user->id;
+        $data->first_name = $user->first_name;
+        $data->last_name = $user->last_name;
+        $data->email = $user->email;
+        $data->access_token = $this->createToken($user);
+
+        DB::commit();
+               
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+
+        } catch (\exception $exception){
+            DB::rollBack();
+                return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false); 
+        }
+
+    }
+
     protected function createToken($user)
         {
             $payload = [
