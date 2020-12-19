@@ -47,7 +47,7 @@ class FormValidation
         break; 
         case  'PostAuthControllerLogin':
           return [
-            'email' => 'required|email|exists:users',  
+            'email' => 'required',  
             'password' => 'required',   
           ];
         break;
