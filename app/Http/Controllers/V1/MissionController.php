@@ -35,16 +35,13 @@ class MissionController extends Controller
 
         try {
             $thumbnail  = null; 
-            $storage = new StorageManager;
-
+ 
             if($request->thumbnail != null){
                 $thumb_upload = new StorageManager;
                 $thumb_upload = $thumb_upload->uploadFile("mission/thumbnail",$request->file('thumbnail'));    
                 $thumbnail = $thumb_upload;
             }
-
-            $storage = $storage->uploadFile("mission",$request->file('file')); 
-             
+ 
             $mission_id         = Uuid::uuid4();
             $mission_content_id = Uuid::uuid4();
     
@@ -59,19 +56,33 @@ class MissionController extends Controller
             $mission->default_content_id    =  $mission_content_id;
 
             if($thumbnail != null){
-                $mission->image_path   = $thumbnail->file_path; 
+                $mission->image_path   = $thumbnail->file_path;
                 $mission->image_file   = $thumbnail->file_name;
+            }else{
+                $mission->image_path   = $request->thumbnail_file_path;
+                $mission->image_file   = $request->thumbnail_file_name;
             }
 
             $save1 = $mission->save();
     
             // SAVE DEFAULT CONTENT MISSION 
+
             $mission_content                = new MissionContentModel; 
             $mission_content->id            = $mission_content_id;
             $mission_content->mission_id    = $mission_id;
-            $mission_content->file_path     = $storage->file_path;
-            $mission_content->file_name     = $storage->file_name;
-            $mission_content->file_mime     = $storage->file_mime;
+
+            if($request->filled('file')){
+                $storage = new StorageManager;
+                $storage = $storage->uploadFile("mission",$request->file('file'));
+                $mission_content->file_path     = $storage->file_path;
+                $mission_content->file_name     = $storage->file_name;
+                $mission_content->file_mime     = $storage->file_mime;
+            }else{
+                $mission_content->file_path     = $request->file_path;
+                $mission_content->file_name     = $request->file_name;
+                $mission_content->file_mime     = $request->file_mime;
+            }
+
             $save2 = $mission_content->save();
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);

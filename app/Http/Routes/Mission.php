@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\MissionController;
 use App\Http\Controllers\V1\ClassRoomController;
 use App\Http\Controllers\V1\MissionCommentController; 
+use App\Http\Controllers\V1\StorageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,13 @@ use App\Http\Controllers\V1\MissionCommentController;
 */
  
 $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
+
+
+    #STORAGE
+    $router->group(['prefix' => 'storage','middleware'=> ['form']], function($router){
+        Route::post('upload', [StorageController::class, 'uploadFile'])->name('PostStorageControlleruploadFile'); 
+    });
+
 
     // Need Login
     $router->group(['middleware'=> ['auth:api','verified']], function($router){
@@ -62,6 +70,8 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
     // Login Not Required
     Route::get('list', [ClassRoomController::class, 'getClassRoom'])->name('GetClassRoomControllerGetClassRoom');
 });
+
+ 
  
  
 

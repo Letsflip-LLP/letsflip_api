@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Transformers\ResponseTransformer;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rule;
 
 class FormValidation
 {
@@ -21,7 +22,7 @@ class FormValidation
     { 
 
         $route_name = Route::currentRouteName();
-        $validation = $this->_selector($route_name);
+        $validation = $this->_selector($route_name,$request);
         
         $validator = app()->make('validator');
         $validate = $validator->make($request->all(),$validation);
@@ -33,7 +34,7 @@ class FormValidation
         }
     }
 
-    private function _selector($route){
+    private function _selector($route,$request){
       switch ($route) { 
         // AUTH
         case 'PostAuthControllerRegister':
@@ -66,9 +67,15 @@ class FormValidation
 
         case 'PostMissionControllerAddMission':
           return [
-            'title' => 'required|min:3',
-            'text'  => 'required|min:3',
             'type'  => 'required|in:1,2',
+            'file'  => Rule::requiredIf( function () use ($request){
+              
+            }),
+            'file_path'  => Rule::requiredIf( function () use ($request){ return !$request->filled('file'); }),
+            'file_name'  => Rule::requiredIf( function () use ($request){ return !$request->filled('file'); }),
+            'file_mime'  => Rule::requiredIf( function () use ($request){ return !$request->filled('file'); }),
+            'thumbnail_file_path'  => Rule::requiredIf( function () use ($request){ return !$request->filled('thumbnail'); }),
+            'thumbnail_file_name'  => Rule::requiredIf( function () use ($request){ return !$request->filled('thumbnail'); }),
           ];
         break;
 
@@ -162,6 +169,14 @@ class FormValidation
             'email' => 'required',
             'first_name' => 'required',
             'last_name' => 'required'
+          ];
+        break;
+
+        case 'PostStorageControlleruploadFile':
+          return [
+            'file' => 'required',
+            'module' => 'required',
+            'thumbnail' => 'required'
           ];
         break;
 
