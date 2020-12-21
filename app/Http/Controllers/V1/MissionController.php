@@ -100,6 +100,80 @@ class MissionController extends Controller
         }  
     }
 
+    public function addResponeMission(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+           
+            $thumbnail  = null; 
+
+            if($request->thumbnail != null){
+                $thumb_upload = new StorageManager;
+                $thumb_upload = $thumb_upload->uploadFile("mission/thumbnail",$request->file('thumbnail'));    
+                $thumbnail = $thumb_upload;
+            }
+
+            $mission_respone_id         = Uuid::uuid4();
+            $mission_respone_content_id = Uuid::uuid4();
+    
+            // SAVE MISSION
+            $mission_respone            = new MissionResponeModel; 
+            $mission_respone->id        = $mission_respone_id;
+            $mission_respone->user_id   = $this->user_login->id;
+            $mission_respone->mission_id= $request->mission_id;
+            $mission_respone->title     = $request->title; 
+            $mission_respone->text      = $request->text; 
+            $mission_respone->type      = $request->type;
+            $mission_respone->status    = 1;
+            $mission_respone->default_content_id = $mission_respone_content_id;
+
+            if($thumbnail != null){
+                $mission_respone->image_path   = $thumbnail->file_path; 
+                $mission_respone->image_file   = $thumbnail->file_name;
+            }else{
+                $mission_respone->image_path   = $request->thumbnail_file_path;
+                $mission_respone->image_file   = $request->thumbnail_file_name;
+            }
+
+            $save1 = $mission_respone->save();
+    
+            // SAVE DEFAULT CONTENT MISSION 
+            $mission_content                = new MissionResponeContentModel;
+            $mission_content->id            = $mission_respone_content_id;
+            $mission_content->mission_response_id = $mission_respone_id;
+         
+            if($request->filled('file')){
+                $storage = new StorageManager;
+                $storage = $storage->uploadFile("mission",$request->file('file'));
+                $mission_content->file_path     = $storage->file_path;
+                $mission_content->file_name     = $storage->file_name;
+                $mission_content->file_mime     = $storage->file_mime;
+            }else{
+                $mission_content->file_path     = $request->file_path;
+                $mission_content->file_name     = $request->file_name;
+                $mission_content->file_mime     = $request->file_mime;
+            }
+
+            $save2 = $mission_content->save();
+    
+            if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
+
+        DB::commit();
+    
+            return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
+
+        } catch (\exception $exception){
+         
+            if(isset($storage) && isset($storage->file_path) && isset($storage->file_name))
+                Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
+            
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
     public function getMission(Request $request){ 
 
         DB::beginTransaction();
@@ -268,71 +342,7 @@ class MissionController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
-
-
-    public function addResponeMission(Request $request){
-
-        DB::beginTransaction();
-
-        try {
-           
-            $thumbnail  = null; 
-            $storage = new StorageManager;
-
-            if($request->thumbnail != null){
-                $thumb_upload = new StorageManager;
-                $thumb_upload = $thumb_upload->uploadFile("mission/thumbnail",$request->file('thumbnail'));    
-                $thumbnail = $thumb_upload;
-            }
-
-            $storage = $storage->uploadFile("mission",$request->file('file'));   
-             
-            $mission_respone_id         = Uuid::uuid4();
-            $mission_respone_content_id = Uuid::uuid4();
-    
-            // SAVE MISSION
-            $mission_respone            = new MissionResponeModel; 
-            $mission_respone->id        = $mission_respone_id;
-            $mission_respone->user_id   = $this->user_login->id;
-            $mission_respone->mission_id= $request->mission_id;
-            $mission_respone->title     = $request->title; 
-            $mission_respone->text      = $request->text; 
-            $mission_respone->type      = $request->type;
-            $mission_respone->status    = 1;
-            $mission_respone->default_content_id = $mission_respone_content_id;
-
-            if($thumbnail != null){
-                $mission_respone->image_path   = $thumbnail->file_path; 
-                $mission_respone->image_file   = $thumbnail->file_name;
-            }
-
-            $save1 = $mission_respone->save();
-    
-            // SAVE DEFAULT CONTENT MISSION 
-            $mission_content                = new MissionResponeContentModel;
-            $mission_content->id            = $mission_respone_content_id;
-            $mission_content->mission_response_id = $mission_respone_id;
-            $mission_content->file_path     = $storage->file_path;
-            $mission_content->file_name     = $storage->file_name;
-            $mission_content->file_mime     = $storage->file_mime;
-            $save2 = $mission_content->save();
-    
-            if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
-
-        DB::commit();
-    
-            return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
-
-        } catch (\exception $exception){
-         
-            if(isset($storage) && isset($storage->file_path) && isset($storage->file_name))
-                Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
-            
-            DB::rollBack();
-
-            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
-        }  
-    }
+ 
 
     public function getResponeMission(Request $request){
 
