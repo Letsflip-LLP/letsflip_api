@@ -51,7 +51,9 @@ class ClassRoomController extends Controller
 
         } catch (\exception $exception){
          
-            Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
+            if(isset($storage) && isset($storage->file_path) && isset($storage->file_name))
+                Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
+            
             DB::rollBack();
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);

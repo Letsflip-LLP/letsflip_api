@@ -13,7 +13,7 @@ use App\Http\Models\MissionModel;
 use App\Http\Models\MissionContentModel;
 use App\Http\Models\MissionResponeModel;
 use App\Http\Models\MissionResponeContentModel;
-
+use App\Http\Models\TagModel; 
 use App\Http\Models\LikeModel;
 use App\Http\Models\MissionReportModel;
 use Ramsey\Uuid\Uuid;
@@ -86,6 +86,30 @@ class MissionController extends Controller
             $save2 = $mission_content->save();
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
+
+                               
+            if($request->filled('tag_classroom_ids')){
+                $classroom_id = explode(',',$request->tag_classroom_ids);
+                $insert_class_tags = [];
+                foreach($classroom_id as $cl_id){
+                    $temp_id[$cl_id] = Uuid::uuid4(); 
+
+                    $tag_model = new TagModel; 
+                    $tag_model->firstOrCreate(
+                        [
+                            "module" => "mission", "foreign_id" =>  $cl_id , "type" => 1
+                        ],
+                        [
+                            "id" => Uuid::uuid4()
+                        ]
+                    );
+                } 
+ 
+            }
+
+    
+
+            
 
         DB::commit();
     

@@ -69,13 +69,13 @@ class FormValidation
           return [
             'type'  => 'required|in:1,2',
             'file'  => Rule::requiredIf( function () use ($request){
-              
-            }),
+             }),
             'file_path'  => Rule::requiredIf( function () use ($request){ return !$request->filled('file'); }),
             'file_name'  => Rule::requiredIf( function () use ($request){ return !$request->filled('file'); }),
             'file_mime'  => Rule::requiredIf( function () use ($request){ return !$request->filled('file'); }),
             'thumbnail_file_path'  => Rule::requiredIf( function () use ($request){ return !$request->filled('thumbnail'); }),
             'thumbnail_file_name'  => Rule::requiredIf( function () use ($request){ return !$request->filled('thumbnail'); }),
+            // 'tag_classroom_ids' => 'exists:classrooms,id'
           ];
         break;
 
