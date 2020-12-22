@@ -46,10 +46,29 @@ class MissionTransformer {
         $temp->total_like           = $model->Like == null ? 0 : $model->Like->count();
         $temp->total_respone        = $model->Respone == null ? 0 : $model->Respone->count();
 
+        $temp->tags = (object) [
+            "user" => $this->_tags($model->UserTag),
+            "classroom" => $this->_tags($model->ClassRoomTag),
+        ];
+
+
         if(auth('api')->user() !=null && $model->Like)
              $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
 
         return $temp;
+    }
+
+    private function _tags($tags){
+        $return = [];
+
+        foreach($tags as $tag){
+            $return[] = (object) [
+                "id"    => $tag->id,
+                "title" => $tag->type == 1 ? $tag->title : $tag->first_name." ".$tag->last_name,
+            ];
+        }
+
+        return $return;
     }
 
     private function _user($model){

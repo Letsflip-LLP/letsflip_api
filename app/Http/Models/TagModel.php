@@ -11,7 +11,7 @@ class TagModel extends Model
     
     public $incrementing = false; 
     protected $table = 'tags';  
-    protected $fillable = ["id","module","type","foreign_id"];  
+    protected $fillable = ["id","module","type","foreign_id" ,"module_id"];  
 
  
 }

@@ -97,14 +97,32 @@ class MissionController extends Controller
                     $tag_model = new TagModel; 
                     $tag_model->firstOrCreate(
                         [
-                            "module" => "mission", "foreign_id" =>  $cl_id , "type" => 1
+                            "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $cl_id , "type" => 1
                         ],
                         [
                             "id" => Uuid::uuid4()
                         ]
                     );
-                } 
- 
+                }
+            }
+
+
+            if($request->filled('tag_user_ids')){
+                $user_ids = explode(',',$request->tag_user_ids);
+                $insert_class_tags = [];
+                foreach($user_ids as $u_id){
+                    $temp_id[$u_id] = Uuid::uuid4(); 
+
+                    $tag_model = new TagModel; 
+                    $tag_model->firstOrCreate(
+                        [
+                            "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $u_id , "type" => 2
+                        ],
+                        [
+                            "id" => Uuid::uuid4()
+                        ]
+                    );
+                }
             }
 
     

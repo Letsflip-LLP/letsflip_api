@@ -15,6 +15,7 @@ class CreateTags extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('module_id')->index();
             $table->uuid('foreign_id')->index();
             $table->string('module',100);
             $table->smallInteger('type')->comment("(1) Class room , (2) User")->indexes();

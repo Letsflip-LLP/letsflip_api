@@ -49,4 +49,14 @@ class MissionModel extends Model
         return $this->hasMany('App\Http\Models\MissionResponeModel','mission_id','id');
     }
 
+    public function ClassRoomTag()
+    {
+         return $this->belongsToMany('App\Http\Models\ClassRoomModel','tags','module_id','foreign_id')->where('tags.type',1);
+    }
+
+    public function UserTag()
+    {
+        return $this->belongsToMany('App\Http\Models\User','tags','module_id','foreign_id')->where('tags.type',2);
+    }
+
 }
