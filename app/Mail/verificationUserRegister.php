@@ -29,6 +29,7 @@ class verificationUserRegister extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.account-verification',$this->data);
+        return $this->view('emails.account-verification',$this->data)
+                ->subject("Let's Fli!p Registration");
     }
 }

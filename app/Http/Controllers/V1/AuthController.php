@@ -53,7 +53,7 @@ class AuthController extends Controller
 
         DB::commit();
  
-           return (new AuthTransformer)->detail(200,"Success",$user);
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
 
         } catch (\exception $exception){
             DB::rollBack();
