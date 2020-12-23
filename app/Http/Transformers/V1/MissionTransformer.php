@@ -47,8 +47,8 @@ class MissionTransformer {
         $temp->total_respone        = $model->Respone == null ? 0 : $model->Respone->count();
 
         $temp->tags = (object) [
-            "user" => $this->_tags($model->UserTag),
-            "classroom" => $this->_tags($model->ClassRoomTag),
+            "user" => $model->UserTag ? $this->_tags($model->UserTag) : [],
+            "classroom" => $model->ClassRoomTag ? $this->_tags($model->ClassRoomTag) : [],
         ];
 
 
