@@ -393,7 +393,7 @@ class MissionController extends Controller
         try {
              
             $respone_mission = new MissionResponeModel;
-            $respone_mission = $respone_mission->where('mission_id',$request->mission_id)->get(); 
+            $respone_mission = $respone_mission->where('mission_id',$request->mission_id)->orderBy('created_at','DESC')->get(); 
 
             DB::commit();
         
