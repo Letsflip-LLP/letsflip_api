@@ -160,7 +160,8 @@ class AuthController extends Controller
             $return->temporary_token    =  $first_token;
             
             $email_payload = [
-                "full_name" => $user->first_name.' '.$user->last_name,
+                "first_name" => $user->first_name ,
+                "last_name" => $user->last_name,
                 "reset_password_url" => env('WEB_PAGE_URL',url('/')).'/account/confirm-reset-password?temporary_token='.Crypt::encryptString($first_token)
             ];
 

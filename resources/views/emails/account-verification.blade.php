@@ -3,7 +3,7 @@
    <table width="100%">
        <tbody>
        <tr>
-         <td style="font-size:14px;color:#333;font-weight:bold;padding-top:10px;padding-bottom:50px;text-align:left;padding-left:10px"> Hello Andhi Saputro, </td>
+         <td style="font-size:14px;color:#333;font-weight:bold;padding-top:10px;padding-bottom:50px;text-align:left;padding-left:10px"> Hello {{$first_name}}&nbsp;{{$last_name}}, </td>
          </tr>
          <tr>
             <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px"> Congratulations on creation of your account. </td>
