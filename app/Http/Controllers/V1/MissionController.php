@@ -401,7 +401,6 @@ class MissionController extends Controller
 
         } catch (\exception $exception){
          
-            Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
             DB::rollBack();
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);

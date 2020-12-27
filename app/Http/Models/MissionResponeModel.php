@@ -36,7 +36,7 @@ class MissionResponeModel extends Model
 
     public function Comment()
     {
-        return $this->hasMany('App\Http\Models\MissionCommentModel','mission_respone_id','id');
+        return $this->hasMany('App\Http\Models\MissionCommentResponeModel','mission_respone_id','id');
     }
 
     public function Report()
