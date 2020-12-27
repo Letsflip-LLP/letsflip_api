@@ -143,6 +143,32 @@ class MissionCommentController extends Controller
     }
 
 
+    public function deleteCommentResponeMission(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $model = new MissionCommentResponeModel;
+            $model = $model->where('id',$request->mission_comment_respone_id)->where('user_id',$this->user_login->id)->first();
+
+            if($model == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.204'), false);
+
+            if(!$model->delete())
+                return (new ResponseTransformer)->toJson(400,__('messages.500'), false);
+
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
     
     
      

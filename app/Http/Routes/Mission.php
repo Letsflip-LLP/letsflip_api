@@ -50,6 +50,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             Route::get('list', [MissionController::class, 'getResponeMission'])->name('GetMissionControllerGetResponeMission'); 
             Route::post('comment/add', [MissionCommentController::class, 'addCommentResponeMission'])->name('PostMissionCommentControllerAddCommentResponeMission'); 
             Route::get('comment/list', [MissionCommentController::class, 'getCommentResponeMission'])->name('PostMissionCommentControllerGetCommentResponeMission'); 
+            Route::post('comment/delete', [MissionCommentController::class, 'deleteCommentResponeMission'])->name('PostMissionCommentControllerDeleteCommentResponeMission');
         });
     });
 
