@@ -127,6 +127,8 @@ class AuthController extends Controller
 
             DB::commit(); 
 
+            $send_mail = \Mail::to($user->email)->send(new \App\Mail\congratulationVerifyMail());
+
         } catch (\exception $exception){
             DB::rollBack();
             $data['message'] = $exception->getMessage(); 
