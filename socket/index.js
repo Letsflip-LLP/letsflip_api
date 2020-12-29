@@ -14,6 +14,12 @@ if(process.env.REDIS_PASSWORD){
   sub.auth(process.env.REDIS_PASSWORD)
 }
 
+
+io.sockets
+.on('connection',()=> {
+  console.log("connected")
+})
+
 io.sockets
 .on('connection', socketioJwt.authorize({
   secret: process.env.JWT_SECRET,
@@ -22,7 +28,10 @@ io.sockets
   //this socket is authenticated, we are good to handle more events from it.
   const user = socket.decoded_token.data;
   io.emit('user',user); 
-});  
+}).on("unauthorized", function(error) {
+   console.log(error)
+});
+ 
 
 Redis.subscribe('message', function (err, count) {
   // console.log('Total client : '+ count)

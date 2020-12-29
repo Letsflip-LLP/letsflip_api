@@ -147,12 +147,13 @@ class AuthController extends Controller
             if($user == null)
                 return (new ResponseTransformer)->toJson(400,__('messages.404'),false); 
 
-            $first_token = Crypt::encryptString($user->email);
+            $first_token = $this->createdPublicToken($user->email);
 
             // DELETE OLD REQUEST
             PasswordResetModel::where('email',$request->email)->delete();
 
             $pass_res = new PasswordResetModel;
+            $pass_res->id = Uuid::uuid4();
             $pass_res->email = $user->email;
             $pass_res->token = $first_token; 
             if(!$pass_res->save())
@@ -164,7 +165,7 @@ class AuthController extends Controller
             $email_payload = [
                 "first_name" => $user->first_name ,
                 "last_name" => $user->last_name,
-                "reset_password_url" => env('WEB_PAGE_URL',url('/')).'/account/confirm-reset-password?temporary_token='.Crypt::encryptString($first_token)
+                "reset_password_url" => env('WEB_PAGE_URL',url('/')).'/account/confirm-reset-password?temporary_token='.$this->createdPublicToken($first_token)
             ];
 
             $send_mail = \Mail::to($user->email)->send(new \App\Mail\resetPasswordConfirmation($email_payload));
@@ -186,18 +187,18 @@ class AuthController extends Controller
         try {
             $data['message'] = "";
 
-            $first_token = Crypt::decryptString($request->temporary_token);
-            $email       = Crypt::decryptString($first_token); 
+            $first_token    = $this->decodePublicToken($request->temporary_token);  
+            $payload_decode = $this->decodePublicToken($first_token->payload);
+            $email          = $payload_decode->payload; 
             $pass_res = new PasswordResetModel;
-            $pass_res = $pass_res->where('email',$email)->where('token',$first_token)->where('is_verification',false)->first();
-            
+            $pass_res = $pass_res->where('email',$email)->where('token',$first_token->payload)->where('is_verification',false)->first();
             if($pass_res == null){
                 $data['message']  = "Oops! This page has been expired.";
                 return view('accounts.confirmation-ress-pass',$data); 
             }
  
-            $update1 = $pass_res->where('email',$email)->where('token','!=',$first_token)->delete();
-            $update2 = $pass_res->where('email',$email)->where('token',$first_token)->update([
+            $update1 = $pass_res->where('email',$email)->where('token','!=',$first_token->payload)->delete();
+            $update2 = $pass_res->where('email',$email)->where('token',$first_token->payload)->update([
                 'is_verification' => true
             ]);
 
@@ -206,7 +207,7 @@ class AuthController extends Controller
             if($update2){
                 $data['message']  = "We have receive your request, kindly launch the app to reset your password.";  
                 $RedisSocket = new RedisSocketManager;
-                $RedisSocket = $RedisSocket->publishRedisSocket(1,"AUTH","UPDATE",["first_token" => $first_token ]);
+                $RedisSocket = $RedisSocket->publishRedisSocket($first_token->payload,"AUTH","UPDATE",["first_token" => $first_token]);
 
                 if($this->agent->isMobile()) return redirect()->to('letsflip://getletsflip.com/auth/confirm-reset-password');
             }
@@ -222,7 +223,8 @@ class AuthController extends Controller
         DB::beginTransaction();
  
         try {
-            $email       = Crypt::decryptString($request->temporary_token);
+            $email       = $this->decodePublicToken($request->temporary_token);
+            $email       = $email->payload;
             $pass_res = new PasswordResetModel;
             $pass_res = $pass_res->where('email',$email)->where('token',$request->temporary_token)->first();
 
@@ -371,13 +373,36 @@ class AuthController extends Controller
     }
 
     protected function createToken($user)
-        {
-            $payload = [
-            'sub' => $user->getAuthIdentifier(),
+    {
+        $payload = [
+        'sub' => $user->getAuthIdentifier(),
+        'iat' => time(),
+        'exp' => time() + (365 * 24 * 60 * 60), // 1 year
+        ];
+
+        return JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+    }
+
+    protected function createdPublicToken($data)
+    {
+        $payload = [
+            'payload' => $data,
             'iat' => time(),
             'exp' => time() + (365 * 24 * 60 * 60), // 1 year
-            ];
+        ];
 
-            return JWT::encode($payload, env('JWT_SECRET'), 'HS256');
-        }
+        return JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+    }
+
+    protected function decodePublicToken($token)
+    { 
+        return JWT::decode($token, env('JWT_SECRET'), ['HS256']);
+    }
+
+    public function testSocket(){ 
+        $RedisSocket = new RedisSocketManager;
+        $RedisSocket = $RedisSocket->publishRedisSocket("TEST","AUTH","UPDATE",["first_token" => "asdas" ]);
+    }
+
+
 }

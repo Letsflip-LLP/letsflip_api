@@ -15,6 +15,7 @@
 			"
 		>
 			Hello {{$first_name}}&nbsp;{{$last_name}},
+			{{$reset_password_url}}
 		</td>
 	</tr>
 	<tr>
