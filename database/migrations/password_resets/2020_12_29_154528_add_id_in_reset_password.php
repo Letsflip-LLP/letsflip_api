@@ -15,7 +15,7 @@ class AddIdInResetPassword extends Migration
     {
         Schema::table('password_resets', function (Blueprint $table) {
             //
-            $table->uuid('id')->first('email')->primary();
+            $table->uuid('id')->first()->primary();
         });
     }
 
