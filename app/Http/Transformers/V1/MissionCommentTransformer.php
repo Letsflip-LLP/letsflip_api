@@ -28,6 +28,7 @@ class MissionCommentTransformer {
 
         $temp = new \stdClass(); 
         $temp->id           = $model->id; 
+        $temp->parent_id    = $model->parent_id; 
         $temp->text         = $model->text; 
         $temp->user         = $this->_user($model->User);
         $temp->liked        = false;
