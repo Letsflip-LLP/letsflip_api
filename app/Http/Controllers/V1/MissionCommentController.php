@@ -129,8 +129,10 @@ class MissionCommentController extends Controller
         DB::beginTransaction();
 
         try {
-            $model = new MissionCommentResponeModel;
-            $model = $model->where('mission_respone_id',$request->mission_respone_id)->orderBy('created_at','ASC')->paginate($request->input('per_page',10)); 
+            $model = new MissionCommentResponeModel; 
+            $model = $model->whereNull('parent_id');
+            $model = $model->with('Comment',function($q){ $q->orderBy('created_at','ASC'); });
+            $model = $model->where('mission_respone_id',$request->mission_respone_id)->orderBy('created_at','DESC')->paginate($request->input('per_page',10));
 
         DB::commit();
     
