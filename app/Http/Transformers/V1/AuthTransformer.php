@@ -14,6 +14,7 @@ class AuthTransformer {
         $temp->first_name = $model->first_name;
         $temp->last_name  = $model->last_name;
         $temp->email      = $model->email;
+        $temp->image_profile = defaultImage('user');
 
         $model->accessToken && $temp->access_token = $model->accessToken;
 
