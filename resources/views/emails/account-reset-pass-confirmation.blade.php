@@ -14,8 +14,7 @@
 				color: #333;
 			"
 		>
-			Hello {{$first_name}}&nbsp;{{$last_name}},
-			{{$reset_password_url}}
+			Hello {{$first_name}}&nbsp;{{$last_name}}
 		</td>
 	</tr>
 	<tr>
