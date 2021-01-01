@@ -1,9 +1,12 @@
 <?php
   
 function dateFormat($date){
+    $sort = $date->diffForHumans(null,true);
+    $sort = explode(' ',$sort);
     return (object) [
         "date" =>\Carbon\Carbon::parse($date)->format("D, M Y"),
-        "diff" => $date->diffForHumans()
+        "diff" => $date->diffForHumans(),
+        "sort_diff" => $sort[0]." ".strtoupper($sort[1][0]),
     ];
 }
 
