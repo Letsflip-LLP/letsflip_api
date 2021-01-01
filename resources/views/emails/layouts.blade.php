@@ -70,8 +70,10 @@
                                                                         bridged, rules torn,<br/>
                                                                         learning unleashed! 
                                                                      </p>
-                                                                     <div style="text-align:center;padding-top:60px"> <a style="width:29%;background-image:url(https://ci4.googleusercontent.com/proxy/zErr9ck_MnZqrMN5fJFN45_L8YuKRGhfCMiww5a02xpEVLoJkJ_O29kofDgwGa7P7VLSAimYAJaAD35MwSUWuwJ9J02AyRI=s0-d-e1-ft#http://35.240.213.126:3000/template/image/iosBtn.png);height:50px;background-size:contain;background-repeat:no-repeat;border:0;padding:0;margin-right:15px;display:inline-block"></a> <a style="width:30%;background-image:url(https://ci6.googleusercontent.com/proxy/gEAOqlzSRGduvxYWhEiN3Lvpk-zNsYM86rEL3RsfW6VS7RL_NX159ehJudepW0IRrmlkEOQfcgHm6oJciBve9qmFMlga9wF32Ilw=s0-d-e1-ft#http://35.240.213.126:3000/template/image/androidBtn.png);height:50px;background-size:contain;background-repeat:no-repeat;border:0;padding:0;display:inline-block"></a> </div>
-                                                                     <p style="margin:0;font-size:9px;color:#333333;text-align:center;padding-top:20px"> Copyright © 2020 Let’s Fl!p. All Rights Reserved. </p>
+                                                                     <div style="text-align:center;padding-top:60px"> 
+                                                                     <img width="190" src="{{url('template/image/iosBtn.png')}}"/>
+                                                                     <img width="200" src="{{url('template/image/androidBtn.png')}}"/>
+                                                                       <p style="margin:0;font-size:9px;color:#333333;text-align:center;padding-top:20px"> Copyright © 2020 Let’s Fl!p. All Rights Reserved. </p>
                                                                    </td>
                                                                 </tr>
                                                              </tbody>
@@ -88,7 +90,6 @@
                             </tr>
                          </tbody>
                       </table>
-                      <img src="https://ci6.googleusercontent.com/proxy/YH7V25Qhk1AP7J-rulKZaGxi87usd3SCSfAh7dDyB9UipxozJShXUGDefGMvFQwBU90Iyo8ZqsaTmVzTerLWmP4RY9j3hhA3TsV4moWMkbk1guZWoT6Jc5GsKHl_Oi1PD-mhYcTJcfEsVN3TJtJ8Itoy24J6e-C1xR1imUnR1RJDAb0FIs7-z8DRMiTVViG1I5VhLEE5yLZ2gpHmBLuy6hNb9PTaL0fVTR0pDBqPTTs8JvvCgP3_TNsluJOCBQo8ZVj09S_WewEb4K9xk7HFyvLaT0wxGh5YjqBEhmD0ChNHlLM98Q-ofZgIOUwK2agPl-LF8oELjiJSUoEVxTU4htkqaQL8bpVVuBtZUTyLyshxzhk_O_Ewnwel9g5MRdxY1P6wZtNWMm9QWfmwjLswPF5IqpwrcNL-BdWAzxPrZNlh0u1iu_7Zxjp6EVp3Rq3H6e5iSQM=s0-d-e1-ft#https://u9758790.ct.sendgrid.net/wf/open?upn=ZuNT-2B5-2FMBtfjTNu-2BvpfRfapfK4Ierdc2p25vHOgS6NlF0jGZt-2FdrZ3fY-2BIRswYB19pT6IyNkw1UcGrmoJMYiPzrM4DUL-2FhjQW73j0Gp-2B7RR9zVbu9CkPdCqP7v5EpVvB2BSk-2FSM1yvv80kLoVOTX4iC4GvXOZpjKeYOr6YeyMOl6Jwn6DQsVrflaPBtNh-2B7e6vqzmrRnZZ576UKB5ctx2pCDs9wILx6o-2Ba52Qu74ur5gfVqTKrxZme6SuYPBINXx" alt="" width="1" height="1" border="0" style="height:1px!important;width:1px!important;border-width:0!important;margin-top:0!important;margin-bottom:0!important;margin-right:0!important;margin-left:0!important;padding-top:0!important;padding-bottom:0!important;padding-right:0!important;padding-left:0!important">
                    </div>
                 </font>
              </div>

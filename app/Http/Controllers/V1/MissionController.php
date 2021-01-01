@@ -434,4 +434,38 @@ class MissionController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+
+    public function deleteResponeMission(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+
+            $mission_respone = new MissionResponeModel;
+            $mission_respone = $mission_respone->where('id',$request->mission_respone_id)->first();
+             
+            if($mission_respone == null)
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS1");
+                
+                
+            if(($mission_respone->user_id != $this->user_login->id && $mission_respone->Mission->user_id != $this->user_login->id))
+                return (new ResponseTransformer)->toJson(400,__('message.401'),"ERRDELRE01");
+
+
+            if(!$mission_respone->delete())
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS2");
+
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
 }

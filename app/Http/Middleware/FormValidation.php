@@ -180,6 +180,12 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerDeleteResponeMission':
+          return [
+            'mission_respone_id' => 'required|exists:mission_responses,id'
+          ];
+        break;
+
         default:
           return [];
       }
