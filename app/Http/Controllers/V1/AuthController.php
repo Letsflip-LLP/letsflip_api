@@ -321,6 +321,8 @@ class AuthController extends Controller
         $data->first_name = $user->first_name;
         $data->last_name = $user->last_name;
         $data->email = $user->email;
+        $data->email = $user->email;
+        $data->image_profile = defaultImage('user');
         $data->access_token = $this->createToken($user);
 
         DB::commit();
@@ -359,6 +361,7 @@ class AuthController extends Controller
         $data->first_name = $user->first_name;
         $data->last_name = $user->last_name;
         $data->email = $user->email;
+        $data->image_profile = defaultImage('user');
         $data->access_token = $this->createToken($user);
 
         DB::commit();
