@@ -1,6 +1,8 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
     <link
         rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -25,18 +27,23 @@
                 <font size="-1">
                    <u></u> 
                    <div>
-                      <table width="600px" align="center" style="font-family:arial">
+                      <table width="100%" align="center" style="font-family:arial">
                          <tbody>
                             <tr>
                                <td style="text-align:center">
-                                  <table width="600px" cellspacing="0" cellpadding="0" style="border:1px solid #e5e5e5">
+                                  <table width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #e5e5e5">
                                      <tbody>
                                         <tr>
                                            <td>
                                               <table width="100%" cellspacing="0" cellpadding="0" style="background:#fff;padding:15px">
                                                    <tbody>
                                                       <tr>
-                                                      <td style="text-align:center;padding-bottom:20px;padding-right:10;padding-left:10"> <a style=" display:inline-block;padding-bottom:10px" href="{{env('LANDING_PAGE_URL',url('/'))}}" target="_blank" ><img src="{{url('template/image/Flip_logo.png')}}" width="400" style="width:200px"></a> <span style="width:100%;height:4px;border-radius:50px;display:block;
+                                                      <td style="text-align:center;padding-bottom:20px;padding-right:10;padding-left:10">
+                                                      <a style=" display:inline-block;padding-bottom:10px" href="{{env('LANDING_PAGE_URL',url('/'))}}" target="_blank" >
+                                                         <center>
+                                                            <img src="{{url('template/image/Flip_logo.png')}}" style="width:300px">
+                                                         </center>
+                                                      </a> <span style="width:100%;height:4px;border-radius:50px;display:block;
                                                                      background: rgb(223,71,135);
                                                                      margin-top : 30px;
                                                                      background: -moz-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
@@ -58,22 +65,15 @@
                                                              <tbody>
                                                                 <tr>
                                                                    <td style="padding-right:5px ; padding-left:5px">
-                                                                     <p style="
-                                                                           width: 100%;
-                                                                           font-size: 40px;
-                                                                           text-align: center;
-                                                                           font-weight: 900;
-                                                                           color : #333333;,
-                                                                           padding-top : 10px;
-                                                                     ">
-                                                                        Walls down, borders<br/>
-                                                                        bridged, rules torn,<br/>
+                                                                     <p style="width: 100%;font-size: 30px;text-align: center;font-weight: 900;color : #333333;padding-top : 10px;">
+                                                                        Walls down, borders<br style="line-height :50px"/>
+                                                                        bridged, rules torn,<br style="line-height :50px"/>
                                                                         learning unleashed! 
                                                                      </p>
                                                                      <div style="text-align:center;padding-top:60px"> 
-                                                                     <img width="190" src="{{url('template/image/app-button-download.png')}}"/>
-                                                                     <img width="200" src="{{url('template/image/google-play-button.png')}}"/>
-                                                                       <p style="margin:0;font-size:9px;color:#333333;text-align:center;padding-top:20px"> Copyright © 2020 Let’s Fl!p. All Rights Reserved. </p>
+                                                                     <img style="margin-right:10px" width="190" src="{{url('template/image/app-button-download.png')}}"/>            
+                                                                     <img style="margin-left:10px" width="200" src="{{url('template/image/google-play-button.png')}}"/>
+                                                                       <p style="margin:0;font-size:12px;color:#333333;text-align:center;padding-top:20px"> Copyright © 2020 Let’s Fl!p. All Rights Reserved. </p>
                                                                    </td>
                                                                 </tr>
                                                              </tbody>
