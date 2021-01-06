@@ -117,9 +117,7 @@ class AuthController extends Controller
             if($user->email_verified_at == null){
                 if($user->update(['email_verified_at' => date('Y-m-d H:i:s')])){
                     $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom"; 
-                    
-                    if($this->agent->isMobile()) return redirect()->to('letsflip://getletsflip.com/auth/login');
-
+                    if($this->agent->isMobile()) return redirect()->to(url('account/verification?succcess=true&temporary_token='.$request->temporary_token));
                 }
              } 
 
@@ -424,11 +422,12 @@ class AuthController extends Controller
                 $message = __('messages.401');
 
             if($user->email_verified_at != null)
-                return (new ResponseTransformer)->toJson(400,"Oops! Your account is already verified",$user);
+                return (new ResponseTransformer)->toJson(400,"Oops! Your account is already verified",false);
 
             if($user->email_verified_at == null){
                 if($user->update(['email_verified_at' => date('Y-m-d H:i:s')])){
-                    return (new ResponseTransformer)->toJson(200,"CONGRATULATIONS! Your account has successfully activated! The world is now your classroom",true);
+                }else{
+                    return (new ResponseTransformer)->toJson(400,"Failed! Validation error",true);
                 }
             }
 
@@ -436,7 +435,7 @@ class AuthController extends Controller
             DB::commit(); 
 
             $send_mail = \Mail::to($user->email)->queue(new \App\Mail\congratulationVerifyMail());
-            return (new ResponseTransformer)->toJson(400,"CONGRATULATIONS! Your account has successfully activated! The world is now your classroom",$user);
+            return (new ResponseTransformer)->toJson(200,"CONGRATULATIONS! Your account has successfully activated! The world is now your classroom",$user);
  
         } catch (\exception $exception){
             DB::rollBack();
