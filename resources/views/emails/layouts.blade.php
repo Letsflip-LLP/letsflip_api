@@ -61,21 +61,30 @@
                                                 <tbody>
                                                     <tr>
                                                        <td style="padding-top:20px;padding-bottom:10px;padding-right:20px;padding-left:20px;background:#e5e5e5">
-                                                          <table width="100%" style="border-spacing:0;font-family:sans-serif;color:#333333">
+                                                          <table width="100%" style=" max-height :  border-spacing:0;font-family:sans-serif;color:#333333">
                                                              <tbody>
                                                                 <tr>
-                                                                   <td style="padding-right:5px ; padding-left:5px">
-                                                                     <p style="width: 100%;font-size: 30px;text-align: center;font-weight: 900;color : #333333;padding-top : 10px;">
+                                                                   <td style="padding-right:5px ; padding-left:5px" colspan="2">
+                                                                     <p style="margin-bottom : 10px ; width: 100%;font-size: 30px;text-align: center;font-weight: 900;color : #333333;padding-top : 10px;">
                                                                         Walls down, borders<br style="line-height :50px"/>
                                                                         bridged, rules torn,<br style="line-height :50px"/>
                                                                         learning unleashed! 
-                                                                     </p>
-                                                                     <div style="text-align:center;padding-top:60px"> 
-                                                                     <img style="margin-right:10px" width="190" src="{{url('template/image/app-button-download.png')}}"/>            
-                                                                     <img style="margin-left:10px" width="200" src="{{url('template/image/google-play-button.png')}}"/>
-                                                                       <p style="margin:0;font-size:12px;color:#333333;text-align:center;padding-top:20px"> Copyright © 2020 Let’s Fl!p. All Rights Reserved. </p>
+                                                                     </p> 
                                                                    </td>
                                                                 </tr>
+                                                                <tr>
+                                                                <td width="50%">
+                                                                   <img style="width:40px, margin-right:10px" src="{{url('template/image/app-button-download.png')}}"/> 
+                                                                </td>
+                                                                <td width="50%">
+                                                                   <img style="width:40px, margin-right:10px" src="{{url('template/image/google-play-button.png')}}"/> 
+                                                                </td> 
+                                                                <tr> 
+                                                                <tr> 
+                                                                  <td colspan="2">
+                                                                     <p style="margin:0;font-size:12px;color:#333333;text-align:center;padding-top:20px"> Copyright © 2020 Let’s Fl!p. All Rights Reserved. </p>
+                                                                  </td> 
+                                                               </tr>
                                                              </tbody>
                                                           </table>
                                                        </td>
