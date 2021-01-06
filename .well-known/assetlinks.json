@@ -1,0 +1,14 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "lets_flip",
+      "package_name": "com.lets_flip",
+      "sha256_cert_fingerprints":
+        [
+          "5e:8f:16:06:2e:a3:cd:2c:4a:0d:54:78:76:ba:a6:f3:8c:ab:f6:25",
+          "a0:4f:31:1a:b0:92:af:ba:4d:4b:0f:07:46:d9:21:42:b2:09:7e:8a",
+          "ce:5e:6a:db:0d:70:1b:a6:35:69:e0:de:f2:72:cf:a9:d8:dd:39:f3",
+          "78:27:0a:25:0b:9c:57:e9:83:cf:c4:fd:bf:32:a4:a6:f6:55:ba:aa"
+        ]
+    } 
+  }]
