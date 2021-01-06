@@ -409,4 +409,40 @@ class AuthController extends Controller
     }
 
 
+    public function registerVerify(Request $request)
+    {        
+        DB::beginTransaction();
+        try {
+             
+            $message = "";
+            
+            $decode = Crypt::decryptString($request->temporary_token);
+
+            $user   = User::where('email',$decode)->first();
+             
+            if($user == null)
+                $message = __('messages.401');
+
+            if($user->email_verified_at != null)
+                return (new ResponseTransformer)->toJson(400,"Oops! Your account is already verified",$user);
+
+            if($user->email_verified_at == null){
+                if($user->update(['email_verified_at' => date('Y-m-d H:i:s')])){
+                    return (new ResponseTransformer)->toJson(200,"CONGRATULATIONS! Your account has successfully activated! The world is now your classroom",true);
+                }
+            }
+
+            $data = []; 
+            DB::commit(); 
+
+            $send_mail = \Mail::to($user->email)->queue(new \App\Mail\congratulationVerifyMail());
+            return (new ResponseTransformer)->toJson(400,"CONGRATULATIONS! Your account has successfully activated! The world is now your classroom",$user);
+ 
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+
 }
