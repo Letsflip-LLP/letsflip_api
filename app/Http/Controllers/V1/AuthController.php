@@ -164,7 +164,7 @@ class AuthController extends Controller
             $email_payload = [
                 "first_name" => $user->first_name ,
                 "last_name" => $user->last_name,
-                "reset_password_url" => env('WEB_PAGE_URL',url('/')).'/account/confirm-reset-password?temporary_token='.$this->createdPublicToken($first_token)
+                "reset_password_url" => env('APP_WO_DEEPLINK',url('/')).'/account/confirm-reset-password?temporary_token='.$this->createdPublicToken($first_token)
             ];
 
             $send_mail = \Mail::to($user->email)->queue(new \App\Mail\resetPasswordConfirmation($email_payload));
