@@ -71,8 +71,8 @@
                                                                         learning unleashed! 
                                                                      </p>
                                                                      <div style="text-align:center;padding-top:60px"> 
-                                                                     <img width="190" src="{{url('template/image/iosBtn.png')}}"/>
-                                                                     <img width="200" src="{{url('template/image/androidBtn.png')}}"/>
+                                                                     <img width="190" src="{{url('template/image/app-button-download.png')}}"/>
+                                                                     <img width="200" src="{{url('template/image/google-play-button.png')}}"/>
                                                                        <p style="margin:0;font-size:9px;color:#333333;text-align:center;padding-top:20px"> Copyright © 2020 Let’s Fl!p. All Rights Reserved. </p>
                                                                    </td>
                                                                 </tr>
