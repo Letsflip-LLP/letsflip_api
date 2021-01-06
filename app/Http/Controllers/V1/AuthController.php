@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\MessageBag; 
 use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite;
+use App\Mail\verificationUserRegister;
 
 class AuthController extends Controller
 {
@@ -49,7 +50,7 @@ class AuthController extends Controller
  
             $validatedData['activate_url'] = env('WEB_PAGE_URL',url('/')).'/account/verification?temporary_token='.Crypt::encryptString($validatedData['email']);
             $validatedData['password'] = $request->password;
-            $send_mail = \Mail::to($validatedData['email'])->send(new \App\Mail\verificationUserRegister($validatedData));
+            $send_mail = \Mail::to($validatedData['email'])->queue(new verificationUserRegister($validatedData));
 
         DB::commit();
  
@@ -127,7 +128,7 @@ class AuthController extends Controller
 
             DB::commit(); 
 
-            $send_mail = \Mail::to($user->email)->send(new \App\Mail\congratulationVerifyMail());
+            $send_mail = \Mail::to($user->email)->queue(new \App\Mail\congratulationVerifyMail());
 
         } catch (\exception $exception){
             DB::rollBack();
@@ -168,7 +169,7 @@ class AuthController extends Controller
                 "reset_password_url" => env('WEB_PAGE_URL',url('/')).'/account/confirm-reset-password?temporary_token='.$this->createdPublicToken($first_token)
             ];
 
-            $send_mail = \Mail::to($user->email)->send(new \App\Mail\resetPasswordConfirmation($email_payload));
+            $send_mail = \Mail::to($user->email)->queue(new \App\Mail\resetPasswordConfirmation($email_payload));
 
             DB::commit(); 
 

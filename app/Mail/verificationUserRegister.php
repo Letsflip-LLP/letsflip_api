@@ -16,6 +16,8 @@ class verificationUserRegister extends Mailable
      *
      * @return void
      */
+    public $data;
+    
     public function __construct($data)
     {
         //
