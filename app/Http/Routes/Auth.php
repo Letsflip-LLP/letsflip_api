@@ -30,7 +30,7 @@ $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
     Route::post('submit-reset-password', [AuthController::class, 'submitResetPassword'])->name('PostAuthControllerSubmitResetPassword');
 
     $router->get('email-verification', function (Request $request){
-        return view('emails.congratulations-activate-account',["reset_password_url"=> "www.facebok.com","email" => "andhi@email.com" , 'password' => "*****" , "activate_url" => "www.faceboook.com" ,"first_name" => "ANd" , "last_name" => "sapu"]);
+        return view('emails.account-verification',["reset_password_url"=> "http://www.facebok.com","email" => "andhi@email.com" , 'password' => "*****" , "activate_url" => "http://www.facebook.com" ,"first_name" => "ANd" , "last_name" => "sapu"]);
     }); 
 }); 
  

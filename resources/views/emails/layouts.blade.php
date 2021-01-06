@@ -36,7 +36,7 @@
                                               <table width="100%" cellspacing="0" cellpadding="0" style="background:#fff;padding:15px">
                                                    <tbody>
                                                       <tr>
-                                                      <td style="text-align:center;padding-bottom:20px;padding-right:10;padding-left:10"> <a style=" display:inline-block;padding-bottom:10px" href="{{env('LANDING_PAGE_URL',url('/'))}}" target="_blank" ><img src="https://ci6.googleusercontent.com/proxy/73SN7alATfD4QNaDmrRHcT2o3ZyZ60HQNWSpCj7Dy69hI71wT8sbkOwtCNm1RKGQqUgOdyEky3zuNmOQ4tWlABZAsFygePSSjiU=s0-d-e1-ft#http://35.240.213.126:3000/template/image/Flip_logo.png" width="400" style="width:200px"></a> <span style="width:100%;height:4px;border-radius:50px;display:block;
+                                                      <td style="text-align:center;padding-bottom:20px;padding-right:10;padding-left:10"> <a style=" display:inline-block;padding-bottom:10px" href="{{env('LANDING_PAGE_URL',url('/'))}}" target="_blank" ><img src="{{url('template/image/Flip_logo.png')}}" width="400" style="width:200px"></a> <span style="width:100%;height:4px;border-radius:50px;display:block;
                                                                      background: rgb(223,71,135);
                                                                      margin-top : 30px;
                                                                      background: -moz-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
