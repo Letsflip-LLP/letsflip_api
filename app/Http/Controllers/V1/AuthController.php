@@ -117,7 +117,7 @@ class AuthController extends Controller
             if($user->email_verified_at == null){
                 if($user->update(['email_verified_at' => date('Y-m-d H:i:s')])){
                     $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom"; 
-                    if($this->agent->isMobile() && !$request->isset("success")) return redirect()->to(url('account/verification?succcess=true&temporary_token='.$request->temporary_token));
+                    if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to(url('account/verification?succcess=true&temporary_token='.$request->temporary_token));
                 }
              } 
 
