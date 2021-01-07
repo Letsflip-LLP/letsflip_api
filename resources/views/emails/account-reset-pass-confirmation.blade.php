@@ -39,35 +39,34 @@
 		<td
 			style="
 				text-align: center;
-				padding: 5px;
-				padding-top: 25px;
-				padding-bottom: 20px;
+				padding: 5px; 
 			"
 		>
-			<a
-				href="{{$reset_password_url}}"
-				style="
-					width: 100%;
-					display: block;
-					margin: 0 auto;
-					height: 50px;
-					background-size: contain;
-					background-repeat: no-repeat;
-					border-radius: 13px;   
-					background: rgb(223,71,135);
-					margin-top : 30px;
-					background: -moz-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
-					background: -webkit-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
-					background: linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
-					filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#df4787',endColorstr='#3d2b93',GradientType=1);
-					filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3d2893', endColorstr='#df4786', GradientType=1 );
-					border-radius: 10px;
-					color: #fff;
-					text-decoration: none;
-					line-height: 50px;
-				"
-				>CHANGE PASSWORD</a
-			>
+			<a href="{{$reset_password_url}}" >
+               <button
+               style="
+                  width: 100%;
+                  display: block;
+                  margin: 0 auto;
+                  height: 50px;
+                  background-size: contain;
+                  background-repeat: no-repeat;
+                  border-radius: 13px;   
+                  background: rgb(223,71,135);
+                  margin-top : 30px;
+                  background: -moz-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
+                  background: -webkit-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
+                  background: linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
+                  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#df4787',endColorstr='#3d2b93',GradientType=1);
+                  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3d2893', endColorstr='#df4786', GradientType=1 );
+                  border-radius: 10px;
+                  color: #fff;
+                  text-decoration: none;
+                  text-align: center;
+                  border:none;
+               "
+               >CHANGE PASSWORD</button>
+            </a>
 		</td>
 	</tr>
 	<tr>
