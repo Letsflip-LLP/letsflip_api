@@ -92,8 +92,7 @@
          }
       </style>
    </head>
-   <body style="background-color:#FFFFFF; padding-left : 10px; padding-right:10px">
-      <div style="background-color:#FFFFFF;">
+       <div style="background-color:#FFFFFF; padding-left : 10px; padding-right:10px">
          <!--[if mso | IE]>
          <table
             align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600"
@@ -278,6 +277,5 @@
             </tr>
          </table>
          <![endif]-->
-      </div>
-   </body>
+      </div> 
 </html>
