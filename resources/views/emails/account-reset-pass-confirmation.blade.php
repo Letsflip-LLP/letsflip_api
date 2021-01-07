@@ -47,7 +47,7 @@
 			<a
 				href="{{$reset_password_url}}"
 				style="
-					width: 50%;
+					width: 100%;
 					display: block;
 					margin: 0 auto;
 					height: 50px;
