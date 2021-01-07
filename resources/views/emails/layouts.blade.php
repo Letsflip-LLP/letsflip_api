@@ -27,7 +27,7 @@
                 <font size="-1">
                    <u></u> 
                    <div>
-                      <table width="100%" align="center" style="font-family:arial">
+                      <table width="100%" align="center" style="max-width:600px;font-family:arial">
                          <tbody>
                             <tr>
                                <td style="text-align:center">
@@ -74,10 +74,10 @@
                                                                 </tr>
                                                                 <tr>
                                                                 <td width="50%">
-                                                                   <img style="width:40px, margin-right:10px" src="{{url('template/image/app-button-download.png')}}"/> 
+                                                                   <img width="100%" style="margin-right:10px" src="{{url('template/image/app-button-download.png')}}"/> 
                                                                 </td>
                                                                 <td width="50%">
-                                                                   <img style="width:40px, margin-right:10px" src="{{url('template/image/google-play-button.png')}}"/> 
+                                                                   <img width="100%" style="margin-right:10px" src="{{url('template/image/google-play-button.png')}}"/> 
                                                                 </td> 
                                                                 <tr> 
                                                                 <tr> 
