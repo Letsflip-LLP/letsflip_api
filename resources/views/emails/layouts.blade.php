@@ -92,7 +92,7 @@
          }
       </style>
    </head>
-   <body style="background-color:#FFFFFF;">
+   <body style="background-color:#FFFFFF; padding-left : 10px; padding-right:10px">
       <div style="background-color:#FFFFFF;">
          <!--[if mso | IE]>
          <table
@@ -182,37 +182,25 @@
                                                                   <div class="mj-column-per-50 outlook-group-fix" style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
                                                                      <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
                                                                         <tr>
-                                                                           <td align="right" style="font-size:0px;padding:0px 0px 0px 0px;word-break:break-word;">
-                                                                              <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
+                                                                           <td style="font-size:0px;padding:0px 0px 0px 0px;word-break:break-word;">
+                                                                              <table align="" border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px; width:100%">
                                                                                  <tbody>
                                                                                     <tr>
+                                                                                       <td style="with:20%"></td>
                                                                                        <td style="width:123px;">
-                                                                                          <img height="auto" src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/5ff711237b674/1610027956.jpg" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="123">
+                                                                                          <img height="auto" src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/5ff711237b674/1610027956.jpg" style="margin-right:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="123">
                                                                                        </td>
-                                                                                    </tr>
+                                                                                       <td style="width:135px;">
+                                                                                          <img height="auto" src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/5ff711237b674/1610027965.jpg" style="margin-left:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="135">
+                                                                                       </td>
+                                                                                       <td style="with:20%"></td>
+                                                                                    </tr> 
                                                                                  </tbody>
                                                                               </table>
                                                                            </td>
                                                                         </tr>
                                                                      </table>
-                                                                  </div> 
-                                                                  <div class="mj-column-per-50 outlook-group-fix" style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                                                                     <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                                                                        <tr>
-                                                                           <td align="left" style="font-size:0px;padding:0px 0px 0px 10px;word-break:break-word;">
-                                                                              <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
-                                                                                 <tbody>
-                                                                                    <tr>
-                                                                                       <td style="width:135px;">
-                                                                                          <img height="auto" src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/5ff711237b674/1610027965.jpg" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="135">
-                                                                                       </td>
-                                                                                    </tr>
-                                                                                 </tbody>
-                                                                              </table>
-                                                                           </td>
-                                                                        </tr> 
-                                                                     </table>
-                                                                  </div>
+                                                                  </div>  
                                                                   <!--[if mso | IE]>
                                                                </td>
                                                             </tr>
