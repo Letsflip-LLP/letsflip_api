@@ -240,6 +240,9 @@ class MissionController extends Controller
                 $mission = $mission->orderBy('created_at','DESC'); 
             }
                 
+            if($request->filled('user_id'))
+                $mission = $mission->where('user_id',$request->user_id);
+
             
             $mission = $mission->paginate($request->input('per_page',10)); 
             // $mission = $mission->paginate(30);
@@ -392,8 +395,15 @@ class MissionController extends Controller
 
         try {
              
-            $respone_mission = new MissionResponeModel;
-            $respone_mission = $respone_mission->where('mission_id',$request->mission_id)->orderBy('created_at','DESC')->get(); 
+            $respone_mission = new MissionResponeModel; 
+            
+            if($request->filled('mission_id'))
+                $respone_mission = $respone_mission->where('mission_id',$request->mission_id);
+
+            if($request->filled('user_id'))
+                $respone_mission = $respone_mission->where('user_id',$request->user_id);
+
+            $respone_mission = $respone_mission->orderBy('created_at','DESC')->get(); 
 
             DB::commit();
         

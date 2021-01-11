@@ -45,9 +45,8 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
  
         // Response Mission
         $router->group(['prefix' => 'respone'], function($router){
-            // MISSION
+            // RESPONE
             Route::post('add', [MissionController::class, 'addResponeMission'])->name('PostMissionResponeControllerAddRespone'); 
-            Route::get('list', [MissionController::class, 'getResponeMission'])->name('GetMissionControllerGetResponeMission'); 
             Route::post('delete', [MissionController::class,'deleteResponeMission'])->name('PostMissionControllerDeleteResponeMission'); 
 
             Route::post('comment/add', [MissionCommentController::class, 'addCommentResponeMission'])->name('PostMissionCommentControllerAddCommentResponeMission'); 
@@ -58,6 +57,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
 
  
     // Login Not Required
+    Route::get('respone/list', [MissionController::class, 'getResponeMission'])->name('GetMissionControllerGetResponeMission'); 
     Route::get('comment/list',   [MissionCommentController::class, 'getComments'])->name('GetMissionCommentControllerGetComments');
     Route::get('list',   [MissionController::class, 'getMission'])->name('GetMissionControllerGetMission');
     Route::get('detail', [MissionController::class, 'getMissionDetail'])->name('GetMissionControllerGetMissionDetail');

@@ -82,6 +82,7 @@ class FormValidation
         case 'GetMissionControllerGetMission':
           return [
             'order_by' => 'in:created_at-asc,created_at-desc,trending', 
+            'user_id' => 'exists:users,id'
           ];
         break;
 
@@ -183,6 +184,14 @@ class FormValidation
         case 'PostMissionControllerDeleteResponeMission':
           return [
             'mission_respone_id' => 'required|exists:mission_responses,id'
+          ];
+        break;
+
+
+        case 'GetMissionControllerGetResponeMission':
+          return [
+            'mission_id' => 'exists:missions,id',
+            'user_id' => 'exists:users,id'
           ];
         break;
 
