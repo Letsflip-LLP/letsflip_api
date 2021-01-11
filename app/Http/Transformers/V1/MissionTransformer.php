@@ -38,9 +38,9 @@ class MissionTransformer {
         ];
 
         if($model->mission_id){
-            $temp->share_url = url('/open-app/mission/'.$model->id);
-        }else{
             $temp->share_url = url('/open-app/respones/'.$model->id);
+        }else{
+            $temp->share_url = url('/open-app/mission/'.$model->id);
         }
  
         $temp->user                 = $this->_user($model->User);
