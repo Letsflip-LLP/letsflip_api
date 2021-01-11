@@ -15,9 +15,9 @@ function defaultImage($module){
         case 'user':
             return [
                 "file_path" => 'assets/default',
-                "file_name" => '453152464_orig (2).jpg',
-                "file_mime" => 'image/jpeg',
-                "file_full_path" => Illuminate\Support\Facades\Storage::disk('gcs')->url('mission/image/4bef8e8b-1436-4724-bf71-0f01d140a50e.jpeg')
+                "file_name" => 'user-default-icon.png',
+                "file_mime" => 'image/png',
+                "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/user-default-icon.png"
             ];
             break;
         
