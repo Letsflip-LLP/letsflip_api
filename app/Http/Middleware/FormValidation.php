@@ -67,6 +67,8 @@ class FormValidation
 
         case 'PostMissionControllerAddMission':
           return [
+            'title'  => 'required',
+            'text'  => 'required',
             'type'  => 'required|in:1,2',
             'file'  => Rule::requiredIf( function () use ($request){
              }),
