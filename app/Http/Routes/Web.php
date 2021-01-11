@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route; 
 use App\Http\Controllers\V1\AuthController;
+use App\Http\Controllers\V1\MissionController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,5 +19,10 @@ $router->group(['middleware'=> ['form'] ], function($router){
     $router->group(['prefix' => 'account'], function($router){
         Route::get('verification', [AuthController::class, 'verificationAccount'])->name('GetAuthControllerverificationAccount');
         Route::get('confirm-reset-password', [AuthController::class, 'confirmResetPassword'])->name('GetAuthControllerConfirmResetPassword');
+    });
+
+    $router->group(['prefix' => 'open-app'], function($router){
+        Route::get('mission/{mission_id}', [MissionController::class, 'openApp'])->name('GetMissionControllerOpenApp');
+        Route::get('respones/{mission_id}', [MissionController::class, 'openApp'])->name('GetMissionControllerOpenApp');
     });
 }); 

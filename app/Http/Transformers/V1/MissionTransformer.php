@@ -37,6 +37,12 @@ class MissionTransformer {
             "image_full_path" => getPublicFile($image_path,$image_file)
         ];
 
+        if($model->mission_id){
+            $temp->share_url = url('/open-app/mission/'.$model->id);
+        }else{
+            $temp->share_url = url('/open-app/respones/'.$model->id);
+        }
+ 
         $temp->user                 = $this->_user($model->User);
         $temp->type                 = $this->_type($model->type);
         $temp->default_content      = $this->_defaultContent($model->MissionContentDefault);

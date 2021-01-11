@@ -478,4 +478,8 @@ class MissionController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function openApp(){
+        return redirect(env('ANDROID_PLAYSTORE_URL'));
+    }
 }
