@@ -17,6 +17,9 @@ class StorageManager {
             $mime = explode("/",$m)[0];
             $extention = explode("/",$m)[1];
 
+
+            if($extention == "quicktime") $extention = "mp4";
+
             $filename = Uuid::uuid4().'.'.$extention;
 
             // $filename
