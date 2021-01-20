@@ -7,7 +7,7 @@ function dateFormat($date){
     return (object) [
         "date" =>\Carbon\Carbon::parse($date)->format("D, M Y"),
         "diff" => diffFormatTableOfTime($date),
-        "sort_diff" => $sort[0]." ".strtoupper($sort[1][0]),
+        "sort_diff" => $sort[0]." ".strtolower($sort[1][0]),
     ];
 }
 
