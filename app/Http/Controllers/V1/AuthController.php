@@ -48,7 +48,7 @@ class AuthController extends Controller
 
             $user = User::create($validatedData);
  
-            $validatedData['activate_url'] = env('WEB_PAGE_URL',url('/')).'/account/verification?temporary_token='.Crypt::encryptString($validatedData['email']);
+            $validatedData['activate_url'] = env('WEB_PAGE_URL',url('/')).'/account/verification/verify?temporary_token='.Crypt::encryptString($validatedData['email']);
             $validatedData['password'] = $request->password;
             $send_mail = \Mail::to($validatedData['email'])->queue(new verificationUserRegister($validatedData));
 
