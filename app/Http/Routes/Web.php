@@ -18,7 +18,7 @@ use App\Http\Controllers\V1\MissionController;
 $router->group(['middleware'=> ['form'] ], function($router){
     $router->group(['prefix' => 'account'], function($router){
         Route::get('verification/verify', [AuthController::class, 'verificationAccount'])->name('GetAuthControllerverificationAccount');
-        Route::get('confirm-reset-password', [AuthController::class, 'confirmResetPassword'])->name('GetAuthControllerConfirmResetPassword');
+        Route::get('confirm-reset-password/forgot', [AuthController::class, 'confirmResetPassword'])->name('GetAuthControllerConfirmResetPassword');
     });
 
     $router->group(['prefix' => 'open-app'], function($router){
