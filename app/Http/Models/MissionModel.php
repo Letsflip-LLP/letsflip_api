@@ -4,6 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model; 
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MissionModel extends Model
 {
@@ -11,8 +12,7 @@ class MissionModel extends Model
     
     public $incrementing = false; 
     protected $table = 'missions';  
-
-
+    use SoftDeletes; 
 
     public function MissionContent()
     {
