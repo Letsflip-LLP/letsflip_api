@@ -444,4 +444,24 @@ class AuthController extends Controller
     }
 
 
+    public function checkAppUpdate(){
+        $data = [
+            "android" => [
+                "version_code" => 20,
+                "version_name" => "1.1.2.0",
+                "version_mandatory" => false,
+                "download_url" => "https://play.google.com/store/apps/details?id=com.lets_flip"
+            ],
+            "ios" => [
+                "version_code" => 20,
+                "version_name" => "1.1.2.0",
+                "version_mandatory" => false,
+                "download_url" => ""
+            ]
+        ];
+
+        return (new ResponseTransformer)->toJson(200,"Ok",$data); 
+    }
+
+
 }

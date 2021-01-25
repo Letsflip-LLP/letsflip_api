@@ -15,6 +15,9 @@ use App\Http\Controllers\V1\AuthController;
 */
 
 $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
+
+    Route::get('check-update', [AuthController::class, 'checkAppUpdate']);
+
     Route::get('peoples', [AuthController::class, 'peoples']);
     Route::get('test-socket', [AuthController::class, 'testSocket']);
 
