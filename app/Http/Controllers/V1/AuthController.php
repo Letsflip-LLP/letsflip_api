@@ -449,7 +449,7 @@ class AuthController extends Controller
             "android" => [
                 "version_code" => 20,
                 "version_name" => "1.1.2.0",
-                "version_mandatory" => false,
+                "version_mandatory" => true,
                 "download_url" => "https://play.google.com/store/apps/details?id=com.lets_flip"
             ],
             "ios" => [
