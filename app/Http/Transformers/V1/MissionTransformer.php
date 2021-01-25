@@ -44,7 +44,12 @@ class MissionTransformer {
         }else{
             $temp->share_url = url('/open-app/mission/'.$model->id);
         }
- 
+
+        $temp->is_responded = false; 
+
+        if(auth('api')->user() && $model->Respone)
+            $temp->is_responded = $model->Respone->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
+
         $temp->user                 = $this->_user($model->User);
         $temp->type                 = $this->_type($model->type);
         $temp->default_content      = $this->_defaultContent($model->MissionContentDefault);
