@@ -148,6 +148,11 @@ class MissionController extends Controller
 
         try {
            
+            $check = MissionResponeModel::where('user_id',$this->user_login->id)->where('mission_id',$request->mission_id)->first();
+
+            if($check != null)
+                return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
+
             $thumbnail  = null; 
 
             if($request->thumbnail != null){
@@ -396,7 +401,6 @@ class MissionController extends Controller
         try {
              
             $respone_mission = new MissionResponeModel; 
-            $respone_mission = $respone_mission->whereHas('Mission');
             
             if($request->filled('mission_id'))
                 $respone_mission = $respone_mission->where('mission_id',$request->mission_id);
