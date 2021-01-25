@@ -447,10 +447,10 @@ class AuthController extends Controller
     public function checkAppUpdate(){
         $data = [
             "android" => [
-                "version_code" => 20,
-                "version_name" => "1.1.2.0",
-                "version_mandatory" => true,
-                "download_url" => "https://play.google.com/store/apps/details?id=com.lets_flip"
+                "version_code" => env('ANDROID_VERSION_CODE',0),
+                "version_name" => env('ANDROID_VERSION_NAME'),
+                "version_mandatory" => env('ANDROID_VERSION_MANDATORY'),
+                "download_url" => env('ANDROID_PLAYSTORE_URL')
             ],
             "ios" => [
                 "version_code" => 20,
