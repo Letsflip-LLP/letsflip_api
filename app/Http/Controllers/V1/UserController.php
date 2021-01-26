@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\AuthTransformer; 
 use App\Http\Transformers\V1\UserTransformer; 
+use App\Http\Transformers\V1\NotificationTransformer; 
 use DB;
 
 class UserController extends Controller
@@ -33,5 +34,20 @@ class UserController extends Controller
         $users = $users->paginate($request->input('per_page',10));
 
         return (new UserTransformer)->list(200,"Success",$users);
+    }
+
+    public function getSelfNotification(Request $request){
+        $users = new User;
+
+        if($request->filled('search')){
+            $users = $users->where('first_name','LIKE',"%".$request->search."%");
+            $users = $users->orWhere('last_name','LIKE',"%".$request->search."%");
+            $users = $users->orWhere('email','LIKE',"%".$request->search."%");
+
+        }
+ 
+        $users = $users->paginate($request->input('per_page',10));
+
+        return (new NotificationTransformer)->list(200,"Success",$users);
     }
 }

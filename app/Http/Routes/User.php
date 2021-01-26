@@ -15,7 +15,12 @@ use App\Http\Controllers\V1\UserController;
 */
  
 $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], function($router){
-    Route::get('self', [UserController::class, 'self'])->name('GetUserControllerSelf');
+
+    // Need Login
+    $router->group(['middleware'=> ['auth:api','verified'] , 'prefix' => 'self' ], function($router){
+        Route::get('/', [UserController::class, 'self'])->name('GetUserControllerSelf');
+        Route::get('notification', [UserController::class, 'getSelfNotification'])->name('GetUserControllerSelf');
+    });
 });
 
 
