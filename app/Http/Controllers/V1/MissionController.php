@@ -228,7 +228,7 @@ class MissionController extends Controller
         try {
 
             $mission = new MissionModel;
-            
+
             if($request->filled('search'))
                 $mission = $mission->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
 
@@ -247,7 +247,9 @@ class MissionController extends Controller
                 
             if($request->filled('user_id'))
                 $mission = $mission->where('user_id',$request->user_id);
-
+             
+            if(!$request->filled('user_id') || ($this->user_login && $request->filled('user_id') != $this->user_login->id))
+                $mission = $mission->where('status',1);
             
             $mission = $mission->paginate($request->input('per_page',10)); 
             // $mission = $mission->paginate(30);
