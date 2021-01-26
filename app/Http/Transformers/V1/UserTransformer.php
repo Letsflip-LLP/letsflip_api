@@ -15,6 +15,15 @@ class UserTransformer {
         $tmp->last_name     = $model->last_name;
         $tmp->image_profile = defaultImage('user'); 
         return  $tmp;
-    } 
+    }  
+    public function list($code,$message,$model){ 
+        $return  = [];
+        foreach($model as $data){
+            $tmp = $this->item($data);
+            $return[] = $tmp;
+        }
+ 
+        return (new ResponseTransformer)->toJson($code,$message,$model,$return);
+    }
  
 }

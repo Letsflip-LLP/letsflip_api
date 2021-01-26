@@ -8,6 +8,7 @@ use App\Http\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\AuthTransformer; 
+use App\Http\Transformers\V1\UserTransformer; 
 use DB;
 
 class UserController extends Controller
@@ -29,8 +30,8 @@ class UserController extends Controller
 
         }
  
-        $users = $users->get();
+        $users = $users->paginate($request->input('per_page',10));
 
-        return (new AuthTransformer)->list(200,"Success",$users);
+        return (new UserTransformer)->list(200,"Success",$users);
     }
 }
