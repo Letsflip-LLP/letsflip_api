@@ -66,7 +66,7 @@ class ClassRoomController extends Controller
 
         try {
             $class_room = new ClassRoomModel;
-            
+            $class_room = $class_room->whereHas('User');
             if($request->filled('search'))
                 $class_room = $class_room->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
 

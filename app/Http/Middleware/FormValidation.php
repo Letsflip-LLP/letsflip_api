@@ -70,6 +70,7 @@ class FormValidation
             'title'  => 'required',
             'text'  => 'required',
             'type'  => 'required|in:1,2',
+            'status' => 'in:1,2',
             'file'  => Rule::requiredIf( function () use ($request){
              }),
             'file_path'  => Rule::requiredIf( function () use ($request){ return !$request->filled('file'); }),

@@ -51,8 +51,8 @@ class MissionController extends Controller
             $mission->user_id   = $this->user_login->id;
             $mission->title     = $request->title; 
             $mission->text      = $request->text; 
-            $mission->type      = $request->type;
-            $mission->status    = 1;
+            $mission->type      = $request->input('type',1);
+            $mission->status    = $request->input('status',1);
             $mission->default_content_id    =  $mission_content_id;
 
             if($thumbnail != null){
