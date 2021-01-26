@@ -41,7 +41,7 @@ class ClassRoomController extends Controller
             $class_room->file_path     = $storage->file_path;
             $class_room->file_name     = $storage->file_name;
             $class_room->file_mime     = $storage->file_mime;  
-            $class_room->type          = $request->type;  
+            $class_room->type          = $request->input('type',1);
 
             if(!$class_room->save()) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 

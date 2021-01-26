@@ -198,6 +198,13 @@ class FormValidation
           ];
         break;
 
+        case 'PostClassRoomControllerAddClassRoom':
+          return [
+            'text' => 'required',
+            'file' => 'required'
+          ];
+        break;
+
         default:
           return [];
       }
