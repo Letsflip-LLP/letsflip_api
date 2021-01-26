@@ -16,6 +16,9 @@ class NotificationTransformer {
         $temp->text  = "has responded 3 missions in Classroom: Basketball Court ,has responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Court";
         
         $temp->user = UserTransformer::item($model);  
+
+        $temp->created_at   = dateFormat($model->created_at);
+
         return $temp;
     } 
  
