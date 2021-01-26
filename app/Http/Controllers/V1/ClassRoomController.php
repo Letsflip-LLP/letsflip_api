@@ -67,8 +67,13 @@ class ClassRoomController extends Controller
         try {
             $class_room = new ClassRoomModel;
             $class_room = $class_room->whereHas('User');
+            $class_room = $class_room->orderBy('created_at','DESC');
+
             if($request->filled('search'))
                 $class_room = $class_room->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
+
+            if($request->filled('type'))
+                $class_room = $class_room->where('type',$request->type); 
 
             $class_room = $class_room->paginate($request->input('per_page',10)); 
 
