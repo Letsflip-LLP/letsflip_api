@@ -17,9 +17,9 @@ class NotificationTransformer {
         if($model->type == 1 || $model->type== 2)
             $temp->title    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->Mission->title]);    
             
-        if($model->type ==  3)
-            $temp->title    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->Respone->title]);         
-        
+        if($model->type ==  3 || $model->type ==  4)
+            $temp->title    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->type==3 ? $model->Mission->title : $model->Respone->title]);         
+         
         $temp->text     =   $temp->title;
         $temp->user     = UserTransformer::item($model->UserFrom);
 
