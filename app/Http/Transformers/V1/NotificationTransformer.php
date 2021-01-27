@@ -13,7 +13,7 @@ class NotificationTransformer {
     public function item($model){ 
         $temp           = new \stdClass();
         $temp->id       = $model->id;
-        $temp->title    = __('notification.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->Mission->title ]);         
+        $temp->title    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->Mission->title]);         
         $temp->text     =   $temp->title;
         $temp->user     = UserTransformer::item($model->UserFrom);
 
