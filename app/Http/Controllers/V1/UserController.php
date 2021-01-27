@@ -46,7 +46,7 @@ class UserController extends Controller
             $user = auth('api')->user(); 
         
             $notif =  NotificationModel::where('user_id_to',$user->id);
-            $notif = $notif->orderBy('created_at','ASC');
+            $notif = $notif->orderBy('created_at','DESC');
             $notif = $notif->paginate($request->input('per_page',10));
       
         DB::commit();
