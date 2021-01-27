@@ -335,11 +335,11 @@ class MissionController extends Controller
        $model1 = $model1->where('user_id',$this->user_login->id);
 
        if($request->filled("mission_id")){
-             $model1 = $model1->where('mission_id',$request->mission_id); 
+             $model1 = $model1->where('mission_id',$request->mission_id)->first(); 
              $model2->mission_id = $request->mission_id;
               
              // Notify to user  
-             if(!$model1){
+             if($model1 == null){
                 $mission_detail = MissionModel::where('id',$request->mission_id)->first();
                 NotificationModel::insert([
                     "id" =>  Uuid::uuid4(),
@@ -354,16 +354,16 @@ class MissionController extends Controller
        }
 
         if($request->filled("mission_comment_id")){
-            $model1 = $model1->where('mission_comment_id',$request->mission_comment_id);
+            $model1 = $model1->where('mission_comment_id',$request->mission_comment_id)->first();
             $model2->mission_comment_id = $request->mission_comment_id;
         }
         
         if($request->filled("mission_respone_id")){
-            $model1 = $model1->where('mission_respone_id',$request->mission_respone_id);
+            $model1 = $model1->where('mission_respone_id',$request->mission_respone_id)->first();
             $model2->mission_respone_id = $request->mission_respone_id;
 
             // Notify to user  
-           if(!$model1){
+           if($model1 == null){
                 $res_mission_detail = MissionResponeModel::where('id',$request->mission_respone_id)->first();
                 NotificationModel::insert([
                     "id" =>  Uuid::uuid4(),
@@ -379,11 +379,11 @@ class MissionController extends Controller
         }
 
         if($request->filled("mission_comment_respone_id")){
-            $model1 = $model1->where('mission_respone_comment_id',$request->mission_comment_respone_id);
+            $model1 = $model1->where('mission_respone_comment_id',$request->mission_comment_respone_id)->first();
             $model2->mission_respone_comment_id = $request->mission_comment_respone_id;
         }
 
-        if($model1->first() == null){
+        if($model1 == null){
             $model2->id      = Uuid::uuid4();
             $model2->user_id = $this->user_login->id;
             $model2->save();
