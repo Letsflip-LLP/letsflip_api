@@ -335,8 +335,20 @@ class MissionController extends Controller
        $model1 = $model1->where('user_id',$this->user_login->id);
 
        if($request->filled("mission_id")){
-             $model1 = $model1->where('mission_id',$request->mission_id);
+             $model1 = $model1->where('mission_id',$request->mission_id); 
              $model2->mission_id = $request->mission_id;
+              
+             // Notify to user  
+             $mission_detail = MissionModel::where('id',$request->mission_id)->first();
+             NotificationModel::insert([
+                 "id" =>  Uuid::uuid4(),
+                 "user_id_from"   => $this->user_login->id,
+                 "user_id_to"     => $mission_detail->user_id,
+                 "mission_id"     => $mission_detail->id,
+                 "created_at"     => date('Y-m-d H:i:s'),
+                 "updated_at"     => date('Y-m-d H:i:s'),
+                 "type"           => 3
+             ]);  
        }
 
         if($request->filled("mission_comment_id")){
