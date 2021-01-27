@@ -339,16 +339,18 @@ class MissionController extends Controller
              $model2->mission_id = $request->mission_id;
               
              // Notify to user  
-             $mission_detail = MissionModel::where('id',$request->mission_id)->first();
-             NotificationModel::insert([
-                 "id" =>  Uuid::uuid4(),
-                 "user_id_from"   => $this->user_login->id,
-                 "user_id_to"     => $mission_detail->user_id,
-                 "mission_id"     => $mission_detail->id,
-                 "created_at"     => date('Y-m-d H:i:s'),
-                 "updated_at"     => date('Y-m-d H:i:s'),
-                 "type"           => 3
-             ]);  
+             if(!$model1){
+                $mission_detail = MissionModel::where('id',$request->mission_id)->first();
+                NotificationModel::insert([
+                    "id" =>  Uuid::uuid4(),
+                    "user_id_from"   => $this->user_login->id,
+                    "user_id_to"     => $mission_detail->user_id,
+                    "mission_id"     => $mission_detail->id,
+                    "created_at"     => date('Y-m-d H:i:s'),
+                    "updated_at"     => date('Y-m-d H:i:s'),
+                    "type"           => 3
+                ]); 
+             } 
        }
 
         if($request->filled("mission_comment_id")){
@@ -359,6 +361,21 @@ class MissionController extends Controller
         if($request->filled("mission_respone_id")){
             $model1 = $model1->where('mission_respone_id',$request->mission_respone_id);
             $model2->mission_respone_id = $request->mission_respone_id;
+
+            // Notify to user  
+           if(!$model1){
+                $res_mission_detail = MissionResponeModel::where('id',$request->mission_respone_id)->first();
+                NotificationModel::insert([
+                    "id" =>  Uuid::uuid4(),
+                    "user_id_from"   => $this->user_login->id,
+                    "user_id_to"     => $res_mission_detail->user_id,
+                    "mission_id"     => $res_mission_detail->mission_id,
+                    "respone_id"     => $request->mission_respone_id,
+                    "created_at"     => date('Y-m-d H:i:s'),
+                    "updated_at"     => date('Y-m-d H:i:s'),
+                    "type"           => 4
+                ]);  
+           }
         }
 
         if($request->filled("mission_comment_respone_id")){
