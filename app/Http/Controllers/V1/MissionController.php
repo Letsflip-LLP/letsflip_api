@@ -16,6 +16,7 @@ use App\Http\Models\MissionResponeContentModel;
 use App\Http\Models\TagModel; 
 use App\Http\Models\LikeModel;
 use App\Http\Models\MissionReportModel;
+use App\Http\Models\NotificationModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 
@@ -149,9 +150,12 @@ class MissionController extends Controller
         try {
            
             $check = MissionResponeModel::where('user_id',$this->user_login->id)->where('mission_id',$request->mission_id)->first();
-
+            
             if($check != null)
                 return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
+
+            $mission_detail = MissionModel::where('id',$request->mission_id)->first();
+ 
 
             $thumbnail  = null; 
 
@@ -205,6 +209,16 @@ class MissionController extends Controller
             $save2 = $mission_content->save();
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
+
+            //NOTIF FOR OWN OF MISSION
+            $notif_mission = new NotificationModel;
+            $notif_mission->id =  Uuid::uuid4();
+            $notif_mission->user_id_from   = $this->user_login->id;
+            $notif_mission->user_id_to     = $mission_detail->user_id;
+            $notif_mission->mission_id     = $mission_detail->id;
+            $notif_mission->respone_id     = $mission_respone_id;
+            $notif_mission->type           = 1;
+            $notif_mission->save();
 
         DB::commit();
     

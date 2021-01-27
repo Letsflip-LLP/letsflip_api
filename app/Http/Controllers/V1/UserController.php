@@ -10,6 +10,7 @@ use App\Http\Transformers\ResponseTransformer;
 use App\Http\Transformers\V1\AuthTransformer; 
 use App\Http\Transformers\V1\UserTransformer; 
 use App\Http\Transformers\V1\NotificationTransformer; 
+use App\Http\Models\NotificationModel;
 use DB;
 
 class UserController extends Controller
@@ -37,17 +38,23 @@ class UserController extends Controller
     }
 
     public function getSelfNotification(Request $request){
-        $users = new User;
 
-        if($request->filled('search')){
-            $users = $users->where('first_name','LIKE',"%".$request->search."%");
-            $users = $users->orWhere('last_name','LIKE',"%".$request->search."%");
-            $users = $users->orWhere('email','LIKE',"%".$request->search."%");
+            DB::beginTransaction();
 
-        }
- 
-        $users = $users->paginate($request->input('per_page',10));
+        try {
 
-        return (new NotificationTransformer)->list(200,"Success",$users);
+            $user = auth('api')->user(); 
+        
+            $notif =  NotificationModel::where('user_id_to',$user->id)->paginate($request->input('per_page',10));
+      
+        DB::commit();
+
+            return (new NotificationTransformer)->list(200,"Success",$notif);
+
+        } catch (\exception $exception){ 
+            DB::rollBack(); 
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+
     }
 }

@@ -11,11 +11,11 @@ use App\Http\Transformers\V1\UserTransformer;
 class NotificationTransformer {
  
     public function item($model){ 
-        $temp       = new \stdClass();
-        $temp->title = $model->first_name." has responded 3 missions in Classroom: Basketball Court";
-        $temp->text  = "has responded 3 missions in Classroom: Basketball Court ,has responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Courthas responded 3 missions in Classroom: Basketball Court";
-        
-        $temp->user = UserTransformer::item($model);  
+        $temp           = new \stdClass();
+        $temp->id       = $model->id;
+        $temp->title    = __('notification.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->Mission->title ]);         
+        $temp->text     = __('notification.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->Mission->title ]);         
+        $temp->user     = UserTransformer::item($model->UserFrom);
 
         $temp->created_at   = dateFormat($model->created_at);
 
