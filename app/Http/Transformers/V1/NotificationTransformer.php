@@ -14,7 +14,7 @@ class NotificationTransformer {
         $temp           = new \stdClass();
         $temp->id       = $model->id;
         $temp->title    = __('notification.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->Mission->title ]);         
-        $temp->text     = __('notification.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->Mission->title ]);         
+        $temp->text     =   $temp->title;
         $temp->user     = UserTransformer::item($model->UserFrom);
 
         $temp->created_at   = dateFormat($model->created_at);

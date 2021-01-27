@@ -17,6 +17,7 @@ use App\Http\Models\TagModel;
 use App\Http\Models\LikeModel;
 use App\Http\Models\MissionReportModel;
 use App\Http\Models\NotificationModel;
+use App\Http\Models\ClassRoomModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 
@@ -93,17 +94,32 @@ class MissionController extends Controller
                 $classroom_id = explode(',',$request->tag_classroom_ids);
                 $insert_class_tags = [];
                 foreach($classroom_id as $cl_id){
-                    $temp_id[$cl_id] = Uuid::uuid4(); 
+                    $class_room_detail = ClassRoomModel::where('id',$cl_id)->first();
 
-                    $tag_model = new TagModel; 
-                    $tag_model->firstOrCreate(
-                        [
-                            "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $cl_id , "type" => 1
-                        ],
-                        [
-                            "id" => Uuid::uuid4()
-                        ]
-                    );
+                    if($class_room_detail){
+                        $temp_id[$cl_id] = Uuid::uuid4(); 
+                        $tag_model = new TagModel; 
+                        $tag_model->firstOrCreate(
+                            [
+                                "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $cl_id , "type" => 1
+                            ],
+                            [
+                                "id" => Uuid::uuid4()
+                            ]
+                        );
+
+                        //NOTIF FOR OWN OF CLASSROM
+                        $notif_mission = new NotificationModel;
+                        $notif_mission->insert([
+                            "id" =>  Uuid::uuid4(),
+                            "user_id_from"   => $this->user_login->id,
+                            "user_id_to"     => $class_room_detail->user_id,
+                            "mission_id"     => $mission_id,
+                            "created_at"     => date('Y-m-d H:i:s'),
+                            "updated_at"     => date('Y-m-d H:i:s'),
+                            "type"           => 2
+                        ]); 
+                    }
                 }
             }
 
