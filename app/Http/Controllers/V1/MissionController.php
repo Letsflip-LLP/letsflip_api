@@ -113,8 +113,7 @@ class MissionController extends Controller
                         $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room_detail->user_id,[
                             "mission_id" => $mission_id,
                             "classroom_id" => $class_room_detail->id
-                        ],2);
- 
+                        ],2); 
                     }
                 }
             }

@@ -10,7 +10,7 @@ use App\Http\Transformers\V1\UserTransformer;
 
 class NotificationTransformer {
  
-    public function item($model){ 
+    public static function item($model){ 
         $temp           = new \stdClass();
         $temp->id       = $model->id;
 

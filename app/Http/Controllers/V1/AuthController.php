@@ -22,6 +22,7 @@ use Illuminate\Support\MessageBag;
 use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite;
 use App\Mail\verificationUserRegister;
+use App\Http\Models\UserDeviceModel;
 
 class AuthController extends Controller
 {
@@ -84,6 +85,14 @@ class AuthController extends Controller
             if($user->email_verified_at == null)
                 return (new ResponseTransformer)->toJson(400,__('passwords.email_verification'),false);  
      
+
+            if($request->filled('notif_player_id') && $request->filled('platform')){
+                UserDeviceModel::firstOrCreate(
+                    [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
+                    [ 'id' => Uuid::uuid4()]
+                );
+            }
+
             $accessToken       = $token;
             $user->accessToken = $accessToken;
 
@@ -285,17 +294,7 @@ class AuthController extends Controller
         // \Firebase\JWT\JWT::$leeway = 180+8;
         $client = new \Google_Client(['client_id' => env('GOOGLE_CLIENT_ID'),'client_secret' => env('GOOGLE_CLIENT_SECRET')]); 
         $payload = $client->verifyIdToken($google_token_id);
-        // do {
-        //     $attempt = 0;
-        //     try {
-        //         $payload = $client->verifyIdToken($google_token_id);
-        //         $retry = false;
-        //     } catch (Firebase\JWT\BeforeValidException $e) {
-        //         $attempt++;
-        //         $retry = $attempt < 10;
-        //     }
-        // } while ($retry);
-
+  
         if($payload == false)
             return (new ResponseTransformer)->toJson(400,__('message.401'),'google_token_id : '.__('messages.401'));
 
@@ -315,6 +314,13 @@ class AuthController extends Controller
             $user->id = $uuid;
         }
         
+        if($request->filled('notif_player_id') && $request->filled('platform')){
+            UserDeviceModel::firstOrCreate(
+                [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
+                [ 'id' => Uuid::uuid4()]
+            );
+        }
+
         $data = new \stdClass();
         $data->id = $user->id;
         $data->first_name = $user->first_name;
@@ -363,6 +369,13 @@ class AuthController extends Controller
         $data->image_profile = defaultImage('user');
         $data->access_token = $this->createToken($user);
 
+        if($request->filled('notif_player_id') && $request->filled('platform')){
+            UserDeviceModel::firstOrCreate(
+                [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
+                [ 'id' => Uuid::uuid4()]
+            );
+        }
+        
         DB::commit();
                
         return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
