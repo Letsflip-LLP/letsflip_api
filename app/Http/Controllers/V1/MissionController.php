@@ -20,6 +20,7 @@ use App\Http\Models\NotificationModel;
 use App\Http\Models\ClassRoomModel;
 use Ramsey\Uuid\Uuid;
 use DB;
+use App\Http\Libraries\Notification\NotificationManager;
 
 class MissionController extends Controller
 {
@@ -109,16 +110,11 @@ class MissionController extends Controller
                         );
 
                         //NOTIF FOR OWN OF CLASSROM
-                        $notif_mission = new NotificationModel;
-                        $notif_mission->insert([
-                            "id" =>  Uuid::uuid4(),
-                            "user_id_from"   => $this->user_login->id,
-                            "user_id_to"     => $class_room_detail->user_id,
-                            "mission_id"     => $mission_id,
-                            "created_at"     => date('Y-m-d H:i:s'),
-                            "updated_at"     => date('Y-m-d H:i:s'),
-                            "type"           => 2
-                        ]); 
+                        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room_detail->user_id,[
+                            "mission_id" => $mission_id,
+                            "classroom_id" => $class_room_detail->id
+                        ],2);
+ 
                     }
                 }
             }
@@ -226,15 +222,12 @@ class MissionController extends Controller
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
-            //NOTIF FOR OWN OF MISSION
-            $notif_mission = new NotificationModel;
-            $notif_mission->id =  Uuid::uuid4();
-            $notif_mission->user_id_from   = $this->user_login->id;
-            $notif_mission->user_id_to     = $mission_detail->user_id;
-            $notif_mission->mission_id     = $mission_detail->id;
-            $notif_mission->respone_id     = $mission_respone_id;
-            $notif_mission->type           = 1;
-            $notif_mission->save();
+            //NOTIF FOR OWN OF MISSION 
+            $notif_new_respone = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
+                            [
+                                "respone_id" => $mission_respone_id,
+                                "mission_id"  => $mission_detail->id
+                            ],1);
 
         DB::commit();
     
@@ -341,15 +334,10 @@ class MissionController extends Controller
              // Notify to user  
              if($model1 == null){
                 $mission_detail = MissionModel::where('id',$request->mission_id)->first();
-                NotificationModel::insert([
-                    "id" =>  Uuid::uuid4(),
-                    "user_id_from"   => $this->user_login->id,
-                    "user_id_to"     => $mission_detail->user_id,
-                    "mission_id"     => $mission_detail->id,
-                    "created_at"     => date('Y-m-d H:i:s'),
-                    "updated_at"     => date('Y-m-d H:i:s'),
-                    "type"           => 3
-                ]); 
+                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
+                [ 
+                    "mission_id"  => $request->mission_id
+                ],3);
              } 
        }
 
@@ -362,20 +350,15 @@ class MissionController extends Controller
             $model1 = $model1->where('mission_respone_id',$request->mission_respone_id)->first();
             $model2->mission_respone_id = $request->mission_respone_id;
 
-            // Notify to user  
+            // Notify to user
            if($model1 == null){
                 $res_mission_detail = MissionResponeModel::where('id',$request->mission_respone_id)->first();
-                NotificationModel::insert([
-                    "id" =>  Uuid::uuid4(),
-                    "user_id_from"   => $this->user_login->id,
-                    "user_id_to"     => $res_mission_detail->user_id,
-                    "mission_id"     => $res_mission_detail->mission_id,
-                    "respone_id"     => $request->mission_respone_id,
-                    "created_at"     => date('Y-m-d H:i:s'),
-                    "updated_at"     => date('Y-m-d H:i:s'),
-                    "type"           => 4
-                ]);  
-           }
+                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$res_mission_detail->user_id,
+                [ 
+                    "mission_id"  => $res_mission_detail->mission_id,
+                    "respone_id"  => $request->mission_respone_id
+                ],4);
+            }
         }
 
         if($request->filled("mission_comment_respone_id")){
