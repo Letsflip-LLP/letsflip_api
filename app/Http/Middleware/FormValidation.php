@@ -167,6 +167,14 @@ class FormValidation
           ];
         break;
 
+        case 'PostAuthControllerLoginApple':
+          return [
+            'email' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required'
+          ];
+        break;
+
         case 'PostAuthControllerLoginFacebook':
           return [
             'email' => 'required',

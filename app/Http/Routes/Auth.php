@@ -28,6 +28,7 @@ $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
 
     Route::post('login/google', [AuthController::class, 'loginGoogle'])->name('PostAuthControllerLoginGoogle');
     Route::post('login/facebook', [AuthController::class, 'loginFacebook'])->name('PostAuthControllerLoginFacebook');
+    Route::post('login/apple', [AuthController::class, 'loginApple'])->name('PostAuthControllerLoginApple');
 
 
     Route::post('request-reset-password', [AuthController::class, 'requestResetPassword'])->name('PostAuthControllerRequestResetPassword');
