@@ -60,6 +60,32 @@ class ClassRoomController extends Controller
         }  
     }
 
+    public function deleteClassRoom(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+            $class_room = new ClassRoomModel;
+            $class_room = $class_room->where('id',$request->classroom_id)->where('user_id',$this->user_login->id)->first();
+            
+            if($class_room == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.404'),false);
+
+        if(!$class_room->delete())
+            return (new ResponseTransformer)->toJson(400,__('messages.400'),false);
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
     public function getClassRoom(Request $request){
 
         DB::beginTransaction();
