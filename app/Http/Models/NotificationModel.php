@@ -33,4 +33,9 @@ class NotificationModel extends Model
     {
         return $this->hasOne('App\Http\Models\MissionModel','id','mission_id');
     }
+
+    public function Point()
+    {
+        return $this->hasOne('App\Http\Models\UserPointsModel','id','point_id');
+    }
 }

@@ -7,6 +7,7 @@ return [
         2 => ":user_name_from Created a mission in your Public Classroom : :module_title'",
         3 => ":user_name_from Liked your Mission : :module_title'",
         4 => ":user_name_from Liked your Respone : :module_title'", 
+        11 => "You have earned :point PTS :from", 
     ],
     "TYPE" => [
         1 => "New respone from our mission",
@@ -18,6 +19,7 @@ return [
         7 => "Comment in mission",
         8 => "Reply comment in mission",
         9 => "Comment in respone",
-        10 => "Reply comment in respone"
+        10 => "Reply comment in respone",
+        11 => "Point!"
     ]
 ];
