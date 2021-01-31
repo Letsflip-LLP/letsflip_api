@@ -23,7 +23,7 @@ class NotificationTransformer {
             $temp->title    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $model->type==3 ? $model->Mission->title : $model->Respone->title]);         
 
         if($model->type ==  11 &&  $model->Point)
-            $temp->title    = __('notification.TEXT.'.$model->type,[ 'from' => "for your first Mission Response!" , "point" => $model->Point->value]); 
+            $temp->title    = __('notification.TEXT.'.$model->type,[ 'from' => "for your first Mission!" , "point" => $model->Point->value]); 
              
         $temp->text     =   $temp->title;
         $temp->user     =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
