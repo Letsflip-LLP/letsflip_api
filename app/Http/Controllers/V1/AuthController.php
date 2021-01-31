@@ -87,6 +87,9 @@ class AuthController extends Controller
      
 
             if($request->filled('notif_player_id') && $request->filled('platform')){
+                $check = UserDeviceModel::where('player_id',$request->notif_player_id)->first(); 
+                if($check!= null && $check->user_id != $user->id) $check->delete();
+                
                 UserDeviceModel::firstOrCreate(
                     [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
                     [ 'id' => Uuid::uuid4()]
@@ -125,8 +128,9 @@ class AuthController extends Controller
 
             if($user->email_verified_at == null){
                 if($user->update(['email_verified_at' => date('Y-m-d H:i:s')])){
-                    $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom"; 
-                    if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to(url('account/verification/verify?success=true&temporary_token='.$request->temporary_token));
+                    $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom";
+                    // if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to(url('account/verification/verify?success=true&temporary_token='.$request->temporary_token));
+                    if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to('letsflip://getletsflip.com/auth/confirm-reset-password/account/verification/verify?success=true&temporary_token='.$request->temporary_token);
                 }
              } 
 
@@ -315,6 +319,9 @@ class AuthController extends Controller
         }
         
         if($request->filled('notif_player_id') && $request->filled('platform')){
+            $check = UserDeviceModel::where('player_id',$request->notif_player_id)->first();
+            if($check!= null && $check->user_id != $user->id) $check->delete();
+
             UserDeviceModel::firstOrCreate(
                 [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
                 [ 'id' => Uuid::uuid4()]
@@ -370,6 +377,9 @@ class AuthController extends Controller
         $data->access_token = $this->createToken($user);
 
         if($request->filled('notif_player_id') && $request->filled('platform')){
+            $check = UserDeviceModel::where('player_id',$request->notif_player_id)->first(); 
+            if($check!= null && $check->user_id != $user->id) $check->delete();
+
             UserDeviceModel::firstOrCreate(
                 [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
                 [ 'id' => Uuid::uuid4()]
