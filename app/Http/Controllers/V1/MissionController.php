@@ -152,7 +152,7 @@ class MissionController extends Controller
                 $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
                     "mission_id" => $mission_id,
                     "point_id" => $point_id
-                ],11);
+                ],11,["type"=>"point","payload"=>["title"=>"CONGRATULATIONS!","text"=>"You have earned ".env('POINT_TYPE_1')." PTS for your first Mission Response!","value"=>env('POINT_TYPE_1')]]);
             }
  
         DB::commit();
