@@ -3,7 +3,7 @@
         "apps": [],
         "details": [ 
             {
-                "appID": "R3C9CA2456.com.letsflip.app",
+                "appID": "com.letsflip.app",
                 "paths": [ "*" ]
             }
         ]
