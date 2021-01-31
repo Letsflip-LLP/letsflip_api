@@ -15,6 +15,10 @@ use App\Http\Controllers\V1\MissionController;
 |
 */
 
+Route::get('/',function(){
+    return view('index');
+});
+
 $router->group(['middleware'=> ['form'] ], function($router){
     $router->group(['prefix' => 'account'], function($router){
         Route::get('verification/verify', [AuthController::class, 'verificationAccount'])->name('GetAuthControllerverificationAccount');
