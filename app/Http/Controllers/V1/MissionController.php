@@ -559,10 +559,8 @@ class MissionController extends Controller
 
         if($data == null) abort(404);
 
-        $agent = new Agent();   
+        $agent = new Agent();    
         
-        dd( $agent->platform());
-
         if($agent->isAndroidOS())
             return redirect(env('ANDROID_PLAYSTORE_URL'));
 
