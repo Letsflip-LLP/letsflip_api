@@ -170,9 +170,7 @@ class FormValidation
 
         case 'PostAuthControllerLoginApple':
           return [
-            'email' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required'
+            'server_auth_code' => 'required'
           ];
         break;
 

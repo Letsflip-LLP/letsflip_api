@@ -402,14 +402,20 @@ class AuthController extends Controller
  
         try {
  
-        $user = User::where('email',$request->email)->first();
+        $token = $request->server_auth_code;
+        $token_decode = JWT::urlsafeB64Decode($token);
+        $token_decode = json_decode($token_decode);  
 
+        if(!isset($token_decode->email))
+            return (new ResponseTransformer)->toJson(400,__('messages.400'));
+
+        $user = User::where('email',$token_decode->email)->first(); 
         if($user == null ){
             $user = User::create([
-                    "email" => $request->email,
+                    "email" => $token_decode->email,
                     "id" => $uuid = Uuid::uuid4(),
-                    "first_name" => $request->first_name,
-                    "last_name" => $request->last_name,
+                    "first_name" => explode('@',$token_decode->email)[0],
+                    "last_name" => "",
                     "email_verified_at" => date("Y-m-d H:i:s")
                 ]
             );
