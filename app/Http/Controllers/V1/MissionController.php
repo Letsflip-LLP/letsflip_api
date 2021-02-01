@@ -548,19 +548,18 @@ class MissionController extends Controller
 
     public function openApp(Request $request){
         $data = null;
+
         if($request->mission_id)
             $data = MissionModel::where('id',$request->mission_id)->first(); 
 
 
+        if($request->mission_respone_id)
+            $data = MissionResponeModel::where('id',$request->mission_respone_id)->first(); 
+
+
+        if($data == null) abort(404);
 
         $agent = new Agent();   
-        
-        return view('open-app.share-meta',
-            [
-                'title'=> $data->title,
-                'description'=>$data->text,
-                'og_image'=>$data->text
-            ]); 
         
         if($agent->isAndroidOS())
             return redirect(env('ANDROID_PLAYSTORE_URL'));
@@ -568,5 +567,13 @@ class MissionController extends Controller
 
         if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
             return redirect(env('IOS_APP_STORE'));
+
+
+        return view('open-app.share-meta',
+            [
+                'title'=> $data->title,
+                'description'=>$data->text,
+                'og_image'=>Storage::disk('gcs')->url($data->image_path.'/'.$data->image_file)
+            ]); 
     }
 }
