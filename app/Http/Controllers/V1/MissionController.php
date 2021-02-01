@@ -553,8 +553,7 @@ class MissionController extends Controller
 
 
 
-        $agent = new Agent();  
-        dd($agent->platform());
+        $agent = new Agent();   
         
         return view('open-app.share-meta',
             [
