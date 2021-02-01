@@ -567,7 +567,7 @@ class MissionController extends Controller
             return redirect(env('ANDROID_PLAYSTORE_URL'));
 
         if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
-            return redirect(env('IOS_APP_STORE'));
+            return redirect(env('IOS_APP_STORE_URL'));
 
 
         return view('open-app.share-meta',
