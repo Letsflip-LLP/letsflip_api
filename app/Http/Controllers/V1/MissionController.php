@@ -561,9 +561,10 @@ class MissionController extends Controller
 
         $agent = new Agent();   
         
+        dd( $agent->platform());
+
         if($agent->isAndroidOS())
             return redirect(env('ANDROID_PLAYSTORE_URL'));
-
 
         if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
             return redirect(env('IOS_APP_STORE'));
