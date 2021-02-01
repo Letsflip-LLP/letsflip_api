@@ -22,6 +22,7 @@ use App\Http\Models\UserPointsModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 use App\Http\Libraries\Notification\NotificationManager;
+use Jenssegers\Agent\Agent;
 
 class MissionController extends Controller
 {
@@ -545,7 +546,28 @@ class MissionController extends Controller
         }  
     }
 
-    public function openApp(){
-        return redirect(env('ANDROID_PLAYSTORE_URL'));
+    public function openApp(Request $request){
+        $data = null;
+        if($request->mission_id)
+            $data = MissionModel::where('id',$request->mission_id)->first(); 
+
+
+
+        $agent = new Agent();  
+        dd($agent->platform());
+        
+        return view('open-app.share-meta',
+            [
+                'title'=> $data->title,
+                'description'=>$data->text,
+                'og_image'=>$data->text
+            ]); 
+        
+        if($agent->isAndroidOS())
+            return redirect(env('ANDROID_PLAYSTORE_URL'));
+
+
+        if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
+            return redirect(env('IOS_APP_STORE'));
     }
 }
