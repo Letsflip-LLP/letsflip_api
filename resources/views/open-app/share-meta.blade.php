@@ -5,10 +5,14 @@
         <meta property="og:title" content="{{$title}}" />
         <meta property="og:type" content="video.movie"/> 
         <meta property="og:image" content="{{$og_image}}" /> 
-    </head>
-</html>
+    </head> 
+    <a href="{{$redirect_url}}">Click</a>
 
-<script>
-    setTimeout(function () { window.location = '{{$redirect_url}}' }, 25);
-    window.location = '{{$deeplink_url}}';
+<script>  
+    setTimeout(function(){ location.href = '{{$redirect_url}}';},25); 
+    location.href = '{{$deeplink_url}}'; 
 </script>
+
+</html>  
+
+ 
