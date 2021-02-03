@@ -115,7 +115,7 @@ class AuthController extends Controller
         try {
              
             $message = "";
-            
+            $success = false;
             $decode = Crypt::decryptString($request->temporary_token);
 
             $user   = User::where('email',$decode)->first();
@@ -128,18 +128,28 @@ class AuthController extends Controller
 
             if($user->email_verified_at == null){
                 if($user->update(['email_verified_at' => date('Y-m-d H:i:s')])){
+                    $success = true;
                     $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom";
-                    if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to(url('account/verification/verify?success=true&temporary_token='.$request->temporary_token));
+                    // if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to(url('account/verification/verify?success=true&temporary_token='.$request->temporary_token));
                     // if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to('letsflip://getletsflip.com/auth/confirm-reset-password/account/verification/verify?success=true&temporary_token='.$request->temporary_token);
                 }
              } 
 
+            if($request->filled('success') && $request->success == true && $request->filled('attempt') && $request->attempt == 1)
+                $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom";
+
+
+            $deeplink_url =  'letsflip://'.$request->getHost().'/account/verification/verify?success=true&temporary_token='.$request->temporary_token;
+
             $data = [];
             $data['message'] = $message;
+            $data['deeplink_url'] = $deeplink_url;
+            $data['success'] = $success;
 
             DB::commit(); 
 
-            $send_mail = \Mail::to($user->email)->queue(new \App\Mail\congratulationVerifyMail());
+            if(!$request->filled("success"))
+                $send_mail = \Mail::to($user->email)->queue(new \App\Mail\congratulationVerifyMail());
 
         } catch (\exception $exception){
             DB::rollBack();
