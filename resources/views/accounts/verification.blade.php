@@ -22,7 +22,6 @@
 					The world<br />
 					is now your<br />
 					classroom
-					{{$deeplink_url}}
 				</h3>
 			</div>
 			<div class="right-side">
@@ -33,14 +32,11 @@
 
 <script>
 	var fullPath = window.location.protocol + "//" + window.location.host + window.location.pathname + window.location.search
- 
-	const urlParams = new URLSearchParams(window.location.search);
-	
+	const urlParams = new URLSearchParams(window.location.search);	
 	if(urlParams.get('attempt') == null && urlParams.get('success') == null){
 		setTimeout(function(){ location.href = fullPath+'&attempt=1&success=true' ;},25);
 		location.href = '{{$deeplink_url}}';
 	}
-	
 </script>
 
 </html>

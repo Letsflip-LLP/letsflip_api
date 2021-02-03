@@ -216,6 +216,11 @@ class AuthController extends Controller
             $pass_res = $pass_res->where('email',$email)->where('token',$first_token->payload)->where('is_verification',false)->first();
             if($pass_res == null){
                 $data['message']  = "Oops! This page has been expired.";
+
+                if($request->filled('success')  && $request->filled('attempt')){
+                    $data['message'] = "We have receive your request, kindly launch the app to reset your password.";
+                }
+
                 return view('accounts.confirmation-ress-pass',$data); 
             }
  
