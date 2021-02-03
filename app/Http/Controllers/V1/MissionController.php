@@ -22,7 +22,7 @@ use App\Http\Models\UserPointsModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 use App\Http\Libraries\Notification\NotificationManager;
-use Jenssegers\Agent\Agent;
+use Jenssegers\Agent\Agent; 
 
 class MissionController extends Controller
 {
@@ -559,17 +559,24 @@ class MissionController extends Controller
 
         if($data == null) abort(404);
 
-        $agent = new Agent();    
+        $redirect_url   = 'https://getletsflip.com';
+        $deepLinkUrl    = 'letsflip://'.$request->getHost().'/open-app/mission/'.$request->mission_id;
+
+        if($request->mission_respone_id)
+            $deepLinkUrl .='?mission_respone_id='.$request->mission_respone_id;
+        
+        $agent = new Agent();
         
         if($agent->isAndroidOS())
-            return redirect(env('ANDROID_PLAYSTORE_URL'));
+            $redirect_url = env('ANDROID_PLAYSTORE_URL');//redirect(env('ANDROID_PLAYSTORE_URL'));
 
         if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
-            return redirect(env('IOS_APP_STORE_URL'));
-
+            $redirect_url = redirect(env('IOS_APP_STORE_URL'));//return redirect(env('IOS_APP_STORE_URL'));
 
         return view('open-app.share-meta',
             [
+                'redirect_url' => $redirect_url,
+                'deeplink_url' => $deepLinkUrl,
                 'title'=> $data->title,
                 'description'=>$data->text,
                 'og_image'=>Storage::disk('gcs')->url($data->image_path.'/'.$data->image_file)

@@ -7,3 +7,8 @@
         <meta property="og:image" content="{{$og_image}}" /> 
     </head>
 </html>
+
+<script>
+    setTimeout(function () { window.location = '{{$redirect_url}}' }, 25);
+    window.location = '{{$deeplink_url}}';
+</script>
