@@ -42,7 +42,7 @@ class NotificationTransformer {
         $custome_model = []; 
         foreach($models as $model ){
             
-            if($model->mission_id && $model->Mission == null) return;
+            if($model->mission_id && $model->Mission == null && in_array([1,2,3,4],$model->type)) return;
 
             $custome_model[] = $this->item($model);
         } 
