@@ -41,6 +41,9 @@ class NotificationTransformer {
     public function list($code,$message,$models){
         $custome_model = []; 
         foreach($models as $model ){
+            
+            if($model->mission_id && $model->Mission == null) return;
+
             $custome_model[] = $this->item($model);
         } 
         return (new ResponseTransformer)->toJson($code,$message,$models,$custome_model);
