@@ -34,11 +34,15 @@ class ClassRoomTransformer {
         $temp->text         = $model->text;
         $temp->file_path    = $model->file_path;
         $temp->file_name    = $model->file_name;
-        $temp->file_mime    = $model->file_mime;
-
+        $temp->file_mime      = $model->file_mime;
         $temp->total_mission  = $model->Mission->count();
-        $temp->total_respone  = 20;  
-        $temp->total_like     = 21;
+        $temp->total_respone  = 0;  
+        $temp->total_like     = $model->Like ? $model->Like->count() : 0;
+        $temp->liked        = false;
+
+        if(auth('api')->user())
+            $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
+
         $temp->user           = UserTransformer::item($model->User);
 
         // $temp->total_respone  = MissionResponeModel::whereIn('id',[1,2,3])->count();

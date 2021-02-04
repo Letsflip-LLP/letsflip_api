@@ -29,4 +29,9 @@ class ClassRoomModel extends Model
     {
         return $this->hasOne('App\Http\Models\User','id','user_id');
     }
+
+    public function Like()
+    {
+        return $this->hasMany('App\Http\Models\LikeModel','classroom_id','id');
+    }
 }

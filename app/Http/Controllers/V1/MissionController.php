@@ -380,6 +380,11 @@ class MissionController extends Controller
             $model2->mission_respone_comment_id = $request->mission_comment_respone_id;
         }
 
+        if($request->filled("classroom_id")){
+            $model1 = $model1->where('classroom_id',$request->classroom_id)->first();
+            $model2->classroom_id = $request->classroom_id;
+        }
+
         if($model1 == null){
             $model2->id      = Uuid::uuid4();
             $model2->user_id = $this->user_login->id;
