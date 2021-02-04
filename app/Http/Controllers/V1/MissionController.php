@@ -141,7 +141,7 @@ class MissionController extends Controller
 
     
             //NOTIF FOR OWN OF CLASSROM
-            // if(UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() == null){
+            if(UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() == null){
                 UserPointsModel::insert([
                     "user_id_to" => $this->user_login->id,
                     "mission_id" => $mission_id,
@@ -154,7 +154,7 @@ class MissionController extends Controller
                     "mission_id" => $mission_id,
                     "point_id" => $point_id
                 ],11,["type"=>"point","payload"=>["title"=>"CONGRATULATIONS!","text"=>"You have earned ".env('POINT_TYPE_1')." PTS for your first Mission!","value"=>env('POINT_TYPE_1')]]);
-            // }
+            }
  
         DB::commit();
     
