@@ -16,6 +16,8 @@ class NotificationManager {
     public static function addNewNotification($user_id_from,$user_id_to,$module_ids,$type,$payload=[]){
 
         // if($user_id_from == $user_id_to) return;
+        if(!isset($payload['type'])) $payload['type'] = "general";
+
         try {  
             $data = [];
             $data['id'] = $uuid = Uuid::uuid4(); 
@@ -43,9 +45,13 @@ class NotificationManager {
 
             $inserted = NotificationModel::where('id',$uuid)->first();
             $wording  = NotificationTransformer::item($inserted);  
+             
             $notif = OneSignalManager::sendPersonalNotif($player_id,$wording->title,$wording->text,$payload);
             
-            return $data; 
+            return [
+                "request" => $data,
+                "response" => $notif
+            ]; 
  
         }catch(Exception $e) {
             return $e; 

@@ -242,7 +242,7 @@ class MissionController extends Controller
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
-            //NOTIF FOR OWN OF MISSION 
+            // NOTIF FOR OWN OF MISSION 
             $notif_new_respone = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
                             [
                                 "respone_id" => $mission_respone_id,
@@ -250,26 +250,30 @@ class MissionController extends Controller
                             ],1);
 
 
-            // NOTIF TO USER RESPONDEN
+            //NOTIF FOR RESPONDED
             UserPointsModel::insert([
                 "user_id_to" => $this->user_login->id,
-                "mission_id" => $mission_id,
-                "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
-                "type" => $is_first ? 1 : 2,
+                "mission_id" => $mission_detail->id,
+                "respone_id" => $mission_respone_id,
+                "value" => $earn_point =  env('POINT_TYPE_3'),
+                "type" => 3,
                 "id" => $point_id = Uuid::uuid4()
             ]); 
 
-            $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
-                "mission_id" => $mission_id,
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
+                "mission_id" => $mission_detail->id,
+                "respone_id" => $mission_respone_id,
                 "point_id" => $point_id
             ],11,[
-                "type"=>"point",
-                "payload"=>[
+                "type"=> "point",
+                "payload"=> [
+                    "type"=> "point",
                     "title"=>"CONGRATULATIONS!",
-                    "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
-                    "value"=>env('POINT_TYPE_3')]
+                    "text" => "You have earned ".$earn_point." PTS for Created Response!",
+                    "value" => $earn_point
+                ]
             ]);
-
+ 
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
