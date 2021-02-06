@@ -13,6 +13,7 @@ use App\Http\Transformers\V1\NotificationTransformer;
 use App\Http\Models\NotificationModel;
 use App\Http\Models\UserFollowModel;
 use Ramsey\Uuid\Uuid;
+use App\Http\Libraries\StorageCdn\StorageManager;
 
 use DB;
 
@@ -93,6 +94,43 @@ class UserController extends Controller
             DB::commit(); 
  
             return (new ResponseTransformer)->toJson(200,__('messages.200'),$action);
+
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    public function userSelfUpdateProfile(Request $request)
+    {        
+        DB::beginTransaction();
+        try { 
+            $user = auth('api')->user(); 
+            
+            if($request->description)
+                $user->description = $request->description;
+
+
+            if($request->image_profile){
+                $image_profile_upload = new StorageManager;
+                $image_profile_upload = $image_profile_upload->uploadFile("public/user/profile",$request->file('image_profile'));    
+                $user->image_profile_path = $image_profile_upload->file_path;
+                $user->image_profile_file = $image_profile_upload->file_name;
+            }
+
+            if($request->image_background){
+                $image_background_upload = new StorageManager;
+                $image_background_upload = $image_background_upload->uploadFile("public/user/profile",$request->file('image_background'));    
+                $user->image_background_path = $image_background_upload->file_path;
+                $user->image_background_file = $image_background_upload->file_name;
+            }
+
+            $user->save();
+
+            DB::commit(); 
+ 
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
 
 
         } catch (\exception $exception){
