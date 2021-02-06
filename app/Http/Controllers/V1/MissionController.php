@@ -260,7 +260,7 @@ class MissionController extends Controller
                 "id" => $point_id = Uuid::uuid4()
             ]); 
 
-            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
+            $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
                 "mission_id" => $mission_detail->id,
                 "respone_id" => $mission_respone_id,
                 "point_id" => $point_id
