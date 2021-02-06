@@ -93,7 +93,6 @@ class ClassRoomController extends Controller
         try {
             $class_room = new ClassRoomModel;
             $class_room = $class_room->whereHas('User');
-            $class_room = $class_room->orderBy('created_at','DESC');
 
             if($request->filled('search'))
                 $class_room = $class_room->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
@@ -101,6 +100,20 @@ class ClassRoomController extends Controller
             if($request->filled('type'))
                 $class_room = $class_room->where('type',$request->type); 
 
+            if($request->filled('order_by')){
+                $order_by = explode('-',$request->order_by);  
+
+                if($order_by[0] == 'created_at')
+                    $class_room = $class_room->orderBy($order_by[0],$order_by[1]);
+                    
+                if($order_by[0] == 'trending')
+                    $class_room = $class_room->withCount('Like')->orderBy('like_count','desc');
+
+            }else{
+                $class_room = $class_room->orderBy('created_at','DESC'); 
+            }
+
+             
             $class_room = $class_room->paginate($request->input('per_page',10)); 
 
         DB::commit();
