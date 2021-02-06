@@ -11,6 +11,9 @@ use App\Http\Transformers\V1\AuthTransformer;
 use App\Http\Transformers\V1\UserTransformer; 
 use App\Http\Transformers\V1\NotificationTransformer; 
 use App\Http\Models\NotificationModel;
+use App\Http\Models\UserFollowModel;
+use Ramsey\Uuid\Uuid;
+
 use DB;
 
 class UserController extends Controller
@@ -58,5 +61,43 @@ class UserController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
 
+    }
+
+
+    public function userFollowAction(Request $request)
+    {        
+        DB::beginTransaction();
+        try { 
+            $user = auth('api')->user(); 
+
+            $action = 'add';
+
+            $check = UserFollowModel::where([
+                "user_id_from" => $user->id,
+                "user_id_to"   => $request->user_id
+            ])->first();
+
+            if($check != null){
+                $action = 'delete';
+                $check->destroy($check->id);
+            }else{
+                $follow = UserFollowModel::insert([
+                    "id" => Uuid::uuid4(),
+                    "user_id_from" => $user->id,
+                    "user_id_to"   => $request->user_id,
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ]);
+            };
+
+            DB::commit(); 
+ 
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),$action);
+
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 }

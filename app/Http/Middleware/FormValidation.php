@@ -212,6 +212,12 @@ class FormValidation
           ];
         break;
 
+        case 'GetUserControllerAddUserFollow':
+          return [
+            'user_id' => 'required|exists:users,id'
+          ];
+        break;
+
         default:
           return [];
       }
