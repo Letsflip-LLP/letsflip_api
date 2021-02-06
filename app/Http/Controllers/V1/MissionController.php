@@ -183,8 +183,8 @@ class MissionController extends Controller
            
             $check = MissionResponeModel::where('user_id',$this->user_login->id)->where('mission_id',$request->mission_id)->first();
             
-            if($check != null)
-                return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
+            // if($check != null)
+            //     return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
 
             $mission_detail = MissionModel::where('id',$request->mission_id)->first();
  
@@ -249,17 +249,31 @@ class MissionController extends Controller
                                 "mission_id"  => $mission_detail->id
                             ],1);
 
-
-            //NOTIF FOR RESPONDED
+            // ADD POINT
             UserPointsModel::insert([
-                "user_id_to" => $this->user_login->id,
-                "mission_id" => $mission_detail->id,
-                "respone_id" => $mission_respone_id,
-                "value" => $earn_point =  env('POINT_TYPE_3'),
-                "type" => 3,
-                "id" => $point_id = Uuid::uuid4()
+                [
+                    "user_id_to" => $this->user_login->id,
+                    "mission_id" => $mission_detail->id,
+                    "respone_id" => $mission_respone_id,
+                    "value" => $earn_point =  env('POINT_TYPE_3'),
+                    "type" => 3,
+                    "id" => $point_id = Uuid::uuid4(),
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ],
+                [
+                    "user_id_to" => $mission_detail->user_id,
+                    "mission_id" => $mission_detail->id,
+                    "respone_id" => $mission_respone_id,
+                    "value" => $earn_point2= env('POINT_TYPE_4'),
+                    "type" => 4,
+                    "id" => $point_id2 = Uuid::uuid4(),
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ]
             ]); 
 
+            // FOR RESPONDEND
             $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
                 "mission_id" => $mission_detail->id,
                 "respone_id" => $mission_respone_id,
@@ -273,6 +287,22 @@ class MissionController extends Controller
                     "value" => $earn_point
                 ]
             ]);
+
+            // FOR MISSION OWNER
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
+                "mission_id" => $mission_detail->id,
+                "respone_id" => $mission_respone_id,
+                "point_id" => $point_id2
+            ],11,[
+                "type"=> "point",
+                "payload"=> [
+                    "type"=> "point",
+                    "title"=>"CONGRATULATIONS!",
+                    "text" => "You have earned ".$earn_point2." PTS for Created Response!",
+                    "value" => $earn_point2
+                ]
+            ]);
+
  
         DB::commit();
     

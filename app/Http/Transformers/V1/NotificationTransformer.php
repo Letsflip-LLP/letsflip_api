@@ -43,6 +43,9 @@ class NotificationTransformer {
 
         if($model->type ==  11 &&  $model->Point && $model->Point->type == 3)
             $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for Created Response!" , "point" => $model->Point->value]); 
+
+        if($model->type ==  11 &&  $model->Point && $model->Point->type == 4)
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for Get a Response!" , "point" => $model->Point->value]); 
              
         $temp->title        =   __('notification.TYPE.'.$model->type);
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
