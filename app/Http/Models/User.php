@@ -74,4 +74,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany('App\Http\Models\UserDeviceModel','user_id','id');
     }
+
+    public function Point()
+    {
+        return $this->hasMany('App\Http\Models\UserPointsModel','user_id_to','id');
+    }
 }
