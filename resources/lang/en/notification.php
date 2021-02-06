@@ -10,16 +10,16 @@ return [
         11 => "You have earned :point PTS :from", 
     ],
     "TYPE" => [
-        1 => "New respone from our mission",
-        2 => "New Mission from our Classroom",
-        3 => "Like mission",
-        4 => "Like respone",
+        1 => "New Respone from My Mission",
+        2 => "New Mission from My Classroom",
+        3 => "Like From My Mission",
+        4 => "Like From My Respones",
         5 => "Like comment in mission",
         6 => "Like comment in respone",
-        7 => "Comment in mission",
-        8 => "Reply comment in mission",
-        9 => "Comment in respone",
-        10 => "Reply comment in respone",
+        7 => "New Comment in Mission",
+        8 => "New Reply comment in mission",
+        9 => "New Comment in respone",
+        10 => "New Reply comment in Respone",
         11 => "New Point!"
     ]
 ];
