@@ -20,6 +20,6 @@ return [
         8 => "Reply comment in mission",
         9 => "Comment in respone",
         10 => "Reply comment in respone",
-        11 => "Point!"
+        11 => "New Point!"
     ]
 ];

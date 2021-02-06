@@ -23,7 +23,7 @@ class CreateUserPoints extends Migration
             $table->uuid('user_id_to',50)->nullable()->comment('user id receive notification');
             $table->uuid('mission_comment_id')->nullable();
             $table->uuid('respone_comment_id')->nullable();
-            $table->tinyInteger('type')->default(1)->indexes()->comment('(1) New respone from first mission');
+            $table->tinyInteger('type')->default(1)->indexes()->comment('(1) From first mission , (2) From next mission , (3) For Respond a mission');
             $table->dateTime('read_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

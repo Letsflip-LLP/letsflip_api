@@ -23,7 +23,7 @@ class NotificationTransformer {
 
         if($model->type == 1 || $model->type== 2){
             $text_ = $model->Mission ? $model->Mission->title : 'deleted mission';
-            $temp->title    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $text_ ]);    
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $text_ ]);    
         }
              
         if($model->type ==  3 || $model->type ==  4){
@@ -32,14 +32,17 @@ class NotificationTransformer {
             if($model->type==4)
                 $text_ = $model->Respone ? $model->Respone->title : 'deleted respone';
 
-            $temp->title    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $text_]);         
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $text_]);         
         }
 
-        if($model->type ==  11 &&  $model->Point)
-            $temp->title    = __('notification.TEXT.'.$model->type,[ 'from' => "for your first Mission!" , "point" => $model->Point->value]); 
+        if($model->type ==  11 &&  $model->Point && $model->Point->type == 1)
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for your first Mission!" , "point" => $model->Point->value]); 
+
+        if($model->type ==  11 &&  $model->Point && $model->Point->type == 2)
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for Created Mission!" , "point" => $model->Point->value]); 
              
-        $temp->text     =   $temp->title;
-        $temp->user     =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
+        $temp->title        =   __('notification.TYPE.'.$model->type);
+        $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
 
         $temp->created_at   = dateFormat($model->created_at);
 

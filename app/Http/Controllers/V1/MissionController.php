@@ -158,7 +158,7 @@ class MissionController extends Controller
                 "payload"=>[
                     "title"=>"CONGRATULATIONS!",
                     "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
-                    "value"=>env('POINT_TYPE_1')]
+                    "value"=> $earn_point ]
             ]);
         
  
@@ -248,6 +248,27 @@ class MissionController extends Controller
                                 "respone_id" => $mission_respone_id,
                                 "mission_id"  => $mission_detail->id
                             ],1);
+
+
+            // NOTIF TO USER RESPONDEN
+            UserPointsModel::insert([
+                "user_id_to" => $this->user_login->id,
+                "mission_id" => $mission_id,
+                "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
+                "type" => $is_first ? 1 : 2,
+                "id" => $point_id = Uuid::uuid4()
+            ]); 
+
+            $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                "mission_id" => $mission_id,
+                "point_id" => $point_id
+            ],11,[
+                "type"=>"point",
+                "payload"=>[
+                    "title"=>"CONGRATULATIONS!",
+                    "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
+                    "value"=>env('POINT_TYPE_3')]
+            ]);
 
         DB::commit();
     
