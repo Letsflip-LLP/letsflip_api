@@ -5,6 +5,7 @@ function dateFormat($date){
     $sort = explode(' ',$sort); 
 
     return (object) [
+        "date_time" =>\Carbon\Carbon::parse($date)->format("Y-m-d H:i:s"),
         "date" =>\Carbon\Carbon::parse($date)->format("D, M Y"),
         "diff" => diffFormatTableOfTime($date),
         "sort_diff" => $sort[0]." ".strtolower($sort[1][0]),
@@ -39,14 +40,14 @@ function diffFormatTableOfTime($date){
     }
 }
 
-function defaultImage($module){
+function defaultImage($module,$data = null){
     switch ($module) {
         case 'user':
             return [
-                "file_path" => 'assets/default',
-                "file_name" => 'user-default-icon.png',
+                "file_path" => $data && $data->image_profile_path ? $data->image_profile_path : 'assets/default',
+                "file_name" => $data && $data->image_profile_file ? $data->image_profile_file : 'user-default-icon.png',
                 "file_mime" => 'image/png',
-                "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/user-default-icon.png"
+                "file_full_path" => $data && $data->image_profile_path && $data->image_profile_file ? getPublicFile($data->image_profile_path,$data->image_profile_file) : "https://storage.googleapis.com/staging_lets_flip/live/assets/user-default-icon.png"
             ];
             break;
         
