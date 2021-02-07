@@ -349,9 +349,24 @@ class MissionController extends Controller
                 $mission = $mission->orderBy('created_at','DESC'); 
             }
                 
-            if($request->filled('user_id'))
+            if($request->filled('user_id') && !$request->filled('module'))
                 $mission = $mission->where('user_id',$request->user_id);
-             
+            
+            if($request->filled('user_id') && $request->filled('module')){
+                if($request->module == 'response'){
+                    $mission = $mission->whereHas('Respone',function($q) use ($request){
+                        $q->where('user_id',$request->user_id);
+                    });
+                }
+
+                if($request->module == 'all'){
+                    $mission = $mission->where('user_id',$request->user_id);
+                    $mission = $mission->orWhereHas('Respone',function($q) use ($request){
+                        $q->where('user_id',$request->user_id);
+                    });
+                }
+
+            }
 
             $mission = $mission->paginate($request->input('per_page',10)); 
             // $mission = $mission->paginate(30);
