@@ -13,10 +13,11 @@ class UserTransformer {
         $tmp->id            = $model->id;
         $tmp->first_name    = $model->first_name;
         $tmp->last_name     = $model->last_name;
-        $tmp->image_profile = defaultImage('user'); 
+        $tmp->image_profile = defaultImage('user',$model);
+
         return  $tmp;
     }  
-    public function list($code,$message,$model){ 
+    public function list($code,$message,$model){
         $return  = [];
         foreach($model as $data){
             $tmp = $this->item($data);

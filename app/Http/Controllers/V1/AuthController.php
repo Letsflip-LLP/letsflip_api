@@ -349,7 +349,7 @@ class AuthController extends Controller
         $data->last_name = $user->last_name;
         $data->email = $user->email;
         $data->email = $user->email;
-        $data->image_profile = defaultImage('user');
+        $data->image_profile = defaultImage('user',$user);
         $data->access_token = $this->createToken($user);
 
         DB::commit();
@@ -388,7 +388,7 @@ class AuthController extends Controller
         $data->first_name = $user->first_name;
         $data->last_name = $user->last_name;
         $data->email = $user->email;
-        $data->image_profile = defaultImage('user');
+        $data->image_profile = defaultImage('user',$user);
         $data->access_token = $this->createToken($user);
 
         if($request->filled('notif_player_id') && $request->filled('platform')){
@@ -442,7 +442,7 @@ class AuthController extends Controller
         $data->first_name = $user->first_name;
         $data->last_name = $user->last_name;
         $data->email = $user->email;
-        $data->image_profile = defaultImage('user');
+        $data->image_profile    = defaultImage('user',$user);
         $data->access_token = $this->createToken($user);
 
         DB::commit();

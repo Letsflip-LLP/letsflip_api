@@ -27,7 +27,12 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'email_verified_at',
-        'id'
+        'id',
+        'description',
+        'image_profile_path',
+        'image_profile_file',
+        'image_background_path',
+        'image_background_file'
     ];
 
     /**
@@ -73,5 +78,10 @@ class User extends Authenticatable implements JWTSubject
     public function Device()
     {
         return $this->hasMany('App\Http\Models\UserDeviceModel','user_id','id');
+    }
+
+    public function Point()
+    {
+        return $this->hasMany('App\Http\Models\UserPointsModel','user_id_to','id');
     }
 }

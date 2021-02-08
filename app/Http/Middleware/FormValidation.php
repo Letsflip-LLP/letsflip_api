@@ -212,6 +212,20 @@ class FormValidation
           ];
         break;
 
+        case 'GetUserControllerAddUserFollow':
+          return [
+            'user_id' => 'required|exists:users,id'
+          ];
+        break;
+
+        case 'PostUpdateProfileUserControllerUserSelfUpdateProfile':
+          return [
+            'description' => 'MIN:5|MAX:360',
+            'image_profile' => 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG|max:10000',
+            'image_background' => 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG|max:10000'
+          ];
+        break;
+
         default:
           return [];
       }
