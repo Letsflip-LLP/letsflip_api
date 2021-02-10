@@ -73,6 +73,7 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
 
     // Login Not Required
     Route::get('list', [ClassRoomController::class, 'getClassRoom'])->name('GetClassRoomControllerGetClassRoom');
+    Route::get('detail', [ClassRoomController::class, 'getDetailClassRoom'])->name('GetClassRoomControllerGetDetailClassRoom');
 });
 
  

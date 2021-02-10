@@ -226,6 +226,12 @@ class FormValidation
           ];
         break;
 
+        case 'GetClassRoomControllerGetDetailClassRoom':
+          return [
+            'classroom_id' => 'required|exists:classrooms,id', 
+          ];
+        break;
+
         default:
           return [];
       }
