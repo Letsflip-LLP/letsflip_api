@@ -130,4 +130,25 @@ class ClassRoomController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function getDetailClassRoom(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+            $class_room = new ClassRoomModel;
+            $class_room = $class_room->where('id',$request->classroom_id);
+            $class_room = $class_room->first();
+
+        DB::commit();
+    
+            return (new ClassRoomTransformer)->detail(200,__('message.200'),$class_room);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
 }
