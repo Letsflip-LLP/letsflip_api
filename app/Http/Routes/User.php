@@ -33,6 +33,7 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
 
 $router->group(['middleware'=> [],'prefix' => 'user'], function($router){
     Route::get('list', [UserController::class, 'getPublicList'])->name('GetUserPublictList'); 
+    Route::get('detail', [UserController::class, 'getPublicDetailUser'])->name('GetPublicUserDetail'); 
 });
 
  

@@ -8,12 +8,43 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class UserTransformer {  
+
+    public function detail($code,$message,$model){
+        $temp = new \stdClass();
+        $temp->id         = $model->id;
+        $temp->first_name = $model->first_name;
+        $temp->last_name  = $model->last_name;
+        $temp->email      = $model->email;
+        $temp->followed      = false;
+
+        $temp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
+        $temp->total_following  = $model->Followed ? $model->Followed->count() : 0;
+
+        if(auth('api')->user() !=null && $model->Followed)
+            $temp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
+
+        $temp->point      = $model->Point->sum('value');
+        $temp->image_profile = defaultImage('user',$model);
+        $temp->image_background = $model->image_background_path && $model->image_background_file ? (object) [
+            "image_background_path" => $model->image_background_path,
+            "image_background_file" => $model->image_background_file,
+            "image_background_url" => getPublicFile($model->image_background_path,$model->image_background_file)
+        ]:null;
+
+        $model->accessToken && $temp->access_token = $model->accessToken;
+
+        return (new ResponseTransformer)->toJson($code,$message,$model,$temp);
+    }
+
     public static function item($model){
         $tmp = new \stdClass;
         $tmp->id            = $model->id;
         $tmp->first_name    = $model->first_name;
         $tmp->last_name     = $model->last_name;
         $tmp->followed      = false;
+
+        $tmp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
+        $tmp->total_following  = $model->Followed ? $model->Followed->count() : 0;
 
         if(auth('api')->user() !=null && $model->Followed)
             $tmp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
