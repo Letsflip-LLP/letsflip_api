@@ -14,6 +14,8 @@ class AuthTransformer {
         $temp->first_name = $model->first_name;
         $temp->last_name  = $model->last_name;
         $temp->email      = $model->email;
+        // $temp->followed   = $model->Followed;
+        // $temp->Follower   = $model->Follower;
         $temp->point      = $model->Point->sum('value');
         $temp->image_profile = defaultImage('user',$model);
         $temp->image_background = $model->image_background_path && $model->image_background_file ? (object) [
