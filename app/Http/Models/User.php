@@ -94,4 +94,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany('App\Http\Models\UserFollowModel','user_id_to','id');
     }
+
+    public function ClassRoom()
+    {
+        return $this->hasMany('App\Http\Models\ClassRoomModel','user_id','id');
+    }
 }
