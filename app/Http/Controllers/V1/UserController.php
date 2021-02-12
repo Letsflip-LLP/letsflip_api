@@ -32,8 +32,7 @@ class UserController extends Controller
         if($request->filled('search')){
             $users = $users->where('first_name','LIKE',"%".$request->search."%");
             $users = $users->orWhere('last_name','LIKE',"%".$request->search."%");
-            $users = $users->orWhere('email','LIKE',"%".$request->search."%");
-
+            $users = $users->orWhere('email','LIKE',"%".$request->search."%"); 
         }
  
         $users = $users->paginate($request->input('per_page',10));

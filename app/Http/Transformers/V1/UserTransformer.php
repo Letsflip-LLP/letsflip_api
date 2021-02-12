@@ -13,6 +13,11 @@ class UserTransformer {
         $tmp->id            = $model->id;
         $tmp->first_name    = $model->first_name;
         $tmp->last_name     = $model->last_name;
+        $tmp->followed      = false;
+
+        if(auth('api')->user() !=null && $model->Followed)
+            $tmp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
+
         $tmp->image_profile = defaultImage('user',$model);
 
         return  $tmp;
