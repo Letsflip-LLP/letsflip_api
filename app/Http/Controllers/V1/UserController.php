@@ -22,7 +22,7 @@ class UserController extends Controller
     public function self(Request $request)
     { 
         $user = auth('api')->user(); 
-        return (new AuthTransformer)->detail(200,"Success",$user); 
+        return (new UserTransformer)->detail(200,"Success",$user); 
     }
 
     public function getPublicList(Request $request)
@@ -136,5 +136,16 @@ class UserController extends Controller
             DB::rollBack();
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
+    }
+
+    public function getPublicDetailUser(Request $request)
+    { 
+        $users = new User;
+        
+        $users = $users->where('id',$request->user_id); 
+        $users = $users->first();
+
+
+        return (new UserTransformer)->detail(200,"Success",$users);
     }
 }
