@@ -146,7 +146,7 @@ return [
 
     'static_data' => [
         'social_media_availlable' => [
-            [
+            "youtube" => [
                 "id" => "youtube",
                 "title" => "TouTube",
                 "image" => (object)[
@@ -155,7 +155,7 @@ return [
                     "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/youtube-ico.png" 
                 ]
             ],
-            [
+            "instagram" => [
                 "id" => "instagram",
                 "title" => "Instagram",
                 "image" => (object)[
@@ -164,7 +164,7 @@ return [
                     "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/ig-ico.png" 
                 ]
             ],
-            [
+            "linkedin" => [
                 "id" => "linkedin",
                 "title" => "Linkedin",
                 "image" => (object)[
@@ -173,7 +173,7 @@ return [
                     "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/linkedin-ico.png" 
                 ]
             ],
-            [
+            "facebook" => [
                 "id" => "facebook",
                 "title" => "Facebook",
                 "image" => (object)[

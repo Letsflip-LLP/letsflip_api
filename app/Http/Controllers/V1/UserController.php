@@ -126,6 +126,18 @@ class UserController extends Controller
                 $user->image_background_file = $image_background_upload->file_name;
             }
 
+
+            if($request->social_media){
+                $sosmed_list = [];
+                foreach($request->social_media as $key => $val){
+                    if($key && $val)
+                        $sosmed_list[$key] = $val;
+                };
+
+                $sosmed = json_encode($sosmed_list);
+                $user->social_media_payload = $sosmed;
+            }
+
             $user->save();
 
             DB::commit(); 
