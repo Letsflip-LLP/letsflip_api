@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route; 
 use App\Http\Controllers\V1\AuthController;
 use App\Http\Controllers\V1\MissionController;
+use App\Http\Controllers\V1\ClassRoomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +29,6 @@ $router->group(['middleware'=> ['form'] ], function($router){
     $router->group(['prefix' => 'open-app'], function($router){
         Route::get('mission/{mission_id}', [MissionController::class, 'openApp'])->name('GetMissionControllerOpenApp');
         Route::get('respones/{mission_id}', [MissionController::class, 'openApp'])->name('GetMissionControllerOpenApp');
+        Route::get('classroom/{classroom_id}', [ClassRoomController::class, 'openAppClassroom'])->name('GetMissionControllerOpenApp');
     });
 }); 

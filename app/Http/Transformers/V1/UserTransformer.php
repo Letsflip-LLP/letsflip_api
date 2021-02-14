@@ -32,9 +32,36 @@ class UserTransformer {
             "image_background_url" => getPublicFile($model->image_background_path,$model->image_background_file)
         ]:null;
 
+        $temp->social_media = $this->sosmed($model->social_media_payload);
+
         $model->accessToken && $temp->access_token = $model->accessToken;
 
         return (new ResponseTransformer)->toJson($code,$message,$model,$temp);
+    }
+
+    private function sosmed($array){ 
+        try {
+
+            $data = [];
+            $static_data = config('database.static_data.social_media_availlable');
+        
+            if($array != null){
+                $array = json_decode($array);
+
+                foreach($array as $key => $value){
+                    $tmp        = (object) $static_data[$key];
+                    $tmp->url = $value;
+                    $data[$key] = $tmp;
+                }
+            }
+
+            return $data;
+            
+        DB::commit(); 
+            return  $data; 
+        } catch (\exception $exception){ 
+            return  [];
+        }   
     }
 
     public static function item($model){
@@ -54,6 +81,7 @@ class UserTransformer {
 
         return  $tmp;
     }  
+
     public function list($code,$message,$model){
         $return  = [];
         foreach($model as $data){

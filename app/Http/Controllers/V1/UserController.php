@@ -14,6 +14,7 @@ use App\Http\Models\NotificationModel;
 use App\Http\Models\UserFollowModel;
 use Ramsey\Uuid\Uuid;
 use App\Http\Libraries\StorageCdn\StorageManager;
+use Illuminate\Support\Facades\App;
 
 use DB;
 
@@ -125,6 +126,18 @@ class UserController extends Controller
                 $user->image_background_file = $image_background_upload->file_name;
             }
 
+
+            if($request->social_media){
+                $sosmed_list = [];
+                foreach($request->social_media as $key => $val){
+                    if($key && $val)
+                        $sosmed_list[$key] = $val;
+                };
+
+                $sosmed = json_encode($sosmed_list);
+                $user->social_media_payload = $sosmed;
+            }
+
             $user->save();
 
             DB::commit(); 
@@ -147,5 +160,10 @@ class UserController extends Controller
 
 
         return (new UserTransformer)->detail(200,"Success",$users);
+    }
+
+    public function availlableSocialMedia(Request $request){
+        $static_data = config('database.static_data.social_media_availlable');
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$static_data);
     }
 }

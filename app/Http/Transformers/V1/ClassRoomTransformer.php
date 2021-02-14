@@ -45,6 +45,8 @@ class ClassRoomTransformer {
 
         $temp->user           = UserTransformer::item($model->User);
 
+        $temp->share_url = url('/open-app/classroom/'.$model->id);
+        
         // $temp->total_respone  = MissionResponeModel::whereIn('id',[1,2,3])->count();
 
         $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.'/'.$model->file_name);
