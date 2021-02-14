@@ -29,6 +29,6 @@ $router->group(['middleware'=> ['form'] ], function($router){
     $router->group(['prefix' => 'open-app'], function($router){
         Route::get('mission/{mission_id}', [MissionController::class, 'openApp'])->name('GetMissionControllerOpenApp');
         Route::get('respones/{mission_id}', [MissionController::class, 'openApp'])->name('GetMissionControllerOpenApp');
-        Route::get('respones/{mission_id}', [MissionController::class, 'openApp'])->name('GetMissionControllerOpenApp');
+        Route::get('classroom/{classroom_id}', [ClassRoomController::class, 'openAppClassroom'])->name('GetMissionControllerOpenApp');
     });
 }); 

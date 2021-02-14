@@ -12,6 +12,7 @@ use App\Http\Transformers\V1\ClassRoomTransformer;
 use App\Http\Models\ClassRoomModel; 
 use Ramsey\Uuid\Uuid;
 use DB;
+use Jenssegers\Agent\Agent; 
 
 class ClassRoomController extends Controller
 {
@@ -150,5 +151,35 @@ class ClassRoomController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
+    }
+
+    public function openAppClassroom(Request $request){
+        $data = null;
+
+        if($request->classroom_id)
+            $data = ClassRoomModel::where('id',$request->classroom_id)->first(); 
+  
+        if($data == null) abort(404);
+
+        $redirect_url   = 'https://getletsflip.com';
+        $deepLinkUrl    = 'letsflip://'.$request->getHost().'/open-app/classroom/'.$data->id;
+ 
+        $agent = new Agent();
+        
+        if($agent->isAndroidOS())
+            $redirect_url = env('ANDROID_PLAYSTORE_URL');//redirect(env('ANDROID_PLAYSTORE_URL'));
+
+        if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
+            $redirect_url = env('IOS_APP_STORE_URL');//return redirect(env('IOS_APP_STORE_URL'));
+
+        $payload_view =  [
+            'redirect_url' => $redirect_url,
+            'deeplink_url' => $deepLinkUrl,
+            'title'=> $data->title,
+            'description'=>$data->text,
+            'og_image'=>Storage::disk('gcs')->url($data->file_path.'/'.$data->file_name)
+        ];
+
+        return view('open-app.share-meta',$payload_view);
     }
 }
