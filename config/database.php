@@ -144,4 +144,46 @@ return [
 
     ],
 
+    'static_data' => [
+        'social_media_availlable' => [
+            [
+                "id" => "youtube",
+                "title" => "TouTube",
+                "image" => (object)[
+                    "file_path" => "",
+                    "file_name" => "",
+                    "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/youtube-ico.png" 
+                ]
+            ],
+            [
+                "id" => "instagram",
+                "title" => "Instagram",
+                "image" => (object)[
+                    "file_path" => "",
+                    "file_name" => "",
+                    "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/ig-ico.png" 
+                ]
+            ],
+            [
+                "id" => "linkedin",
+                "title" => "Linkedin",
+                "image" => (object)[
+                    "file_path" => "",
+                    "file_name" => "",
+                    "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/linkedin-ico.png" 
+                ]
+            ],
+            [
+                "id" => "facebook",
+                "title" => "Facebook",
+                "image" => (object)[
+                    "file_path" => "",
+                    "file_name" => "",
+                    "file_full_path" => "https://storage.googleapis.com/staging_lets_flip/live/assets/fb-ico.png" 
+                ]
+            ]
+
+        ]
+    ]
+
 ];

@@ -14,6 +14,7 @@ use App\Http\Models\NotificationModel;
 use App\Http\Models\UserFollowModel;
 use Ramsey\Uuid\Uuid;
 use App\Http\Libraries\StorageCdn\StorageManager;
+use Illuminate\Support\Facades\App;
 
 use DB;
 
@@ -147,5 +148,10 @@ class UserController extends Controller
 
 
         return (new UserTransformer)->detail(200,"Success",$users);
+    }
+
+    public function availlableSocialMedia(Request $request){
+        $static_data = config('database.static_data.social_media_availlable');
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$static_data);
     }
 }
