@@ -179,7 +179,7 @@ class ClassRoomController extends Controller
             'description'=>$data->text,
             'og_image'=>Storage::disk('gcs')->url($data->file_path.'/'.$data->file_name)
         ];
-
+    
         return view('open-app.share-meta',$payload_view);
     }
 }
