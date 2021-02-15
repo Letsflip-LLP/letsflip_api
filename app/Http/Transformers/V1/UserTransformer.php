@@ -15,6 +15,8 @@ class UserTransformer {
         $temp->first_name = $model->first_name;
         $temp->last_name  = $model->last_name;
         $temp->email      = $model->email;
+        $temp->description  = $model->description;
+
         $temp->followed      = false;
 
         $temp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
@@ -52,7 +54,7 @@ class UserTransformer {
                     if(isset($static_data[$key])){
                         $tmp        = (object) $static_data[$key];
                         $tmp->url = $value;
-                        $data[$key] = $tmp;
+                        $data[] = $tmp;
                     } 
                 }
             }
