@@ -54,7 +54,7 @@ class UserTransformer {
                     if(isset($static_data[$key])){
                         $tmp        = (object) $static_data[$key];
                         $tmp->url = $value;
-                        $data[$key] = $tmp;
+                        $data[] = $tmp;
                     } 
                 }
             }
