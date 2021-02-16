@@ -535,9 +535,9 @@ class AuthController extends Controller
                 "download_url" => env('ANDROID_PLAYSTORE_URL')
             ],
             "ios" => [
-                "version_code" => 1,
-                "version_name" => "1.3.0.0",
-                "version_mandatory" => false,
+                "version_code" => env('IOS_VERSION_CODE'),
+                "version_name" => env('IOS_VERSION_NAME'),
+                "version_mandatory" => env('IOS_VERSION_MANDATORY'),
                 "download_url" =>  env('IOS_APP_STORE_URL')
             ]
         ];
