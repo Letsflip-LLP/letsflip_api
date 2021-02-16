@@ -529,13 +529,13 @@ class AuthController extends Controller
     public function checkAppUpdate(){
         $data = [
             "android" => [
-                "version_code" => env('ANDROID_VERSION_CODE',0),
+                "version_code" => (integer) env('ANDROID_VERSION_CODE',0),
                 "version_name" => env('ANDROID_VERSION_NAME'),
                 "version_mandatory" => env('ANDROID_VERSION_MANDATORY'),
                 "download_url" => env('ANDROID_PLAYSTORE_URL')
             ],
             "ios" => [
-                "version_code" => env('IOS_VERSION_CODE'),
+                "version_code" => (integer) env('IOS_VERSION_CODE'),
                 "version_name" => env('IOS_VERSION_NAME'),
                 "version_mandatory" => env('IOS_VERSION_MANDATORY'),
                 "download_url" =>  env('IOS_APP_STORE_URL')
