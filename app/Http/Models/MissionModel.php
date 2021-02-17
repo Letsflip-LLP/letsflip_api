@@ -11,7 +11,8 @@ class MissionModel extends Model
     use HasFactory;
     
     public $incrementing = false; 
-    protected $table = 'missions';  
+    protected $table = 'missions';   
+
     use SoftDeletes; 
 
     public function MissionContent()

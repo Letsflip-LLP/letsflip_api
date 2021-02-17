@@ -144,6 +144,13 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerEditMission':
+          return [ 
+            'mission_id' => 'exists:missions,id',
+            'status'     => 'in:1,2,3'
+          ];
+        break;
+        
         case 'GetMissionControllerGetMissionDetail':
           return [ 
             'id' => 'exists:missions'
