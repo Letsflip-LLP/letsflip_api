@@ -23,16 +23,16 @@ class NotificationTransformer {
 
         if($model->type == 1 || $model->type== 2){
             $text_ = $model->Mission ? $model->Mission->title : 'deleted mission';
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $text_ ]);    
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_ ]);    
         }
              
         if($model->type ==  3 || $model->type ==  4){
             if($model->type==3)
                 $text_ = $model->Mission ? $model->Mission->title : 'deleted mission';
             if($model->type==4)
-                $text_ = $model->Respone ? $model->Respone->title : 'deleted respone';
+                $text_ = $model->Respone ? $model->Respone->Mission->title : 'deleted respone';
 
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->first_name , 'module_title' => $text_]);         
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_]);         
         }
 
         if($model->type ==  11 &&  $model->Point && $model->Point->type == 1)
