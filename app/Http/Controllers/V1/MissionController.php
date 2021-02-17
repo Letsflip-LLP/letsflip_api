@@ -141,27 +141,28 @@ class MissionController extends Controller
 
     
             //NOTIF FOR OWN OF CLASSROM
-            $is_first = UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() ? false : true;
-            UserPointsModel::insert([
-                "user_id_to" => $this->user_login->id,
-                "mission_id" => $mission_id,
-                "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
-                "type" => $is_first ? 1 : 2,
-                "id" => $point_id = Uuid::uuid4()
-            ]); 
-
-            $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
-                "mission_id" => $mission_id,
-                "point_id" => $point_id
-            ],11,[
-                "type"=>"point",
-                "payload"=>[
-                    "title"=>"CONGRATULATIONS!",
-                    "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
-                    "value"=> $earn_point ]
-            ]);
+            if($mission->status == 1){
+                $is_first = UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() ? false : true;
+                UserPointsModel::insert([
+                    "user_id_to" => $this->user_login->id,
+                    "mission_id" => $mission_id,
+                    "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
+                    "type" => $is_first ? 1 : 2,
+                    "id" => $point_id = Uuid::uuid4()
+                ]); 
+    
+                $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                    "mission_id" => $mission_id,
+                    "point_id" => $point_id
+                ],11,[
+                    "type"=>"point",
+                    "payload"=>[
+                        "title"=>"CONGRATULATIONS!",
+                        "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
+                        "value"=> $earn_point ]
+                ]);
+            }
         
- 
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'),$mission);
