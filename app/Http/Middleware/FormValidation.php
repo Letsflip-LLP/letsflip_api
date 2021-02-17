@@ -204,6 +204,12 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerEditResponeMission':
+          return [
+            'mission_respone_id' => 'required|exists:mission_responses,id',
+            'status'=> 'in:1,2,3'
+          ];
+        break;
 
         case 'GetMissionControllerGetResponeMission':
           return [

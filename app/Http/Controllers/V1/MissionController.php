@@ -208,8 +208,8 @@ class MissionController extends Controller
             $mission_respone->mission_id= $request->mission_id;
             $mission_respone->title     = $request->title; 
             $mission_respone->text      = $request->text; 
-            $mission_respone->type      = $request->type;
-            $mission_respone->status    = 1;
+            $mission_respone->type      = $request->input('type',1);
+            $mission_respone->status    = $request->input('status',1);
             $mission_respone->default_content_id = $mission_respone_content_id;
 
             if($thumbnail != null){
@@ -628,33 +628,14 @@ class MissionController extends Controller
             $mission = $mission->where('id',$request->mission_id)->where('user_id' , $this->user_login->id)->first();
              
             if($mission == null)
-                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS1");
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS1");
 
 
             if($request->filled('status'))
                 $mission->status = $request->status;
             
             if(!$mission->save())
-                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS2");
-
-
-            // REMOVE POINT
-            $point = UserPointsModel::where('mission_id',$request->mission_id)
-                                    ->where('user_id_to',$this->user_login->id)
-                                    ->whereIn('type',[1,2])
-                                    ->first();
-
-            if($point){
-                $point_detail = $point;
-                // dd($point);
-                $point->delete();
-    
-                // FOR DELETED MISSION
-                $add_notif = NotificationManager::addNewNotification(null,$this->user_login->id,[
-                    "mission_id" => $mission->id,
-                    "point_id" => $point_detail->id
-                ],12);
-            }
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS2");
 
         DB::commit();
     
@@ -752,5 +733,36 @@ class MissionController extends Controller
                 'description'=>$data->text,
                 'og_image'=>Storage::disk('gcs')->url($data->image_path.'/'.$data->image_file)
             ]); 
+    }
+
+
+    public function editResponeMission(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+
+            $mission_respone = new MissionResponeModel;
+            $mission_respone = $mission_respone->where('id',$request->mission_respone_id)->where('user_id',$this->user_login->id)->first();
+             
+            if($mission_respone == null)
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES001");
+    
+            if($request->filled('status'))
+                $mission_respone->status = $request->status;
+
+            if(!$mission_respone->save())
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES002");
+ 
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 }
