@@ -101,8 +101,29 @@ class ClassRoomController extends Controller
             if($request->filled('type'))
                 $class_room = $class_room->where('type',$request->type); 
 
-            if($request->filled('user_id'))
+            if($request->filled('user_id') && $request->module != 'response')
                 $class_room = $class_room->where('user_id',$request->user_id);
+
+            // if($request->filled('module'))
+            //     dd($request->module);
+
+            if($request->filled('module')){
+                if($request->module == 'all'){
+                    $class_room = $class_room->orWhereHas('Mission',function($q) use ($request){
+                                      $q->whereHas('Respone',function($q2) use ($request){
+                                        $q2->where('user_id',$request->user_id);
+                                      });
+                                  });
+                }
+
+                if($request->module == 'response'){
+                    $class_room = $class_room->whereHas('Mission',function($q) use ($request){
+                                      $q->whereHas('Respone',function($q2) use ($request){
+                                        $q2->where('user_id',$request->user_id);
+                                      });
+                                  });
+                }
+            }
             
             if($request->filled('order_by')){
                 $order_by = explode('-',$request->order_by);  
