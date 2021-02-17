@@ -208,8 +208,8 @@ class MissionController extends Controller
             $mission_respone->mission_id= $request->mission_id;
             $mission_respone->title     = $request->title; 
             $mission_respone->text      = $request->text; 
-            $mission_respone->type      = $request->type;
-            $mission_respone->status    = 1;
+            $mission_respone->type      = $request->input('type',1);
+            $mission_respone->status    = $request->input('status',1);
             $mission_respone->default_content_id = $mission_respone_content_id;
 
             if($thumbnail != null){
