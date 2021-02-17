@@ -61,7 +61,10 @@ class NotificationTransformer {
     public function list($code,$message,$models){
         $custome_model = []; 
         foreach($models as $model ){
-            $custome_model[] = $this->item($model);
+            $tmp = $this->item($model);
+
+            if($tmp->text)
+                $custome_model[] = $tmp;
         } 
         return (new ResponseTransformer)->toJson($code,$message,$models,$custome_model);
     }
