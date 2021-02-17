@@ -46,7 +46,10 @@ class NotificationManager {
             $inserted = NotificationModel::where('id',$uuid)->first();
             $wording  = NotificationTransformer::item($inserted);  
              
-            $notif = OneSignalManager::sendPersonalNotif($player_id,$wording->title,$wording->text,$payload);
+            $notif= false;
+            
+            if($type != 12 && $type != 13)
+                $notif = OneSignalManager::sendPersonalNotif($player_id,$wording->title,$wording->text,$payload);
             
             return [
                 "request" => $data,

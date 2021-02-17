@@ -586,6 +586,24 @@ class MissionController extends Controller
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS2");
 
 
+            // REMOVE POINT
+            $point = UserPointsModel::where('mission_id',$request->mission_id)
+                                    ->where('user_id_to',$this->user_login->id)
+                                    ->whereIn('type',[1,2])
+                                    ->first();
+
+            if($point){
+                $point_detail = $point;
+                // dd($point);
+                $point->delete();
+    
+                // FOR DELETED MISSION
+                $add_notif = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                    "mission_id" => $mission->id,
+                    "point_id" => $point_detail->id
+                ],12);
+            }
+
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
@@ -619,6 +637,22 @@ class MissionController extends Controller
             if(!$mission_respone->delete())
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS2");
 
+           // REMOVE POINT
+            $point = UserPointsModel::where('respone_id',$request->mission_respone_id)
+                                    ->where('user_id_to',$this->user_login->id)
+                                    ->whereIn('type',[3])
+                                    ->first();         
+
+            if($point){
+                $point_detail = $point; 
+                $point->delete(); 
+                // FOR DELETED RESPONE
+                $add_notif = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                    "respone_id" => $request->mission_respone_id,
+                    "mission_id" => $mission_respone->mission_id,
+                    "point_id" => $point_detail->id
+                ],13);
+            }
 
         DB::commit();
     
