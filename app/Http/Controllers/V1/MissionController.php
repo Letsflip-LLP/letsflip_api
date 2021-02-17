@@ -586,6 +586,18 @@ class MissionController extends Controller
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS2");
 
 
+            // REMOVE POINT
+            $point = UserPointsModel::where('mission_id',$request->mission_id)->first();
+            $point_detail = $point;
+            // dd($point);
+            $point->delete();
+
+            // FOR RESPONDEND
+            $add_notif = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                "mission_id" => $mission->id,
+                "point_id" => $point_detail->id
+            ],12);
+
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'),true);

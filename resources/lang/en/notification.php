@@ -9,6 +9,8 @@ return [
         // 4 => ":user_name_from Liked your Response : :module_title'", 
         4 => ":user_name_from Liked your Response in Mission : :module_title", 
         11 => "You have earned :point PTS :from", 
+        12 => "Points deducted from deleting Mission",
+        13 => "Points deducted from deleting Respones"
     ],
     "TYPE" => [
         1 => "New Response from My Mission",
@@ -21,6 +23,8 @@ return [
         8 => "New Reply comment in mission",
         9 => "New Comment in Response",
         10 => "New Reply comment in Response",
-        11 => "New Point!"
+        11 => "New Point!",
+        12 => "Point deducted from deleted Mission",
+        13 => "Point deducted from deleted Respones"
     ]
 ];
