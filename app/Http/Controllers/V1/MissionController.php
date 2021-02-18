@@ -557,6 +557,8 @@ class MissionController extends Controller
             if($request->filled('user_id'))
                 $respone_mission = $respone_mission->where('user_id',$request->user_id);
 
+            $respone_mission = $respone_mission->where('status',1);
+
             $respone_mission = $respone_mission->orderBy('created_at','DESC')->get(); 
 
             DB::commit();
