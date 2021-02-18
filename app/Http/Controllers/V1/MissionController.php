@@ -557,6 +557,8 @@ class MissionController extends Controller
             if($request->filled('user_id'))
                 $respone_mission = $respone_mission->where('user_id',$request->user_id);
 
+            $respone_mission = $respone_mission->where('status',1);
+
             $respone_mission = $respone_mission->orderBy('created_at','DESC')->get(); 
 
             DB::commit();
@@ -633,6 +635,12 @@ class MissionController extends Controller
 
             if($request->filled('status'))
                 $mission->status = $request->status;
+
+            if($request->filled('title'))
+                $mission->title = $request->title;
+            
+            if($request->filled('text'))
+                $mission->text = $request->text;
             
             if(!$mission->save())
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS2");
@@ -750,6 +758,12 @@ class MissionController extends Controller
     
             if($request->filled('status'))
                 $mission_respone->status = $request->status;
+
+            if($request->filled('title'))
+                $mission_respone->title = $request->title;
+            
+            if($request->filled('text'))
+                $mission_respone->text = $request->text;
 
             if(!$mission_respone->save())
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES002");
