@@ -635,6 +635,12 @@ class MissionController extends Controller
 
             if($request->filled('status'))
                 $mission->status = $request->status;
+
+            if($request->filled('title'))
+                $mission->title = $request->title;
+            
+            if($request->filled('text'))
+                $mission->text = $request->text;
             
             if(!$mission->save())
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS2");
