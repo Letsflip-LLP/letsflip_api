@@ -39,6 +39,13 @@ class ClassRoomTransformer {
         $temp->total_respone  = 0;  
         $temp->total_like     = $model->Like ? $model->Like->count() : 0;
         $temp->liked        = false;
+ 
+        $temp->has_subscribe    = false;
+
+        if($model->type == 1) $temp->has_subscribe = true;
+
+        if($model->type != 1 && auth('api')->user() && auth('api')->user()->id && $model->UserSubcriber->where('user_id',auth('api')->user()->id)->first() != null)
+            $temp->has_subscribe = true;
 
         if(auth('api')->user())
             $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;

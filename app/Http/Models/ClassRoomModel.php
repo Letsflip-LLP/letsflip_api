@@ -34,4 +34,9 @@ class ClassRoomModel extends Model
     {
         return $this->hasMany('App\Http\Models\LikeModel','classroom_id','id');
     }
+
+    public function UserSubcriber()
+    {
+        return $this->hasMany('App\Http\Models\SubscriberModel','classroom_id','id')->where('status',1);
+     }
 }
