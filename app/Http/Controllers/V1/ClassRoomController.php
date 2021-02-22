@@ -217,7 +217,7 @@ class ClassRoomController extends Controller
         $subscribe =  SubscriberModel::firstOrCreate(
             ["classroom_id" => $class_room->id, "user_id" => $this->user_login->id,'status' => 1],
             ["id" => Uuid::uuid4()]
-        ); 
+        );
 
         DB::commit();
     
