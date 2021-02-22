@@ -71,6 +71,9 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
     $router->group(['middleware'=> ['auth:api','verified']], function($router){
         Route::post('add', [ClassRoomController::class, 'addClassRoom'])->name('PostClassRoomControllerAddClassRoom');
         Route::post('delete', [ClassRoomController::class, 'deleteClassRoom'])->name('PostClassRoomControllerDeleteClassRoom');
+        
+        // SUBSCRIBE CLASSROOM
+        Route::post('subscribe', [ClassRoomController::class, 'subscribeClassroom'])->name('PostClassRoomControllerSubscribeClassroom');
     });
 
     // Login Not Required

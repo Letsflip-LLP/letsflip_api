@@ -10,6 +10,7 @@ use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\ClassRoomTransformer; 
 use App\Http\Models\ClassRoomModel; 
+use App\Http\Models\SubscriberModel; 
 use Ramsey\Uuid\Uuid;
 use DB;
 use Jenssegers\Agent\Agent; 
@@ -202,5 +203,31 @@ class ClassRoomController extends Controller
         ];
     
         return view('open-app.share-meta',$payload_view);
+    }
+
+    public function subscribeClassroom(Request $request){
+        DB::beginTransaction(); 
+        try {
+            $class_room = new ClassRoomModel;
+            $class_room = $class_room->where('id',$request->classroom_id)->first();
+            
+            if($class_room == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.404'),false);
+
+        $subscribe =  SubscriberModel::firstOrCreate(
+            ["classroom_id" => $class_room->id, "user_id" => $this->user_login->id,'status' => 1],
+            ["id" => Uuid::uuid4()]
+        ); 
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),$subscribe);
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        } 
     }
 }

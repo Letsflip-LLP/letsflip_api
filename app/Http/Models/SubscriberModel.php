@@ -12,7 +12,9 @@ class SubscriberModel extends Model
     use SoftDeletes; 
 
     public $incrementing = false; 
-    protected $table = 'subscribes';  
+    protected $table = 'subscribes'; 
+    protected $fillable = ['classroom_id' , 'user_id','id','status'];  
+ 
 
     public function User()
     {
