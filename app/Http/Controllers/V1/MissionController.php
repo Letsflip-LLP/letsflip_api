@@ -184,8 +184,8 @@ class MissionController extends Controller
            
             $check = MissionResponeModel::where('user_id',$this->user_login->id)->where('mission_id',$request->mission_id)->first();
             
-            // if($check != null)
-            //     return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
+            if($check != null)
+                return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
 
             $mission_detail = MissionModel::where('id',$request->mission_id)->first();
  
