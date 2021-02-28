@@ -41,17 +41,26 @@ class ClassRoomTransformer {
         $temp->liked        = false;
  
         $temp->has_subscribe    = false;
+ 
+        $sub_check = $model->UserSubcriber->where('user_id',auth('api')->user()->id)->first();
 
-        if($model->type == 1) $temp->has_subscribe = true;
-
-        if($model->type != 1 && auth('api')->user() && auth('api')->user()->id && $model->UserSubcriber->where('user_id',auth('api')->user()->id)->first() != null)
+        if($model->type != 1 && auth('api')->user() && auth('api')->user()->id && $sub_check != null)
             $temp->has_subscribe = true;
+        
+        if($temp->has_subscribe == true){
+            $temp->subscribe_date = (object) [
+                "start" => $sub_check->date_start,
+                "end"   => $sub_check->date_end
+            ];
+        }
+
 
         if(auth('api')->user())
             $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
 
-        $temp->user           = UserTransformer::item($model->User);
 
+
+        $temp->user           = UserTransformer::item($model->User); 
         $temp->share_url = url('/open-app/classroom/'.$model->id);
         
         // $temp->total_respone  = MissionResponeModel::whereIn('id',[1,2,3])->count();
