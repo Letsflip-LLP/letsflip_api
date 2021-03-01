@@ -14,6 +14,7 @@ use App\Http\Models\SubscriberModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 use Jenssegers\Agent\Agent; 
+use Carbon\Carbon;
 
 class ClassRoomController extends Controller
 {
@@ -216,7 +217,11 @@ class ClassRoomController extends Controller
 
         $subscribe =  SubscriberModel::firstOrCreate(
             ["classroom_id" => $class_room->id, "user_id" => $this->user_login->id,'status' => 1],
-            ["id" => Uuid::uuid4()]
+            [
+                "id" => Uuid::uuid4(),
+                "date_start" => date('Y-m-d H:i:s'),
+                "date_end"   => Carbon::now()->add('months',1)->format('Y-m-d H:i:s')
+            ]
         );
 
         DB::commit();
