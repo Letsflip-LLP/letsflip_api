@@ -61,10 +61,10 @@ class ClassRoomTransformer {
             ];
         }
 
-        // $temp->product_id = (object) [
-        //     "android" => env('STORE_SUB_PRIVATE_PRODUCT_ID'),
-        //     "ios"     => env('STORE_SUB_PRIVATE_PRODUCT_ID')
-        // ];
+        $temp->market_product_id = (object) [
+            "android" => env('STORE_SUB_PRIVATE_PRODUCT_ID'),
+            "ios"     => env('STORE_SUB_PRIVATE_PRODUCT_ID')
+        ];
 
         $temp->user           = UserTransformer::item($model->User); 
         $temp->share_url = url('/open-app/classroom/'.$model->id);
