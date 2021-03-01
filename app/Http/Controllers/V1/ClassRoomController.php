@@ -220,7 +220,8 @@ class ClassRoomController extends Controller
             [
                 "id" => Uuid::uuid4(),
                 "date_start" => date('Y-m-d H:i:s'),
-                "date_end"   => Carbon::now()->add('months',1)->format('Y-m-d H:i:s')
+                "date_end"   => Carbon::now()->add('months',1)->format('Y-m-d H:i:s'),
+                "payload"    => json_encode($request->all())
             ]
         );
 
