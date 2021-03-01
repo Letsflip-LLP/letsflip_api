@@ -38,15 +38,22 @@ class ClassRoomTransformer {
         $temp->total_mission  = $model->Mission->count();
         $temp->total_respone  = 0;  
         $temp->total_like     = $model->Like ? $model->Like->count() : 0;
-        $temp->liked        = false;
- 
-        $temp->has_subscribe    = false;
- 
-        $sub_check = $model->UserSubcriber->where('user_id',auth('api')->user()->id)->first();
-
-        if($model->type != 1 && auth('api')->user() && auth('api')->user()->id && $sub_check != null)
-            $temp->has_subscribe = true;
         
+        $temp->liked            = false;
+        $temp->has_subscribe    = false;
+        $temp->subscribe_date   = false;
+
+        if(auth('api')->user()){
+            $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
+            $sub_check = $model->UserSubcriber->where('user_id',auth('api')->user()->id);
+            $sub_check = $sub_check->where('date_start','<=',date('Y-m-d H:i:s'));
+            $sub_check = $sub_check->where('date_end','>=',date('Y-m-d H:i:s'));
+            $sub_check = $sub_check->first();
+
+            if($model->type != 1 && auth('api')->user()->id && $sub_check != null)
+                $temp->has_subscribe = true;
+        }
+
         if($temp->has_subscribe == true){
             $temp->subscribe_date = (object) [
                 "start" => $sub_check->date_start,
@@ -54,11 +61,10 @@ class ClassRoomTransformer {
             ];
         }
 
-
-        if(auth('api')->user())
-            $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
-
-
+        // $temp->product_id = (object) [
+        //     "android" => env('STORE_SUB_PRIVATE_PRODUCT_ID'),
+        //     "ios"     => env('STORE_SUB_PRIVATE_PRODUCT_ID')
+        // ];
 
         $temp->user           = UserTransformer::item($model->User); 
         $temp->share_url = url('/open-app/classroom/'.$model->id);
