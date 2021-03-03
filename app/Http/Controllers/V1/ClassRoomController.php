@@ -207,27 +207,52 @@ class ClassRoomController extends Controller
     }
 
     public function subscribeClassroom(Request $request){
-        DB::beginTransaction(); 
+        DB::beginTransaction();
         try {
-            $class_room = new ClassRoomModel;
-            $class_room = $class_room->where('id',$request->classroom_id)->first();
+            $check_sub  = null;
+            $class_room = null;
+
+            if($request->filled('classroom_id')){
+                $class_room = new ClassRoomModel;
+                $class_room = $class_room->where('id',$request->classroom_id)->first();
+                if($class_room == null)
+                    return (new ResponseTransformer)->toJson(400,__('messages.404'),false);
+            }
+
+            if(!$request->filled('data'))
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
+
+            $vendor_payload = $request->data; 
+
+            if($this->user_login->Subscribe)
+                $check_sub = $this->user_login->Subscribe
+                            ->where('product_id',$vendor_payload['productId'])
+                            ->where('vendor_trx_id',$vendor_payload['transactionId'])
+                            ->first();
             
-            if($class_room == null)
-                return (new ResponseTransformer)->toJson(400,__('messages.404'),false);
+            if($check_sub)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),"Duplicated");
 
         $subscribe =  SubscriberModel::firstOrCreate(
-            ["classroom_id" => $class_room->id, "user_id" => $this->user_login->id,'status' => 1],
+            [ 
+                "user_id" => $this->user_login->id,
+                "status" => 1,
+                "vendor_trx_id" => $vendor_payload['transactionId']
+            ],
             [
-                "id" => Uuid::uuid4(),
-                "date_start" => date('Y-m-d H:i:s'),
-                "date_end"   => Carbon::now()->add('months',1)->format('Y-m-d H:i:s'),
-                "payload"    => json_encode($request->all())
+                "id"            => Uuid::uuid4(),
+                "date_start"    => date('Y-m-d H:i:s'),
+                "date_end"      => Carbon::now()->add('months',1)->format('Y-m-d H:i:s'),
+                "payload"       => json_encode($request->all()),
+                "type"          => $class_room->type,
+                "classroom_id"  => $class_room ? $class_room->id : $class_room->id,
+                "product_id"    => $vendor_payload['productId']
             ]
         );
 
         DB::commit();
     
-            return (new ResponseTransformer)->toJson(200,__('messages.200'),$subscribe);
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
 
         } catch (\exception $exception){ 
 

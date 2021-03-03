@@ -247,7 +247,7 @@ class FormValidation
 
         case 'PostClassRoomControllerSubscribeClassroom':
           return [
-            'classroom_id' => 'required|exists:classrooms,id', 
+            // 'classroom_id' => 'required|exists:classrooms,id', 
           ];
         break;
 
