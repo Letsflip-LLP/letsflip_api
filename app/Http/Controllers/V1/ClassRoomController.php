@@ -209,8 +209,12 @@ class ClassRoomController extends Controller
     public function subscribeClassroom(Request $request){
         DB::beginTransaction();
         try {
+
+            $product_account = config('account.premium_product');  
             $check_sub  = null;
             $class_room = null;
+            $product_id = null;
+            $transaction_id = null;
 
             if($request->filled('classroom_id')){
                 $class_room = new ClassRoomModel;
@@ -224,29 +228,37 @@ class ClassRoomController extends Controller
 
             $vendor_payload = $request->data; 
 
-            if($this->user_login->Subscribe)
-                $check_sub = $this->user_login->Subscribe
-                            ->where('product_id',$vendor_payload['productId'])
-                            ->where('vendor_trx_id',$vendor_payload['transactionId'])
-                            ->first();
-            
-            if($check_sub)
-                return (new ResponseTransformer)->toJson(400,__('messages.401'),"Duplicated");
+            if(!isset($vendor_payload['productId']) || !isset($vendor_payload['transactionId']))
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
 
+        $product_id = $vendor_payload['productId'];
+        $transaction_id = $vendor_payload['transactionId'];
+
+
+        if($this->user_login->Subscribe){
+            $check_sub = $this->user_login->Subscribe 
+            ->where('vendor_trx_id',$transaction_id)
+            ->first();
+        } 
+
+        if($check_sub)
+            return (new ResponseTransformer)->toJson(400,__('messages.401'),"Duplicated");
+
+        $product_detail = $product_account[$product_id];
         $subscribe =  SubscriberModel::firstOrCreate(
             [ 
                 "user_id" => $this->user_login->id,
                 "status" => 1,
-                "vendor_trx_id" => $vendor_payload['transactionId']
+                "vendor_trx_id" => $transaction_id
             ],
             [
                 "id"            => Uuid::uuid4(),
                 "date_start"    => date('Y-m-d H:i:s'),
-                "date_end"      => Carbon::now()->add('months',1)->format('Y-m-d H:i:s'),
+                "date_end"      => Carbon::now()->add('months',$product_detail['duration'])->format('Y-m-d H:i:s'),
                 "payload"       => json_encode($request->all()),
                 "type"          => $class_room->type,
-                "classroom_id"  => $class_room ? $class_room->id : $class_room->id,
-                "product_id"    => $vendor_payload['productId']
+                "classroom_id"  => $class_room ? $class_room->id : null,
+                "product_id"    => $product_id
             ]
         );
 
