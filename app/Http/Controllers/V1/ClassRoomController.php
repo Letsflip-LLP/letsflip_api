@@ -287,7 +287,6 @@ class ClassRoomController extends Controller
     private function _purchaseDetail($package,$sku,$token){
 
         try{
-            putenv('GOOGLE_APPLICATION_CREDENTIALS=/Applications/XAMPP/xamppfiles/htdocs/development/ScoreCampus/api.letsflip/google-service-cedential.json');
             $client = new \Google_Client();
             $client->useApplicationDefaultCredentials();
             $client->addScope('https://www.googleapis.com/auth/androidpublisher');
