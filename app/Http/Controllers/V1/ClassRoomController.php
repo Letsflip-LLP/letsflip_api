@@ -35,10 +35,14 @@ class ClassRoomController extends Controller
             $storage = new StorageManager;
             $storage = $storage->uploadFile("mission",$request->file('file'));   
              
-            $classroom_id   = Uuid::uuid4(); 
+            $classroom_id   = Uuid::uuid4();  
+            $code = explode('-',$classroom_id);
+            $code = $code[count($code)-1];
+            $code = strtoupper($code); 
             
             $class_room                = new ClassRoomModel;
-            $class_room->id            = $classroom_id; 
+            $class_room->id            = $classroom_id;
+            $class_room->access_code   = $code;
             $class_room->title         = $request->title;
             $class_room->user_id       = $this->user_login->id;
             $class_room->text          = $request->text;
@@ -206,6 +210,12 @@ class ClassRoomController extends Controller
     
         return view('open-app.share-meta',$payload_view);
     }
+
+    // private function _generateCode(){
+    //     $partOne =  substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 4);    
+    //     $partTwo =  substr(str_shuffle("0123456789"), 0, 4);
+    //     return $partOne.$partTwo;
+    // }
 
     public function subscribeClassroom(Request $request){
 
