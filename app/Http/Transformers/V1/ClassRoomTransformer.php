@@ -41,6 +41,7 @@ class ClassRoomTransformer {
         
         $temp->liked            = false;
         $temp->has_subscribe    = false; 
+        $temp->access_code      = false;
 
         if(auth('api')->user()){
             $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
@@ -52,6 +53,8 @@ class ClassRoomTransformer {
             if($model->type != 1 && auth('api')->user()->id && $sub_check != null)
                 $temp->has_subscribe = true;
                 
+            if(auth('api')->user() && auth('api')->user()->id == $model->User->id)
+                $temp->access_code = $model->access_code;
         }
 
         $temp->market_product_id = (object) [
