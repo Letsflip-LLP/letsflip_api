@@ -15,6 +15,7 @@ use Ramsey\Uuid\Uuid;
 use DB;
 use Jenssegers\Agent\Agent; 
 use Carbon\Carbon;
+use Laravel\Socialite\Facades\Socialite;
 
 class ClassRoomController extends Controller
 {
@@ -207,14 +208,29 @@ class ClassRoomController extends Controller
     }
 
     public function subscribeClassroom(Request $request){
+
         DB::beginTransaction();
         try {
-
-            $product_account = config('account.premium_product');  
+            
+            $product_account = config('account.premium_product');
             $check_sub  = null;
             $class_room = null;
             $product_id = null;
             $transaction_id = null;
+
+            if(!$request->filled('data'))
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
+
+            $vendor_payload = $request->data;  
+            $product_id = $vendor_payload['productId'];
+            $transaction_id = $vendor_payload['transactionId'];
+            $purchase_token = $vendor_payload['purchaseToken'];
+
+
+            $validate_token_purchase = $this->_purchaseDetail('com.lets_flip',$product_id,$purchase_token);
+
+            if($validate_token_purchase == false)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
 
             if($request->filled('classroom_id')){
                 $class_room = new ClassRoomModel;
@@ -223,16 +239,10 @@ class ClassRoomController extends Controller
                     return (new ResponseTransformer)->toJson(400,__('messages.404'),false);
             }
 
-            if(!$request->filled('data'))
-                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
-
-            $vendor_payload = $request->data; 
-
             if(!isset($vendor_payload['productId']) || !isset($vendor_payload['transactionId']))
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
 
-        $product_id = $vendor_payload['productId'];
-        $transaction_id = $vendor_payload['transactionId'];
+    
 
 
         if($this->user_login->Subscribe){
@@ -256,7 +266,7 @@ class ClassRoomController extends Controller
                 "date_start"    => date('Y-m-d H:i:s'),
                 "date_end"      => Carbon::now()->add('months',$product_detail['duration'])->format('Y-m-d H:i:s'),
                 "payload"       => json_encode($request->all()),
-                "type"          => $class_room->type,
+                "type"          => $product_detail['type'],
                 "classroom_id"  => $class_room ? $class_room->id : null,
                 "product_id"    => $product_id
             ]
@@ -272,5 +282,21 @@ class ClassRoomController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         } 
+    }
+
+    private function _purchaseDetail($package,$sku,$token){
+
+        try{
+            putenv('GOOGLE_APPLICATION_CREDENTIALS=/Applications/XAMPP/xamppfiles/htdocs/development/ScoreCampus/api.letsflip/google-service-cedential.json');
+            $client = new \Google_Client();
+            $client->useApplicationDefaultCredentials();
+            $client->addScope('https://www.googleapis.com/auth/androidpublisher');
+            $service = new \Google_Service_AndroidPublisher($client);
+            $purchase = $service->purchases_subscriptions->get($package,$sku,$token);
+           
+            return $purchase;
+        } catch (\exception $exception){ 
+            return false;
+        }  
     }
 }
