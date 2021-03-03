@@ -15,4 +15,9 @@ class ClassroomAccessModel extends Model
     protected $table = 'classroom_accesses';
     protected $fillable = ['id','classroom_id','user_id','access_code','status'];
 
+    public function ClassRoom()
+    {
+        return $this->hasOne('App\Http\Models\ClassRoomModel','id','classroom_id');
+    }
+
 }

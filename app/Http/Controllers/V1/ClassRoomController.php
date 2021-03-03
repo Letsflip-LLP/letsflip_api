@@ -17,6 +17,7 @@ use DB;
 use Jenssegers\Agent\Agent; 
 use Carbon\Carbon;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Libraries\Notification\NotificationManager;
 
 class ClassRoomController extends Controller
 {
@@ -339,7 +340,47 @@ class ClassRoomController extends Controller
          
         if(!$access)
             return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+
+        if(!$request->filled('access_code')){
+            //NOTIF FOR OWN OF CLASSROM
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room->user_id,[
+                "classroom_id" => $class_room->id,
+                "classroom_access_id"    => $access_id
+            ],14); 
+        }
         
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+    public function giveAccessClassRoom(Request $request){
+        DB::beginTransaction();
+        try {
+    
+        $access = new ClassroomAccessModel;
+        $access = $access->where('id',$request->classroom_access_id)->first();
+            
+        if(!$access || !$access->ClassRoom || $access->ClassRoom->user_id != $this->user_login->id)
+            return (new ResponseTransformer)->toJson(400,__('messages.401'), true);
+
+
+        $update = $access->update([
+            "access_code" => $access->ClassRoom->access_code,
+            "status"      => 1
+        ]); 
+
+
+        if(!$update)
+            return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true);

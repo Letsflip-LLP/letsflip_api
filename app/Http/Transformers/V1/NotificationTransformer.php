@@ -14,6 +14,18 @@ class NotificationTransformer {
     public static function item($model){  
         $temp           = new \stdClass();
         $temp->id       = $model->id;
+        $temp->module_detail  = null;
+
+        $temp->type       = (object) [
+            'id' => $model->type,
+            'title' => __('notification.TYPE.'.$model->type)
+        ];
+
+        if($model->type == 14 && $model->ClassroomAccess)
+            $temp->module_detail = (object) [
+                "id" => $model->ClassroomAccess->id
+            ];
+
         $temp->text     = "";
         $temp->title    = "";
 
@@ -49,6 +61,9 @@ class NotificationTransformer {
              
         if($model->type ==  12 || $model->type ==  13)
             $temp->text  =   __('notification.TEXT.'.$model->type);
+            
+        if($model->type == 14)
+            $temp->text  =   __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $model->ClassRoom->title ]);
 
         $temp->title        =   __('notification.TYPE.'.$model->type);
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
@@ -62,7 +77,6 @@ class NotificationTransformer {
         $custome_model = []; 
         foreach($models as $model ){
             $tmp = $this->item($model);
-
             if($tmp->text)
                 $custome_model[] = $tmp;
         } 

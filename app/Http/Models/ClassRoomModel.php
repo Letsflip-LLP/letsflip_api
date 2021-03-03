@@ -35,8 +35,8 @@ class ClassRoomModel extends Model
         return $this->hasMany('App\Http\Models\LikeModel','classroom_id','id');
     }
 
-    public function UserSubcriber()
+    public function PremiumUserAccess()
     {
-        return $this->hasMany('App\Http\Models\SubscriberModel','classroom_id','id')->where('status',1);
-     }
+        return $this->hasMany('App\Http\Models\ClassroomAccessModel','classroom_id','id');
+    }
 }
