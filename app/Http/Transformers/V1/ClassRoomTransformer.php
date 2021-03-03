@@ -82,14 +82,16 @@ class ClassRoomTransformer {
         switch ($type) {
             case 1:
                 return (object) [
-                    "id" => $type,
-                    "name" => "Public Class Room"
+                    "id"    => $type,
+                    "name"  => "Public Class Room",
+                    "price" => 0
                 ];
                 break;
             case 2:
                 return (object) [
-                    "id" => $type,
-                    "name" => "Private Class Room"
+                    "id"    => $type,
+                    "name"  => "Private Class Room",
+                    "price" => env('STORE_SUB_PRIVATE_PRODUCT_PRICE',100)
                 ];
                 break;
             case 3:
