@@ -50,13 +50,12 @@ class ClassRoomTransformer {
                 $check_access = auth('api')->user()->PremiumClassRoomAccess
                                 ->where('classroom_id',$model->id)->first();
                     
-                if($check_access)
+                if($check_access && $check_access->status == 1)
                     $temp->has_subscribe = true;
             }
                 
             if(auth('api')->user() && auth('api')->user()->id == $model->User->id){
-                $temp->access_code = $model->access_code; 
-                $temp->has_subscribe = true;
+                $temp->access_code = $model->access_code;
             }
         }
 
