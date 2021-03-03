@@ -13,5 +13,6 @@ class ClassroomAccessModel extends Model
 
     public $incrementing = false; 
     protected $table = 'classroom_accesses';
- 
+    protected $fillable = ['id','classroom_id','user_id','access_code','status'];
+
 }

@@ -318,16 +318,17 @@ class ClassRoomController extends Controller
         $class_room = $class_room->where('id',$request->classroom_id)->first();
    
         $access               = new ClassroomAccessModel;
-        $access->id           = $access_id = Uuid::uuid4();
-        $access->classroom_id = $class_room->id;
-        $access->user_id      = $this->user_login->id;
-
-        if($request->filled('access_code'))
-            $access->access_code      = $request->access_code;
-
-        $access->status      = $request->filled('access_code') ? 1 : 2;
-
-        if(!$access->save())
+        $access               = $access->firstOrCreate([
+            "classroom_id" => $class_room->id,
+        ],
+        [
+            "user_id"     =>  $this->user_login->id,
+            "id"          =>  $access_id = Uuid::uuid4(),
+            "access_code" => $request->access_code ? $request->access_code : null,
+            "type"        => $request->filled('access_code') ? 1 : 2
+        ]);
+ 
+        if(!$access)
             return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
         
         DB::commit();
