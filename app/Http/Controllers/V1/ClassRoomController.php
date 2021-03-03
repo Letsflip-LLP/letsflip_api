@@ -11,6 +11,7 @@ use App\Http\Transformers\ResponseTransformer;
 use App\Http\Transformers\V1\ClassRoomTransformer; 
 use App\Http\Models\ClassRoomModel; 
 use App\Http\Models\SubscriberModel; 
+use App\Http\Models\ClassroomAccessModel; 
 use Ramsey\Uuid\Uuid;
 use DB;
 use Jenssegers\Agent\Agent; 
@@ -307,5 +308,37 @@ class ClassRoomController extends Controller
         } catch (\exception $exception){ 
             return false;
         }  
+    }
+
+    public function getAccessClassRoom(Request $request){
+        DB::beginTransaction();
+        try {
+    
+        $class_room = new ClassRoomModel;
+        $class_room = $class_room->where('id',$request->classroom_id)->first();
+   
+        $access               = new ClassroomAccessModel;
+        $access->id           = $access_id = Uuid::uuid4();
+        $access->classroom_id = $class_room->id;
+        $access->user_id      = $this->user_login->id;
+
+        if($request->filled('access_code'))
+            $access->access_code      = $request->access_code;
+
+        $access->status      = $request->filled('access_code') ? 1 : 2;
+
+        if(!$access->save())
+            return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+        
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
     }
 }

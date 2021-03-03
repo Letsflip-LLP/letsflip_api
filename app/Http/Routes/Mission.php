@@ -74,6 +74,8 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
         
         // SUBSCRIBE CLASSROOM
         Route::post('subscribe', [ClassRoomController::class, 'subscribeClassroom'])->name('PostClassRoomControllerSubscribeClassroom');
+
+        Route::post('get-access', [ClassRoomController::class, 'getAccessClassRoom'])->name('PostClassRoomControllerGetAccess');
     });
 
     // Login Not Required

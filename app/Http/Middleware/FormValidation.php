@@ -251,6 +251,13 @@ class FormValidation
           ];
         break;
 
+        case 'PostClassRoomControllerGetAccess':
+          return [
+            'classroom_id' => 'required|exists:classrooms,id', 
+            'access_code' =>  ' exists:classrooms,access_code',
+          ];
+        break;
+
         default:
           return [];
       }
