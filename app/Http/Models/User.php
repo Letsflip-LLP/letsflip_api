@@ -99,4 +99,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany('App\Http\Models\ClassRoomModel','user_id','id');
     }
+
+    public function Subscribe()
+    {
+        return $this->hasOne('App\Http\Models\SubscriberModel','user_id','id')
+                ->where('date_start','<=',date('Y-m-d H:i:s'))
+                ->where('date_end','>=',date('Y-m-d H:i:s'));
+    }
 }
