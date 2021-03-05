@@ -9,6 +9,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\MissionTransformer; 
+use App\Http\Transformers\V1\QuickScoreTransformer; 
 use App\Http\Models\MissionModel;
 use App\Http\Models\MissionContentModel;
 use App\Http\Models\MissionResponeModel;
@@ -19,6 +20,7 @@ use App\Http\Models\MissionReportModel;
 use App\Http\Models\NotificationModel;
 use App\Http\Models\ClassRoomModel;
 use App\Http\Models\UserPointsModel; 
+use App\Http\Models\MissionQuestionModel; 
 use Ramsey\Uuid\Uuid;
 use DB;
 use App\Http\Libraries\Notification\NotificationManager;
@@ -139,6 +141,11 @@ class MissionController extends Controller
                 }
             }
 
+
+            if($request->filled('quick_scores')){
+                $this->_insertQuickScore($request->quick_scores,$mission_id);
+            }
+
     
             //NOTIF FOR OWN OF CLASSROM
             if($mission->status == 1){
@@ -174,6 +181,33 @@ class MissionController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
+    }
+
+
+    public function _insertQuickScore($data,$mission_id){
+        $datas = [];
+        foreach($data as $q){
+            $quest_id   = Uuid::uuid4();
+            $datas[] = [
+                "id"         => $quest_id,
+                "mission_id" => $mission_id,
+                "title"      => $q['title'],
+                "text"       => $q['title'],
+                "option1"    => $q['options'] && isset($q['options'][0]) ? $q['options'][0]["name"] : null,
+                "option2"    => $q['options'] && isset($q['options'][1]) ? $q['options'][1]["name"] : null,
+                "option3"    => $q['options'] && isset($q['options'][2]) ? $q['options'][2]["name"] : null,
+                "option4"    => $q['options'] && isset($q['options'][3]) ? $q['options'][3]["name"] : null,
+                "option5"    => $q['options'] && isset($q['options'][4]) ? $q['options'][4]["name"] : null,
+                "option6"    => $q['options'] && isset($q['options'][5]) ? $q['options'][5]["name"] : null,
+                "option7"    => $q['options'] && isset($q['options'][6]) ? $q['options'][6]["name"] : null,
+                "correct_option" => $q['correct_answer'] ? "option".$q['correct_answer'] : null,
+                "question_type" => $q['type'],
+                "type" => 1
+            ];
+        }
+        
+        $model = new MissionQuestionModel;
+        $model = $model->insert($datas);
     }
 
     public function addResponeMission(Request $request){
@@ -778,5 +812,16 @@ class MissionController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
+    }
+
+    public function getQuestionList(Request $request){
+        $model = new MissionQuestionModel;
+        $model = $model->where('mission_id',$request->mission_id);
+        if($request->filled('type'))
+            $model = $model->where('type',$request->type);
+
+        
+        $model = $model->get(); 
+        return (new QuickScoreTransformer)->list(200,__('messages.200'),$model); 
     }
 }

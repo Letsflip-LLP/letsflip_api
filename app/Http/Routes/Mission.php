@@ -55,6 +55,10 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             Route::get('comment/list', [MissionCommentController::class, 'getCommentResponeMission'])->name('PostMissionCommentControllerGetCommentResponeMission'); 
             Route::post('comment/delete', [MissionCommentController::class, 'deleteCommentResponeMission'])->name('PostMissionCommentControllerDeleteCommentResponeMission');
         });
+
+        $router->group(['prefix' => 'question'], function($router){
+            Route::get('list', [MissionController::class, 'getQuestionList'])->name('GetMissionControllerGetQuestionList');
+        });
     });
 
  

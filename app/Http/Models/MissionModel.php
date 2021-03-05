@@ -60,4 +60,9 @@ class MissionModel extends Model
         return $this->belongsToMany('App\Http\Models\User','tags','module_id','foreign_id')->where('tags.type',2);
     }
 
+    public function QuickScores()
+    {
+        return $this->hasMany('App\Http\Models\MissionQuestionModel','mission_id','id');
+    }
+
 }

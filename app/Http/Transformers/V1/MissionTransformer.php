@@ -6,11 +6,13 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Transformers\ResponseTransformer; 
 use Carbon\Carbon; 
 use Illuminate\Support\Facades\Storage;
+use App\Http\Transformers\V1\QuickScoreTransformer; 
 
 class MissionTransformer {
 
     public function detail($code,$message,$model){ 
         $data = $this->item($model);
+        // $data->quick_scores = $model->QuickScores;
 
         return (new ResponseTransformer)->toJson($code,$message,$model,$data);
     }
