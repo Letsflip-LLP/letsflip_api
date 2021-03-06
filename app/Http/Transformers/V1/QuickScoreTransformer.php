@@ -29,14 +29,17 @@ class QuickScoreTransformer {
         $tmp->id        = $model->id;
         $tmp->title     = $model->title;
         $tmp->my_answer = null;
-        $my_answer      = $model->Answer->where('user_id',auth('api')->user()->id)->first();
+        $my_answer      = $model->Answer->where('user_id',auth('api')->user()->id);
 
-        if($my_answer != null)
-            $tmp->my_answer = (object) [
-                "id" => $my_answer->id,
-                "answer" => $my_answer->answer
-            ];
-         
+        if($my_answer != null){
+            $tmp->my_answer= [];
+            foreach($my_answer as $ans){
+                $tmp->my_answer[] = (object) [
+                    "id" => $ans->id,
+                    "answer" => $ans->answer
+                ];
+            }
+        }
 
         $tmp->type  = (object) [
             "id" => $model->type,

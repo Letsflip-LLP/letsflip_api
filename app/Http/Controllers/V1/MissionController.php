@@ -853,7 +853,6 @@ class MissionController extends Controller
         if($request->filled('type'))
             $model = $model->where('type',$request->type);
 
-        
         $model = $model->get(); 
         return (new QuickScoreTransformer)->list(200,__('messages.200'),$model); 
     }
@@ -910,7 +909,22 @@ class MissionController extends Controller
                     $exist->answer         = $request->answer;
                     $exist->update();
                 }
-            }            
+            }
+
+            if($question_detail->type == 2){
+                if(!$request->filled('answer_id')){
+                    $insert                 = new MissionAnswerModel;
+                    $insert->id             = Uuid::uuid4();
+                    $insert->user_id        = $this->user_login->id;
+                    $insert->question_id    = $request->question_id;
+                    $insert->answer         = $request->answer;
+                    $insert->save();
+                }else{
+                    $update                 = MissionAnswerModel::where('id',$request->answer_id)->first();
+                    $update->answer         = $request->answer;
+                    $update->update();
+                }
+            }
 
         DB::commit();
     
