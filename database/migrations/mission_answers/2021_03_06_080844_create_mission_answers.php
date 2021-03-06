@@ -17,7 +17,7 @@ class CreateMissionAnswers extends Migration
             $table->uuid('id')->primary();
             $table->uuid('question_id')->index();
             $table->uuid('user_id')->index();
-            $table->longText('answer')->index();
+            $table->longText('answer');
             $table->timestamps();
             $table->softDeletes();
         });
