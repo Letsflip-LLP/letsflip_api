@@ -30,6 +30,7 @@ class MissionTransformer {
  
         $temp = new \stdClass();
         $temp->id                   = $model->id;
+        $temp->difficulty_level     = $model->difficulty_level;
         $temp->title                = $model->title;
         $temp->text                 = $model->text; 
         $temp->status               = $model->status; 

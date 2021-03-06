@@ -55,6 +55,7 @@ class MissionController extends Controller
             // SAVE MISSION
             $mission            = new MissionModel; 
             $mission->id        = $mission_id;
+            $mission->difficulty_level  = $request->difficulty_level;
             $mission->user_id   = $this->user_login->id;
             $mission->title     = $request->title; 
             $mission->text      = $request->text; 
