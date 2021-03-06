@@ -875,6 +875,10 @@ class MissionController extends Controller
             $mission_detail  = MissionModel::where('id',$request->mission_id)->first();
             $question_detail = MissionQuestionModel::where('id',$request->question_id)->first();
             
+            // CHECK SUBMIT RESPONES 
+            if($mission_detail->Respone->where('user_id',$this->user_login->id)->where('status',1)->first())
+                return (new ResponseTransformer)->toJson(400,__('messages.404'),["mission_id" => "You have been response this mission before"]);
+            
             $model = new MissionAnswerModel;
 
             $multi_c = [
