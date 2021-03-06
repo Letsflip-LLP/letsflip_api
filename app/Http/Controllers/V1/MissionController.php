@@ -203,9 +203,10 @@ class MissionController extends Controller
                 "mission_id" => $mission_id,
                 "title"      => $dat['title'],
                 "text"       => $dat['title'],
+                "question_template_id" => $dat['id'],
                 "question_type" => 2,
                 "type" => 2
-            ]; 
+            ];
            }
          } 
 
