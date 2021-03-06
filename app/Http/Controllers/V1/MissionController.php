@@ -824,4 +824,14 @@ class MissionController extends Controller
         $model = $model->get(); 
         return (new QuickScoreTransformer)->list(200,__('messages.200'),$model); 
     }
+
+    public function getQuestionTemplate(Request $request){
+        $data = [];
+        $template = config('static_db.question_template'); 
+        
+        if($request->filled('type') && $request->type == 2)
+            $data = $template['learning_jpurney'];
+        
+        return (new ResponseTransformer)->toJson(200,__('message.200'),$data); 
+    }
 }
