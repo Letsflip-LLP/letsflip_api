@@ -25,9 +25,19 @@ class QuickScoreTransformer {
     }
 
     public function item($model){
-        $tmp        = new \stdClass();
-        $tmp->id    = $model->id;
-        $tmp->title = $model->title;
+        $tmp            = new \stdClass();
+        $tmp->id        = $model->id;
+        $tmp->title     = $model->title;
+        $tmp->my_answer = null;
+        $my_answer      = $model->Answer->where('user_id',auth('api')->user()->id)->first();
+
+        if($my_answer != null)
+            $tmp->my_answer = (object) [
+                "id" => $my_answer->id,
+                "answer" => $my_answer->answer
+            ];
+         
+
         $tmp->type  = (object) [
             "id" => $model->type,
             "title" => $model->type == 1 ? "Quick Scores" : "Learning Journey"

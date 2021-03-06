@@ -14,4 +14,11 @@ class MissionQuestionModel extends Model
     protected $table = 'mission_questions';
 
     use SoftDeletes; 
+
+
+    public function Answer()
+    {
+        return $this->hasMany('App\Http\Models\MissionAnswerModel','question_id','id');
+    }
+    
 }

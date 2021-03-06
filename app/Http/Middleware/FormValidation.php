@@ -265,6 +265,12 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerSubmitAnswerOfQuestion':
+          return [
+            'mission_id' => 'required|exists:missions,id',
+            'question_id' => 'required|exists:mission_questions,id' 
+          ];
+        break;
 
         default:
           return [];

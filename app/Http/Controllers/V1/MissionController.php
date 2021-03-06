@@ -21,6 +21,8 @@ use App\Http\Models\NotificationModel;
 use App\Http\Models\ClassRoomModel;
 use App\Http\Models\UserPointsModel; 
 use App\Http\Models\MissionQuestionModel; 
+use App\Http\Models\MissionAnswerModel;
+
 use Ramsey\Uuid\Uuid;
 use DB;
 use App\Http\Libraries\Notification\NotificationManager;
@@ -864,5 +866,61 @@ class MissionController extends Controller
             $data = $template['learning_journey'];
 
         return (new ResponseTransformer)->toJson(200,__('message.200'),$data); 
+    }
+
+    public function submitAnswerOfQuestion(Request $request){
+        DB::beginTransaction();
+
+        try {
+
+            $mission_detail  = MissionModel::where('id',$request->mission_id)->first();
+            $question_detail = MissionQuestionModel::where('id',$request->question_id)->first();
+            
+            $model = new MissionAnswerModel;
+
+            $multi_c = [
+                'option1',
+                'option2',
+                'option3',
+                'option4',
+                'option5',
+                'option6',
+                'option7',
+            ];
+            
+            if($question_detail->type == 1){
+                if(!in_array($request->answer,$multi_c))
+                    return (new ResponseTransformer)->toJson(400,__('validation.exists',["attribute" => "answer"]),["answer" => [__('validation.exists',["attribute" => "answer"])]]);
+                
+                $exist = MissionAnswerModel::where([
+                        "user_id" => $this->user_login->id,
+                        "question_id" => $request->question_id
+                    ])->first(); 
+
+                if($exist == null){
+                    $insert                 = new MissionAnswerModel;
+                    $insert->id             = Uuid::uuid4();
+                    $insert->user_id        = $this->user_login->id;
+                    $insert->question_id    = $request->question_id;
+                    $insert->answer         = $request->answer;
+                    $insert->save();
+                }else{
+                    $exist->user_id        = $this->user_login->id;
+                    $exist->question_id    = $request->question_id;
+                    $exist->answer         = $request->answer;
+                    $exist->update();
+                }
+            }            
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 }

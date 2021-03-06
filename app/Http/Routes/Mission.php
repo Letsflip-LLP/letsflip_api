@@ -59,6 +59,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         $router->group(['prefix' => 'question'], function($router){
             Route::get('list', [MissionController::class, 'getQuestionList'])->name('GetMissionControllerGetQuestionList');
             Route::get('template', [MissionController::class, 'getQuestionTemplate'])->name('GetMissionControllerGetQuestionTemplate');
+            Route::post('answer',   [MissionController::class, 'submitAnswerOfQuestion'])->name('PostMissionControllerSubmitAnswerOfQuestion');
         });
     });
 
