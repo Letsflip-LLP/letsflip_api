@@ -142,8 +142,14 @@ class MissionController extends Controller
             }
 
 
+            // QUICK SCORE
             if($request->filled('quick_scores')){
                 $this->_insertQuickScore($request->quick_scores,$mission_id);
+            }
+
+            // LEARNING JOURNEY
+            if($request->filled('learning_journey')){
+                $this->_insertLearningJourney($request->learning_journey,$mission_id);
             }
 
     
@@ -183,8 +189,31 @@ class MissionController extends Controller
         }  
     }
 
+    private function _insertLearningJourney($data,$mission_id){
+        $template = config('static_db.question_template'); 
+        $template = $template['learning_journey'];
+        $quest_ids = $data;
 
-    public function _insertQuickScore($data,$mission_id){
+        $include = [];
+        foreach( $template as $dat ){
+           if(in_array($dat['id'],$data)){
+            $quest_id   = Uuid::uuid4();
+            $include[] = [
+                "id"         => $quest_id,
+                "mission_id" => $mission_id,
+                "title"      => $dat['title'],
+                "text"       => $dat['title'],
+                "question_type" => 2,
+                "type" => 2
+            ]; 
+           }
+         } 
+
+         $model = new MissionQuestionModel;
+         $model = $model->insert($include);
+    }
+
+    private function _insertQuickScore($data,$mission_id){
         $datas = [];
         foreach($data as $q){
             $quest_id   = Uuid::uuid4();
@@ -830,8 +859,8 @@ class MissionController extends Controller
         $template = config('static_db.question_template'); 
         
         if($request->filled('type') && $request->type == 2)
-            $data = $template['learning_jpurney'];
-        
+            $data = $template['learning_journey'];
+
         return (new ResponseTransformer)->toJson(200,__('message.200'),$data); 
     }
 }

@@ -2,7 +2,7 @@
 
 return [
     "question_template" => [
-        "learning_jpurney" => [
+        "learning_journey" => [
                 [
                     "id" => "d52ee232-df02-4481-aa4a-fc2d2cd9b098",
                     "title" => "Why and what is your thought process"

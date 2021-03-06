@@ -21,13 +21,23 @@ class QuickScoreTransformer {
             $datas[] =  $this->item($model); 
         }
 
-        return (new ResponseTransformer)->toJson($code,$message,$model,$datas);
+        return (new ResponseTransformer)->toJson($code,$message,$models,$datas);
     }
 
     public function item($model){
         $tmp        = new \stdClass();
         $tmp->id    = $model->id;
         $tmp->title = $model->title;
+        $tmp->type  = (object) [
+            "id" => $model->type,
+            "title" => $model->type == 1 ? "Quick Scores" : "Learning Journey"
+        ];
+
+        $tmp->question_type  = (object) [
+            "id" => $model->type,
+            "title" => $model->type == 1 ? "Multiple Choise" : "How To Step (Learning journey)"
+        ];
+
         // $tmp->option = [];
 
         for($i = 1 ; $i <=7 ; $i++){
