@@ -268,7 +268,8 @@ class FormValidation
         case 'PostMissionControllerSubmitAnswerOfQuestion':
           return [
             'mission_id' => 'required|exists:missions,id',
-            'question_id' => 'required|exists:mission_questions,id' 
+            'question_id' => 'required|exists:mission_questions,id',
+            'answer_id' => 'exists:mission_answers,id' 
           ];
         break;
 
