@@ -48,6 +48,9 @@ class MissionTransformer {
             ];
         }
 
+        $temp->has_learning_journey = $model->QuickScores && $model->QuickScores->where('type',2)->first() ? true : false;
+        $temp->has_quick_score = $model->QuickScores && $model->QuickScores->where('type',1)->first() ? true : false;
+
         $temp->thumbnail    =  [
             "image_path" => $image_path =  $model->image_path ? $model->image_path : "mission/tumbnail/image",
             "image_file" => $image_file =  $model->image_path ? $model->image_file : "d4eb8193-f6f4-4f5e-a3ae-4a83b5ea4cbc.jpeg",
