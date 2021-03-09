@@ -22,6 +22,7 @@ use Illuminate\Support\MessageBag;
 use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite;
 use App\Mail\verificationUserRegister;
+use App\Http\Models\UserDeviceModel;
 
 class AuthController extends Controller
 {
@@ -84,6 +85,17 @@ class AuthController extends Controller
             if($user->email_verified_at == null)
                 return (new ResponseTransformer)->toJson(400,__('passwords.email_verification'),false);  
      
+
+            if($request->filled('notif_player_id') && $request->filled('platform')){
+                $check = UserDeviceModel::where('player_id',$request->notif_player_id)->first(); 
+                if($check!= null && $check->user_id != $user->id) $check->delete();
+                
+                UserDeviceModel::firstOrCreate(
+                    [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
+                    [ 'id' => Uuid::uuid4()]
+                );
+            }
+
             $accessToken       = $token;
             $user->accessToken = $accessToken;
 
@@ -103,7 +115,7 @@ class AuthController extends Controller
         try {
              
             $message = "";
-            
+            $success = false;
             $decode = Crypt::decryptString($request->temporary_token);
 
             $user   = User::where('email',$decode)->first();
@@ -116,17 +128,28 @@ class AuthController extends Controller
 
             if($user->email_verified_at == null){
                 if($user->update(['email_verified_at' => date('Y-m-d H:i:s')])){
-                    $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom"; 
-                    if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to(url('account/verification/verify?success=true&temporary_token='.$request->temporary_token));
+                    $success = true;
+                    $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom";
+                    // if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to(url('account/verification/verify?success=true&temporary_token='.$request->temporary_token));
+                    // if($this->agent->isMobile() && !$request->filled("success")) return redirect()->to('letsflip://getletsflip.com/auth/confirm-reset-password/account/verification/verify?success=true&temporary_token='.$request->temporary_token);
                 }
              } 
 
+            if($request->filled('success') && $request->success == true && $request->filled('attempt') && $request->attempt == 1)
+                $message = "CONGRATULATIONS! Your account has successfully activated! The world is now your classroom";
+
+
+            $deeplink_url =  'letsflip://'.$request->getHost().'/account/verification/verify?success=true&temporary_token='.$request->temporary_token;
+
             $data = [];
             $data['message'] = $message;
+            $data['deeplink_url'] = $deeplink_url;
+            $data['success'] = $success;
 
             DB::commit(); 
 
-            $send_mail = \Mail::to($user->email)->queue(new \App\Mail\congratulationVerifyMail());
+            if(!$request->filled("success"))
+                $send_mail = \Mail::to($user->email)->queue(new \App\Mail\congratulationVerifyMail());
 
         } catch (\exception $exception){
             DB::rollBack();
@@ -193,6 +216,11 @@ class AuthController extends Controller
             $pass_res = $pass_res->where('email',$email)->where('token',$first_token->payload)->where('is_verification',false)->first();
             if($pass_res == null){
                 $data['message']  = "Oops! This page has been expired.";
+
+                if($request->filled('success')  && $request->filled('attempt')){
+                    $data['message'] = "We have receive your request, kindly launch the app to reset your password.";
+                }
+
                 return view('accounts.confirmation-ress-pass',$data); 
             }
  
@@ -285,17 +313,7 @@ class AuthController extends Controller
         // \Firebase\JWT\JWT::$leeway = 180+8;
         $client = new \Google_Client(['client_id' => env('GOOGLE_CLIENT_ID'),'client_secret' => env('GOOGLE_CLIENT_SECRET')]); 
         $payload = $client->verifyIdToken($google_token_id);
-        // do {
-        //     $attempt = 0;
-        //     try {
-        //         $payload = $client->verifyIdToken($google_token_id);
-        //         $retry = false;
-        //     } catch (Firebase\JWT\BeforeValidException $e) {
-        //         $attempt++;
-        //         $retry = $attempt < 10;
-        //     }
-        // } while ($retry);
-
+  
         if($payload == false)
             return (new ResponseTransformer)->toJson(400,__('message.401'),'google_token_id : '.__('messages.401'));
 
@@ -315,13 +333,23 @@ class AuthController extends Controller
             $user->id = $uuid;
         }
         
+        if($request->filled('notif_player_id') && $request->filled('platform')){
+            $check = UserDeviceModel::where('player_id',$request->notif_player_id)->first();
+            if($check!= null && $check->user_id != $user->id) $check->delete();
+
+            UserDeviceModel::firstOrCreate(
+                [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
+                [ 'id' => Uuid::uuid4()]
+            );
+        }
+
         $data = new \stdClass();
         $data->id = $user->id;
         $data->first_name = $user->first_name;
         $data->last_name = $user->last_name;
         $data->email = $user->email;
         $data->email = $user->email;
-        $data->image_profile = defaultImage('user');
+        $data->image_profile = defaultImage('user',$user);
         $data->access_token = $this->createToken($user);
 
         DB::commit();
@@ -360,9 +388,19 @@ class AuthController extends Controller
         $data->first_name = $user->first_name;
         $data->last_name = $user->last_name;
         $data->email = $user->email;
-        $data->image_profile = defaultImage('user');
+        $data->image_profile = defaultImage('user',$user);
         $data->access_token = $this->createToken($user);
 
+        if($request->filled('notif_player_id') && $request->filled('platform')){
+            $check = UserDeviceModel::where('player_id',$request->notif_player_id)->first(); 
+            if($check!= null && $check->user_id != $user->id) $check->delete();
+
+            UserDeviceModel::firstOrCreate(
+                [ 'player_id' => $request->notif_player_id ,  'platform' => $request->platform , 'user_id' =>  $user->id],
+                [ 'id' => Uuid::uuid4()]
+            );
+        }
+        
         DB::commit();
                
         return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
@@ -379,14 +417,20 @@ class AuthController extends Controller
  
         try {
  
-        $user = User::where('email',$request->email)->first();
+        $token = $request->server_auth_code;
+        $token_decode = JWT::urlsafeB64Decode($token);
+        $token_decode = json_decode($token_decode);  
 
+        if(!isset($token_decode->email))
+            return (new ResponseTransformer)->toJson(400,__('messages.400'));
+
+        $user = User::where('email',$token_decode->email)->first(); 
         if($user == null ){
             $user = User::create([
-                    "email" => $request->email,
+                    "email" => $token_decode->email,
                     "id" => $uuid = Uuid::uuid4(),
-                    "first_name" => $request->first_name,
-                    "last_name" => $request->last_name,
+                    "first_name" => explode('@',$token_decode->email)[0],
+                    "last_name" => "",
                     "email_verified_at" => date("Y-m-d H:i:s")
                 ]
             );
@@ -398,7 +442,7 @@ class AuthController extends Controller
         $data->first_name = $user->first_name;
         $data->last_name = $user->last_name;
         $data->email = $user->email;
-        $data->image_profile = defaultImage('user');
+        $data->image_profile    = defaultImage('user',$user);
         $data->access_token = $this->createToken($user);
 
         DB::commit();
@@ -485,16 +529,16 @@ class AuthController extends Controller
     public function checkAppUpdate(){
         $data = [
             "android" => [
-                "version_code" => env('ANDROID_VERSION_CODE',0),
+                "version_code" => (integer) env('ANDROID_VERSION_CODE',0),
                 "version_name" => env('ANDROID_VERSION_NAME'),
                 "version_mandatory" => env('ANDROID_VERSION_MANDATORY'),
                 "download_url" => env('ANDROID_PLAYSTORE_URL')
             ],
             "ios" => [
-                "version_code" => 20,
-                "version_name" => "1.1.2.0",
-                "version_mandatory" => false,
-                "download_url" => ""
+                "version_code" => (integer) env('IOS_VERSION_CODE'),
+                "version_name" => env('IOS_VERSION_NAME'),
+                "version_mandatory" => env('IOS_VERSION_MANDATORY'),
+                "download_url" =>  env('IOS_APP_STORE_URL')
             ]
         ];
 

@@ -14,7 +14,15 @@ class AuthTransformer {
         $temp->first_name = $model->first_name;
         $temp->last_name  = $model->last_name;
         $temp->email      = $model->email;
-        $temp->image_profile = defaultImage('user');
+        // $temp->followed   = $model->Followed;
+        // $temp->Follower   = $model->Follower;
+        $temp->point      = $model->Point->sum('value');
+        $temp->image_profile = defaultImage('user',$model);
+        $temp->image_background = $model->image_background_path && $model->image_background_file ? (object) [
+            "image_background_path" => $model->image_background_path,
+            "image_background_file" => $model->image_background_file,
+            "image_background_url" => getPublicFile($model->image_background_path,$model->image_background_file)
+        ]:null;
 
         $model->accessToken && $temp->access_token = $model->accessToken;
 
@@ -35,7 +43,7 @@ class AuthTransformer {
                 $tmp->file_mime = $data->file_mime;
                 $tmp->file_full_path = $data->file_full_path;
             }else{
-                $dumy_image = defaultImage('user'); 
+                $dumy_image = defaultImage('user',$data); 
                 $tmp->file_path = $dumy_image['file_path'];
                 $tmp->file_name = $dumy_image['file_name'];
                 $tmp->file_mime = $dumy_image['file_mime'];

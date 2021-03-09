@@ -4,8 +4,10 @@ namespace App\Http\Transformers\V1;
 use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Http\JsonResponse;
-use App\Http\Transformers\ResponseTransformer; 
+use App\Http\Transformers\ResponseTransformer;
+use App\Http\Transformers\V1\UserTransformer; 
 use Carbon\Carbon; 
+use App\Http\Models\MissionResponeModel;
 
 class ClassRoomTransformer {
 
@@ -24,7 +26,7 @@ class ClassRoomTransformer {
         return (new ResponseTransformer)->toJson($code,$message,$models,$custome_model);
     }
 
-    public function item($model){ 
+    public function item($model){
 
         $temp = new \stdClass(); 
         $temp->id           = $model->id;
@@ -32,7 +34,21 @@ class ClassRoomTransformer {
         $temp->text         = $model->text;
         $temp->file_path    = $model->file_path;
         $temp->file_name    = $model->file_name;
-        $temp->file_mime    = $model->file_mime;
+        $temp->file_mime      = $model->file_mime;
+        $temp->total_mission  = $model->Mission->count();
+        $temp->total_respone  = 0;  
+        $temp->total_like     = $model->Like ? $model->Like->count() : 0;
+        $temp->liked        = false;
+
+        if(auth('api')->user())
+            $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
+
+        $temp->user           = UserTransformer::item($model->User);
+
+        $temp->share_url = url('/open-app/classroom/'.$model->id);
+        
+        // $temp->total_respone  = MissionResponeModel::whereIn('id',[1,2,3])->count();
+
         $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.'/'.$model->file_name);
         $temp->type         = $this->_type($model->type); 
         $temp->created_at   = dateFormat($model->created_at);

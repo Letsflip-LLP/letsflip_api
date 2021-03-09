@@ -16,8 +16,13 @@ use App\Http\Models\MissionResponeContentModel;
 use App\Http\Models\TagModel; 
 use App\Http\Models\LikeModel;
 use App\Http\Models\MissionReportModel;
+use App\Http\Models\NotificationModel;
+use App\Http\Models\ClassRoomModel;
+use App\Http\Models\UserPointsModel; 
 use Ramsey\Uuid\Uuid;
 use DB;
+use App\Http\Libraries\Notification\NotificationManager;
+use Jenssegers\Agent\Agent; 
 
 class MissionController extends Controller
 {
@@ -51,8 +56,8 @@ class MissionController extends Controller
             $mission->user_id   = $this->user_login->id;
             $mission->title     = $request->title; 
             $mission->text      = $request->text; 
-            $mission->type      = $request->type;
-            $mission->status    = 1;
+            $mission->type      = $request->input('type',1);
+            $mission->status    = $request->input('status',1);
             $mission->default_content_id    =  $mission_content_id;
 
             if($thumbnail != null){
@@ -92,17 +97,26 @@ class MissionController extends Controller
                 $classroom_id = explode(',',$request->tag_classroom_ids);
                 $insert_class_tags = [];
                 foreach($classroom_id as $cl_id){
-                    $temp_id[$cl_id] = Uuid::uuid4(); 
+                    $class_room_detail = ClassRoomModel::where('id',$cl_id)->first();
 
-                    $tag_model = new TagModel; 
-                    $tag_model->firstOrCreate(
-                        [
-                            "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $cl_id , "type" => 1
-                        ],
-                        [
-                            "id" => Uuid::uuid4()
-                        ]
-                    );
+                    if($class_room_detail){
+                        $temp_id[$cl_id] = Uuid::uuid4(); 
+                        $tag_model = new TagModel; 
+                        $tag_model->firstOrCreate(
+                            [
+                                "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $cl_id , "type" => 1
+                            ],
+                            [
+                                "id" => Uuid::uuid4()
+                            ]
+                        );
+
+                        //NOTIF FOR OWN OF CLASSROM
+                        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room_detail->user_id,[
+                            "mission_id" => $mission_id,
+                            "classroom_id" => $class_room_detail->id
+                        ],2); 
+                    }
                 }
             }
 
@@ -126,9 +140,29 @@ class MissionController extends Controller
             }
 
     
-
-            
-
+            //NOTIF FOR OWN OF CLASSROM
+            if($mission->status == 1){
+                $is_first = UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() ? false : true;
+                UserPointsModel::insert([
+                    "user_id_to" => $this->user_login->id,
+                    "mission_id" => $mission_id,
+                    "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
+                    "type" => $is_first ? 1 : 2,
+                    "id" => $point_id = Uuid::uuid4()
+                ]); 
+    
+                $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                    "mission_id" => $mission_id,
+                    "point_id" => $point_id
+                ],11,[
+                    "type"=>"point",
+                    "payload"=>[
+                        "title"=>"CONGRATULATIONS!",
+                        "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
+                        "value"=> $earn_point ]
+                ]);
+            }
+        
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'),$mission);
@@ -149,9 +183,12 @@ class MissionController extends Controller
         try {
            
             $check = MissionResponeModel::where('user_id',$this->user_login->id)->where('mission_id',$request->mission_id)->first();
+            
+            // if($check != null)
+            //     return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
 
-            if($check != null)
-                return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
+            $mission_detail = MissionModel::where('id',$request->mission_id)->first();
+ 
 
             $thumbnail  = null; 
 
@@ -171,8 +208,8 @@ class MissionController extends Controller
             $mission_respone->mission_id= $request->mission_id;
             $mission_respone->title     = $request->title; 
             $mission_respone->text      = $request->text; 
-            $mission_respone->type      = $request->type;
-            $mission_respone->status    = 1;
+            $mission_respone->type      = $request->input('type',1);
+            $mission_respone->status    = $request->input('status',1);
             $mission_respone->default_content_id = $mission_respone_content_id;
 
             if($thumbnail != null){
@@ -206,6 +243,68 @@ class MissionController extends Controller
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
+            // NOTIF FOR OWN OF MISSION 
+            $notif_new_respone = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
+                            [
+                                "respone_id" => $mission_respone_id,
+                                "mission_id"  => $mission_detail->id
+                            ],1);
+
+            // ADD POINT
+            UserPointsModel::insert([
+                [
+                    "user_id_to" => $this->user_login->id,
+                    "mission_id" => $mission_detail->id,
+                    "respone_id" => $mission_respone_id,
+                    "value" => $earn_point =  env('POINT_TYPE_3'),
+                    "type" => 3,
+                    "id" => $point_id = Uuid::uuid4(),
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ],
+                [
+                    "user_id_to" => $mission_detail->user_id,
+                    "mission_id" => $mission_detail->id,
+                    "respone_id" => $mission_respone_id,
+                    "value" => $earn_point2= env('POINT_TYPE_4'),
+                    "type" => 4,
+                    "id" => $point_id2 = Uuid::uuid4(),
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ]
+            ]); 
+
+            // FOR RESPONDEND
+            $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                "mission_id" => $mission_detail->id,
+                "respone_id" => $mission_respone_id,
+                "point_id" => $point_id
+            ],11,[
+                "type"=> "point",
+                "payload"=> [
+                    "type"=> "point",
+                    "title"=>"CONGRATULATIONS!",
+                    "text" => "You have earned ".$earn_point." PTS for Created Response!",
+                    "value" => $earn_point
+                ]
+            ]);
+
+            // FOR MISSION OWNER
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
+                "mission_id" => $mission_detail->id,
+                "respone_id" => $mission_respone_id,
+                "point_id" => $point_id2
+            ],11,[
+                "type"=> "point",
+                "payload"=> [
+                    "type"=> "point",
+                    "title"=>"CONGRATULATIONS!",
+                    "text" => "You have earned ".$earn_point2." PTS for Created Response!",
+                    "value" => $earn_point2
+                ]
+            ]);
+
+ 
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
@@ -228,9 +327,20 @@ class MissionController extends Controller
         try {
 
             $mission = new MissionModel;
-            
+
+            if(!$this->user_login || !$this->user_login->id)
+                $mission = $mission->where('status',1);
+        
+            if(!$request->filled('user_id') || ($this->user_login && $request->filled('user_id') != $this->user_login->id))
+                $mission = $mission->where('status',1);
+                
             if($request->filled('search'))
                 $mission = $mission->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
+
+            if($request->filled('classroom_id'))
+                $mission = $mission->whereHas('ClassRoomTag',function($q) use($request) {
+                    $q->where('foreign_id',$request->classroom_id);
+                });
 
             if($request->filled('order_by')){
                 $order_by = explode('-',$request->order_by); 
@@ -245,10 +355,25 @@ class MissionController extends Controller
                 $mission = $mission->orderBy('created_at','DESC'); 
             }
                 
-            if($request->filled('user_id'))
+            if($request->filled('user_id') && !$request->filled('module'))
                 $mission = $mission->where('user_id',$request->user_id);
-
             
+            if($request->filled('user_id') && $request->filled('module')){
+                if($request->module == 'response'){
+                    $mission = $mission->whereHas('Respone',function($q) use ($request){
+                        $q->where('user_id',$request->user_id);
+                    });
+                }
+
+                if($request->module == 'all'){
+                    $mission = $mission->where('user_id',$request->user_id);
+                    $mission = $mission->orWhereHas('Respone',function($q) use ($request){
+                        $q->where('user_id',$request->user_id);
+                    });
+                }
+
+            }
+
             $mission = $mission->paginate($request->input('per_page',10)); 
             // $mission = $mission->paginate(30);
 
@@ -299,26 +424,50 @@ class MissionController extends Controller
        $model1 = $model1->where('user_id',$this->user_login->id);
 
        if($request->filled("mission_id")){
-             $model1 = $model1->where('mission_id',$request->mission_id);
+             $model1 = $model1->where('mission_id',$request->mission_id)->first(); 
              $model2->mission_id = $request->mission_id;
+              
+             // Notify to user  
+             if($model1 == null){
+                $mission_detail = MissionModel::where('id',$request->mission_id)->first();
+                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
+                [ 
+                    "mission_id"  => $request->mission_id
+                ],3);
+             } 
        }
 
         if($request->filled("mission_comment_id")){
-            $model1 = $model1->where('mission_comment_id',$request->mission_comment_id);
+            $model1 = $model1->where('mission_comment_id',$request->mission_comment_id)->first();
             $model2->mission_comment_id = $request->mission_comment_id;
         }
         
         if($request->filled("mission_respone_id")){
-            $model1 = $model1->where('mission_respone_id',$request->mission_respone_id);
+            $model1 = $model1->where('mission_respone_id',$request->mission_respone_id)->first();
             $model2->mission_respone_id = $request->mission_respone_id;
+
+            // Notify to user
+           if($model1 == null){
+                $res_mission_detail = MissionResponeModel::where('id',$request->mission_respone_id)->first();
+                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$res_mission_detail->user_id,
+                [ 
+                    "mission_id"  => $res_mission_detail->mission_id,
+                    "respone_id"  => $request->mission_respone_id
+                ],4);
+            }
         }
 
         if($request->filled("mission_comment_respone_id")){
-            $model1 = $model1->where('mission_respone_comment_id',$request->mission_comment_respone_id);
+            $model1 = $model1->where('mission_respone_comment_id',$request->mission_comment_respone_id)->first();
             $model2->mission_respone_comment_id = $request->mission_comment_respone_id;
         }
 
-        if($model1->first() == null){
+        if($request->filled("classroom_id")){
+            $model1 = $model1->where('classroom_id',$request->classroom_id)->first();
+            $model2->classroom_id = $request->classroom_id;
+        }
+
+        if($model1 == null){
             $model2->id      = Uuid::uuid4();
             $model2->user_id = $this->user_login->id;
             $model2->save();
@@ -408,6 +557,8 @@ class MissionController extends Controller
             if($request->filled('user_id'))
                 $respone_mission = $respone_mission->where('user_id',$request->user_id);
 
+            $respone_mission = $respone_mission->where('status',1);
+
             $respone_mission = $respone_mission->orderBy('created_at','DESC')->get(); 
 
             DB::commit();
@@ -438,6 +589,24 @@ class MissionController extends Controller
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS2");
 
 
+            // REMOVE POINT
+            $point = UserPointsModel::where('mission_id',$request->mission_id)
+                                    ->where('user_id_to',$this->user_login->id)
+                                    ->whereIn('type',[1,2])
+                                    ->first();
+
+            if($point){
+                $point_detail = $point;
+                // dd($point);
+                $point->delete();
+    
+                // FOR DELETED MISSION
+                $add_notif = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                    "mission_id" => $mission->id,
+                    "point_id" => $point_detail->id
+                ],12);
+            }
+
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
@@ -450,6 +619,43 @@ class MissionController extends Controller
         }  
     }
 
+
+    public function editMission(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+
+            $mission = new MissionModel;
+            $mission = $mission->where('id',$request->mission_id)->where('user_id' , $this->user_login->id)->first();
+             
+            if($mission == null)
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS1");
+
+
+            if($request->filled('status'))
+                $mission->status = $request->status;
+
+            if($request->filled('title'))
+                $mission->title = $request->title;
+            
+            if($request->filled('text'))
+                $mission->text = $request->text;
+            
+            if(!$mission->save())
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS2");
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
 
     public function deleteResponeMission(Request $request){
 
@@ -471,6 +677,22 @@ class MissionController extends Controller
             if(!$mission_respone->delete())
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERRDELMIS2");
 
+           // REMOVE POINT
+            $point = UserPointsModel::where('respone_id',$request->mission_respone_id)
+                                    ->where('user_id_to',$this->user_login->id)
+                                    ->whereIn('type',[3])
+                                    ->first();         
+
+            if($point){
+                $point_detail = $point; 
+                $point->delete(); 
+                // FOR DELETED RESPONE
+                $add_notif = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                    "respone_id" => $request->mission_respone_id,
+                    "mission_id" => $mission_respone->mission_id,
+                    "point_id" => $point_detail->id
+                ],13);
+            }
 
         DB::commit();
     
@@ -484,7 +706,77 @@ class MissionController extends Controller
         }  
     }
 
-    public function openApp(){
-        return redirect(env('ANDROID_PLAYSTORE_URL'));
+    public function openApp(Request $request){
+        $data = null;
+
+        if($request->mission_id)
+            $data = MissionModel::where('id',$request->mission_id)->first(); 
+
+
+        if($request->mission_respone_id)
+            $data = MissionResponeModel::where('id',$request->mission_respone_id)->first(); 
+
+
+        if($data == null) abort(404);
+
+        $redirect_url   = 'https://getletsflip.com';
+        $deepLinkUrl    = 'letsflip://'.$request->getHost().'/open-app/mission/'.$request->mission_id;
+
+        if($request->mission_respone_id)
+            $deepLinkUrl .='?mission_respone_id='.$request->mission_respone_id;
+        
+        $agent = new Agent();
+        
+        if($agent->isAndroidOS())
+            $redirect_url = env('ANDROID_PLAYSTORE_URL');//redirect(env('ANDROID_PLAYSTORE_URL'));
+
+        if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
+            $redirect_url = env('IOS_APP_STORE_URL');//return redirect(env('IOS_APP_STORE_URL'));
+
+        return view('open-app.share-meta',
+            [
+                'redirect_url' => $redirect_url,
+                'deeplink_url' => $deepLinkUrl,
+                'title'=> $data->title,
+                'description'=>$data->text,
+                'og_image'=>Storage::disk('gcs')->url($data->image_path.'/'.$data->image_file)
+            ]); 
+    }
+
+
+    public function editResponeMission(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+
+            $mission_respone = new MissionResponeModel;
+            $mission_respone = $mission_respone->where('id',$request->mission_respone_id)->where('user_id',$this->user_login->id)->first();
+             
+            if($mission_respone == null)
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES001");
+    
+            if($request->filled('status'))
+                $mission_respone->status = $request->status;
+
+            if($request->filled('title'))
+                $mission_respone->title = $request->title;
+            
+            if($request->filled('text'))
+                $mission_respone->text = $request->text;
+
+            if(!$mission_respone->save())
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES002");
+ 
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 }

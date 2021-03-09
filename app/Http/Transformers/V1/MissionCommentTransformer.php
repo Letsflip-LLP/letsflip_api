@@ -58,7 +58,7 @@ class MissionCommentTransformer {
         $tmp->id            = $model->id;
         $tmp->first_name    = $model->first_name;
         $tmp->last_name     = $model->last_name;
-        $tmp->image_profile = defaultImage('user');
+        $tmp->image_profile = defaultImage('user',$model);
 
         return  $tmp;
     }

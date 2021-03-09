@@ -16,6 +16,7 @@
 			<div class="left-side">
 				<p>
 					{{$message}}
+					{{$deeplink_url}}
 				</p>
 				<h3>
 					The world<br />
@@ -28,4 +29,14 @@
 			</div>
 		</div>
 	</body>
+
+<script>
+	var fullPath = window.location.protocol + "//" + window.location.host + window.location.pathname + window.location.search
+	const urlParams = new URLSearchParams(window.location.search);	
+	if(urlParams.get('attempt') == null && urlParams.get('success') == null){
+		setTimeout(function(){ location.href = fullPath+'&attempt=1&success=true' ;},25);
+		location.href = '{{$deeplink_url}}';
+	}
+</script>
+
 </html>

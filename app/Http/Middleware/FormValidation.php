@@ -70,6 +70,7 @@ class FormValidation
             'title'  => 'required',
             'text'  => 'required',
             'type'  => 'required|in:1,2',
+            'status' => 'in:1,2',
             'file'  => Rule::requiredIf( function () use ($request){
              }),
             'file_path'  => Rule::requiredIf( function () use ($request){ return !$request->filled('file'); }),
@@ -115,6 +116,7 @@ class FormValidation
             'mission_comment_id' => 'exists:mission_comments,id',
             'mission_respone_id' => 'exists:mission_responses,id',
             'mission_comment_respone_id' => 'exists:mission_respone_comments,id',
+            'classroom_id' => 'exists:classrooms,id'
           ];
         break;
 
@@ -142,6 +144,13 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerEditMission':
+          return [ 
+            'mission_id' => 'exists:missions,id',
+            'status'     => 'in:1,2,3'
+          ];
+        break;
+        
         case 'GetMissionControllerGetMissionDetail':
           return [ 
             'id' => 'exists:missions'
@@ -169,9 +178,7 @@ class FormValidation
 
         case 'PostAuthControllerLoginApple':
           return [
-            'email' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required'
+            'server_auth_code' => 'required'
           ];
         break;
 
@@ -197,11 +204,44 @@ class FormValidation
           ];
         break;
 
+        case 'PostMissionControllerEditResponeMission':
+          return [
+            'mission_respone_id' => 'required|exists:mission_responses,id',
+            'status'=> 'in:1,2,3'
+          ];
+        break;
 
         case 'GetMissionControllerGetResponeMission':
           return [
             'mission_id' => 'exists:missions,id',
             'user_id' => 'exists:users,id'
+          ];
+        break;
+
+        case 'PostClassRoomControllerAddClassRoom':
+          return [
+            'text' => 'required',
+            'file' => 'required'
+          ];
+        break;
+
+        case 'GetUserControllerAddUserFollow':
+          return [
+            'user_id' => 'required|exists:users,id'
+          ];
+        break;
+
+        case 'PostUpdateProfileUserControllerUserSelfUpdateProfile':
+          return [
+            'description' => 'MIN:5|MAX:360',
+            'image_profile' => 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG|max:10000',
+            'image_background' => 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG|max:10000'
+          ];
+        break;
+
+        case 'GetClassRoomControllerGetDetailClassRoom':
+          return [
+            'classroom_id' => 'required|exists:classrooms,id', 
           ];
         break;
 

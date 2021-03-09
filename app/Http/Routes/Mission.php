@@ -31,6 +31,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         // MISSION
         Route::post('add', [MissionController::class, 'addMission'])->name('PostMissionControllerAddMission'); 
         Route::post('delete', [MissionController::class, 'deleteMission'])->name('PostMissionControllerDeleteMission'); 
+        Route::post('edit', [MissionController::class, 'editMission'])->name('PostMissionControllerEditMission'); 
 
         // COMMENTS
         Route::post('comment/add',      [MissionCommentController::class, 'addComment'])->name('PostMissionCommentControllerAddComment');
@@ -48,6 +49,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             // RESPONE
             Route::post('add', [MissionController::class, 'addResponeMission'])->name('PostMissionResponeControllerAddRespone'); 
             Route::post('delete', [MissionController::class,'deleteResponeMission'])->name('PostMissionControllerDeleteResponeMission'); 
+            Route::post('edit', [MissionController::class,'editResponeMission'])->name('PostMissionControllerEditResponeMission'); 
 
             Route::post('comment/add', [MissionCommentController::class, 'addCommentResponeMission'])->name('PostMissionCommentControllerAddCommentResponeMission'); 
             Route::get('comment/list', [MissionCommentController::class, 'getCommentResponeMission'])->name('PostMissionCommentControllerGetCommentResponeMission'); 
@@ -68,10 +70,12 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
     // Need Login
     $router->group(['middleware'=> ['auth:api','verified']], function($router){
         Route::post('add', [ClassRoomController::class, 'addClassRoom'])->name('PostClassRoomControllerAddClassRoom');
+        Route::post('delete', [ClassRoomController::class, 'deleteClassRoom'])->name('PostClassRoomControllerDeleteClassRoom');
     });
 
     // Login Not Required
     Route::get('list', [ClassRoomController::class, 'getClassRoom'])->name('GetClassRoomControllerGetClassRoom');
+    Route::get('detail', [ClassRoomController::class, 'getDetailClassRoom'])->name('GetClassRoomControllerGetDetailClassRoom');
 });
 
  

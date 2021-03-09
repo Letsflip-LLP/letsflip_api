@@ -30,8 +30,22 @@ class MissionTransformer {
         $temp->id                   = $model->id;
         $temp->title                = $model->title;
         $temp->text                 = $model->text; 
+        $temp->status               = $model->status; 
+
+        $temp->my_response           = null;
         
-        $temp->thumbnail             =  [
+        if(auth('api')->user() && $model->Respone){
+            $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first();
+            
+            if($my_response)
+            $temp->my_response  = (object) [
+                "id" => $my_response->id,
+                "title" => $my_response->title,
+                "status" => $my_response->status
+            ];
+        }
+
+        $temp->thumbnail    =  [
             "image_path" => $image_path =  $model->image_path ? $model->image_path : "mission/tumbnail/image",
             "image_file" => $image_file =  $model->image_path ? $model->image_file : "d4eb8193-f6f4-4f5e-a3ae-4a83b5ea4cbc.jpeg",
             "image_full_path" => getPublicFile($image_path,$image_file)
@@ -89,7 +103,7 @@ class MissionTransformer {
         $tmp->id            = $model->id;
         $tmp->first_name    = $model->first_name;
         $tmp->last_name     = $model->last_name;
-        $tmp->image_profile = defaultImage('user');
+        $tmp->image_profile = defaultImage('user',$model);
 
         return  $tmp;
     }
