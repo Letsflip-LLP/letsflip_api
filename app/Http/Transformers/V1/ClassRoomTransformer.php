@@ -35,7 +35,7 @@ class ClassRoomTransformer {
         $temp->file_path    = $model->file_path;
         $temp->file_name    = $model->file_name;
         $temp->file_mime      = $model->file_mime;
-        $temp->total_mission  = $model->Mission->count();
+        $temp->total_mission  = $model->Mission ? $model->Mission->where('status',1)->count() : 0;
         $temp->total_respone  = 0;  
         $temp->total_like     = $model->Like ? $model->Like->count() : 0;
         $temp->liked        = false;
