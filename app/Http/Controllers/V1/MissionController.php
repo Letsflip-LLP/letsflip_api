@@ -374,7 +374,11 @@ class MissionController extends Controller
 
             }
 
-            $mission = $mission->paginate($request->input('per_page',10)); 
+            $perPage = $request->input('per_page',10);
+            if($perPage < 10) 
+                $perPage = 20;
+                
+            $mission = $mission->paginate($perPage); 
             // $mission = $mission->paginate(30);
 
         DB::commit();
