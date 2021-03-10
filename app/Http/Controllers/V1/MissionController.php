@@ -875,7 +875,7 @@ class MissionController extends Controller
         DB::beginTransaction();
 
         try {
-
+            $answer_id       = null;
             $mission_detail  = MissionModel::where('id',$request->mission_id)->first();
             $question_detail = MissionQuestionModel::where('id',$request->question_id)->first();
             
@@ -906,7 +906,7 @@ class MissionController extends Controller
 
                 if($exist == null){
                     $insert                 = new MissionAnswerModel;
-                    $insert->id             = Uuid::uuid4();
+                    $insert->id             = $answer_id = Uuid::uuid4();
                     $insert->user_id        = $this->user_login->id;
                     $insert->question_id    = $request->question_id;
                     $insert->answer         = $request->answer;
@@ -916,27 +916,29 @@ class MissionController extends Controller
                     $exist->question_id    = $request->question_id;
                     $exist->answer         = $request->answer;
                     $exist->update();
+                    $answer_id = $exist->id;
                 }
             }
 
             if($question_detail->type == 2){
                 if(!$request->filled('answer_id')){
                     $insert                 = new MissionAnswerModel;
-                    $insert->id             = Uuid::uuid4();
+                    $insert->id             = $answer_id = Uuid::uuid4();
                     $insert->user_id        = $this->user_login->id;
                     $insert->question_id    = $request->question_id;
                     $insert->answer         = $request->answer;
-                    $insert->save();
+                    $insert->save();  
                 }else{
                     $update                 = MissionAnswerModel::where('id',$request->answer_id)->first();
                     $update->answer         = $request->answer;
                     $update->update();
+                    $answer_id = $update->id;
                 }
             }
 
         DB::commit();
     
-            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),(object) ["answer_id" => $answer_id]);
 
         } catch (\exception $exception){
            
