@@ -910,11 +910,13 @@ class MissionController extends Controller
                     $insert->user_id        = $this->user_login->id;
                     $insert->question_id    = $request->question_id;
                     $insert->answer         = $request->answer;
+                    $insert->is_true        = $question_detail->correct_option == $request->answer ? true : false;
                     $insert->save();
                 }else{
                     $exist->user_id        = $this->user_login->id;
                     $exist->question_id    = $request->question_id;
                     $exist->answer         = $request->answer;
+                    $exist->is_true        = $question_detail->correct_option == $request->answer ? true : false;
                     $exist->update();
                     $answer_id = $exist->id;
                 }
@@ -927,10 +929,12 @@ class MissionController extends Controller
                     $insert->user_id        = $this->user_login->id;
                     $insert->question_id    = $request->question_id;
                     $insert->answer         = $request->answer;
+                    $insert->is_true         = 1;
                     $insert->save();  
                 }else{
                     $update                 = MissionAnswerModel::where('id',$request->answer_id)->first();
                     $update->answer         = $request->answer;
+                    $update->is_true         = 1;
                     $update->update();
                     $answer_id = $update->id;
                 }
