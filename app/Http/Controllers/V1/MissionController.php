@@ -895,6 +895,12 @@ class MissionController extends Controller
                 'option7',
             ];
             
+            $payload_current_ = (object) [
+                "question_detail" => $question_detail,
+                "mission_detail"  => $mission_detail,
+                "answer_detail"   => $request->all()
+            ];
+
             if($question_detail->type == 1){
                 if(!in_array($request->answer,$multi_c))
                     return (new ResponseTransformer)->toJson(400,__('validation.exists',["attribute" => "answer"]),["answer" => [__('validation.exists',["attribute" => "answer"])]]);
@@ -911,12 +917,14 @@ class MissionController extends Controller
                     $insert->question_id    = $request->question_id;
                     $insert->answer         = $request->answer;
                     $insert->is_true        = $question_detail->correct_option == $request->answer ? true : false;
+                    $insert->payload        = json_encode($payload_current_);
                     $insert->save();
                 }else{
                     $exist->user_id        = $this->user_login->id;
                     $exist->question_id    = $request->question_id;
                     $exist->answer         = $request->answer;
                     $exist->is_true        = $question_detail->correct_option == $request->answer ? true : false;
+                    $exist->payload        = json_encode($payload_current_);
                     $exist->update();
                     $answer_id = $exist->id;
                 }
@@ -930,11 +938,13 @@ class MissionController extends Controller
                     $insert->question_id    = $request->question_id;
                     $insert->answer         = $request->answer;
                     $insert->is_true         = 1;
+                    $insert->payload        = json_encode($payload_current_);
                     $insert->save();  
                 }else{
                     $update                 = MissionAnswerModel::where('id',$request->answer_id)->first();
                     $update->answer         = $request->answer;
-                    $update->is_true         = 1;
+                    $update->is_true        = 1;
+                    $update->payload        = json_encode($payload_current_);
                     $update->update();
                     $answer_id = $update->id;
                 }
