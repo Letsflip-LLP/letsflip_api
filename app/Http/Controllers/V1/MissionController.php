@@ -255,7 +255,6 @@ class MissionController extends Controller
                 return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
 
             $mission_detail = MissionModel::where('id',$request->mission_id)->first();
- 
 
             $thumbnail  = null; 
 
@@ -371,18 +370,58 @@ class MissionController extends Controller
                 ]
             ]);
 
- 
+                    
+            $answer = new MissionAnswerModel;
+            $answer = $answer->where('user_id',$this->user_login->id)->wherehas('Question',function($q) use ($mission_detail){
+                $q->where('mission_questions.mission_id',$mission_detail->id);
+            })->get();
+
+            $point = 0;
+
+            if($answer){
+                foreach($answer as $ans){ 
+                    if($ans->Question->type == 2 && $ans->is_true == 1)
+                        $point = $point + env('TYPE_2_TRUE');
+
+                    if($ans->Question->type == 2 && $ans->is_true == 0)
+                        $point = $point + env('TYPE_2_FALSE');
+                    
+                    if($ans->Question->type == 1 && $ans->is_true == 1)
+                        $point = $point + env('TYPE_1_TRUE');
+
+                    if($ans->Question->type == 1 && $ans->is_true == 0)
+                        $point = $point + env('TYPE_1_FALSE');
+                }
+                // insert point for answer question
+
+                // ADD POINT
+                UserPointsModel::insert([
+                    [
+                        "user_id_to" => $this->user_login->id,
+                        "mission_id" => $mission_detail->id,
+                        "respone_id" => $mission_respone_id,
+                        "value" => $answer_point =  $point,
+                        "type" => 5,
+                        "id" => Uuid::uuid4(),
+                        "created_at" => date('Y-m-d H:i:s'),
+                        "updated_at" => date('Y-m-d H:i:s')
+                    ]
+                ]); 
+            }
+
+
+
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
 
-        } catch (\exception $exception){
-         
+        } catch (\Exception $exception){
+
+            DB::rollBack();
+
             if(isset($storage) && isset($storage->file_path) && isset($storage->file_name))
                 Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
             
-            DB::rollBack();
-
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
