@@ -15,7 +15,7 @@ class AddPayloadInMissionAnswers extends Migration
     {
         Schema::table('mission_answers', function (Blueprint $table) {
             //
-            $table->longText('payload')->after('is_true')->default("")->comment('Current payload when user answer the question');
+            $table->longText('payload')->after('is_true')->nullable()->comment('Current payload when user answer the question');
         });
     }
 
