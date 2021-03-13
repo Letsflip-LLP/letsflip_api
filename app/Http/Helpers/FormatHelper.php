@@ -89,3 +89,9 @@ function subsType($type){
             break;
     }
 }
+
+
+function getEmothName(){
+    $emoth = config('static_db.review.emotion_list');
+    return array_column($emoth,'id');
+}

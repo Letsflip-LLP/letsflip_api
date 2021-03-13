@@ -46,8 +46,8 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
 
         // REVIEW MISSION
         $router->group(['prefix' => 'review'], function($router){
-            Route::post('add-review', [MissionController::class, 'addReviewMission'])->name('PostClassRoomControllerAddReviewMission');
-            Route::get('get-review-emotions', [MissionController::class, 'getReviewEmotions'])->name('PostClassRoomControllerAddReviewMission');
+            Route::post('add-review', [MissionController::class, 'addReview'])->name('PostMissionControllerAddReviewMission');
+            Route::get('get-review-emotions', [MissionController::class, 'getReviewEmotions'])->name('GetMissionControllerGetReviewEmotions');
         });
         
         // Response Mission

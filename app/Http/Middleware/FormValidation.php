@@ -34,7 +34,8 @@ class FormValidation
         }
     }
 
-    private function _selector($route,$request){
+    private function _selector($route,$request){ 
+
       switch ($route) { 
         // AUTH
         case 'PostAuthControllerRegister':
@@ -270,6 +271,13 @@ class FormValidation
             'mission_id' => 'required|exists:missions,id',
             'question_id' => 'required|exists:mission_questions,id',
             'answer_id' => 'exists:mission_answers,id' 
+          ];
+        break;
+
+        case 'PostMissionControllerAddReviewMission':
+          return [
+            'mission_id' => 'required|exists:missions,id', 
+            'feeling'    => 'required|in:'.implode(',',getEmothName())
           ];
         break;
 

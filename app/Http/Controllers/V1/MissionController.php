@@ -22,6 +22,7 @@ use App\Http\Models\ClassRoomModel;
 use App\Http\Models\UserPointsModel; 
 use App\Http\Models\MissionQuestionModel; 
 use App\Http\Models\MissionAnswerModel;
+use App\Http\Models\ReviewModel;
 
 use Ramsey\Uuid\Uuid;
 use DB;
@@ -1006,5 +1007,44 @@ class MissionController extends Controller
         $emots  = $review['emotion_list'];
 
         return (new ResponseTransformer)->toJson(200,__('messages.200'),$emots);
+    }
+
+    public function addReview(Request $request){
+        DB::beginTransaction();
+
+        try {
+
+            $model = new ReviewModel;
+            $model = $model
+                    ->where('user_id',$this->user_login->id)
+                    ->where('module','missions')
+                    ->where('module_id',$request->mission_id)
+                    ->first();
+
+            if($model == null){
+                $insert             = new ReviewModel;
+                $insert->id         = $review_id = Uuid::uuid4();
+                $insert->user_id    = $this->user_login->id;
+                $insert->module     = 'missions';
+                $insert->module_id  = $request->mission_id;
+                $insert->feeling    = $request->feeling;
+
+                if(!$insert->save())
+                    return (new ResponseTransformer)->toJson(400,__('messages.400'),false);
+            }else{
+                $model->feeling = $request->feeling;
+                $model->update();
+            }
+
+            DB::commit();
+        
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+        
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 }
