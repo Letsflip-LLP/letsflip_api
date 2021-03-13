@@ -43,7 +43,13 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         // REPORT 
         Route::post('report-content',   [MissionController::class, 'reportActionContent'])->name('PostMissionControllerReportActionContent');
 
- 
+
+        // REVIEW MISSION
+        $router->group(['prefix' => 'review'], function($router){
+            Route::post('add-review', [MissionController::class, 'addReviewMission'])->name('PostClassRoomControllerAddReviewMission');
+            Route::get('get-review-emotions', [MissionController::class, 'getReviewEmotions'])->name('PostClassRoomControllerAddReviewMission');
+        });
+        
         // Response Mission
         $router->group(['prefix' => 'respone'], function($router){
             // RESPONE
@@ -54,6 +60,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             Route::post('comment/add', [MissionCommentController::class, 'addCommentResponeMission'])->name('PostMissionCommentControllerAddCommentResponeMission'); 
             Route::get('comment/list', [MissionCommentController::class, 'getCommentResponeMission'])->name('PostMissionCommentControllerGetCommentResponeMission'); 
             Route::post('comment/delete', [MissionCommentController::class, 'deleteCommentResponeMission'])->name('PostMissionCommentControllerDeleteCommentResponeMission');
+        
         });
 
         $router->group(['prefix' => 'question'], function($router){
@@ -61,6 +68,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             Route::get('template', [MissionController::class, 'getQuestionTemplate'])->name('GetMissionControllerGetQuestionTemplate');
             Route::post('answer',   [MissionController::class, 'submitAnswerOfQuestion'])->name('PostMissionControllerSubmitAnswerOfQuestion');
         });
+
     });
 
  
@@ -79,7 +87,7 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
         Route::post('delete', [ClassRoomController::class, 'deleteClassRoom'])->name('PostClassRoomControllerDeleteClassRoom');
         
         // SUBSCRIBE CLASSROOM
-        Route::post('subscribe', [ClassRoomController::class, 'subscribeClassroom'])->name('PostClassRoomControllerSubscribeClassroom');
+        // Route::post('subscribe', [ClassRoomController::class, 'subscribeClassroom'])->name('PostClassRoomControllerSubscribeClassroom');
 
         Route::post('get-access', [ClassRoomController::class, 'getAccessClassRoom'])->name('PostClassRoomControllerGetAccess');
         Route::post('give-access', [ClassRoomController::class, 'giveAccessClassRoom'])->name('PostClassRoomControllerGiveAccessClassRoom');

@@ -1000,4 +1000,11 @@ class MissionController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function getReviewEmotions(){
+        $review = config('static_db.review'); 
+        $emots  = $review['emotion_list'];
+
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$emots);
+    }
 }
