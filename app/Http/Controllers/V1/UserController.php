@@ -12,7 +12,7 @@ use App\Http\Transformers\V1\UserTransformer;
 use App\Http\Transformers\V1\NotificationTransformer; 
 use App\Http\Models\NotificationModel;
 use App\Http\Models\UserFollowModel;
-use App\Http\Models\ClassroomModel;
+use App\Http\Models\ClassRoomModel;
 use Ramsey\Uuid\Uuid;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use Illuminate\Support\Facades\App;
