@@ -206,6 +206,13 @@ class UserController extends Controller
             if(!$request->filled('data'))
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
 
+            if($request->filled('classroom_id')){
+                $class_room = new ClassRoomModel;
+                $class_room = $class_room->where('id',$request->classroom_id)->first();
+                if($class_room == null)
+                    return (new ResponseTransformer)->toJson(400,__('messages.404'),["classroom_id" => ["Not found"]]);
+            }
+            
             $vendor_payload = $request->data;  
             $product_id = $vendor_payload['productId'];
             $transaction_id = $vendor_payload['transactionId'];
@@ -217,24 +224,11 @@ class UserController extends Controller
             if($validate_token_purchase == false)
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
 
-            if($request->filled('classroom_id')){
-                $class_room = new ClassRoomModel;
-                $class_room = $class_room->where('id',$request->classroom_id)->first();
-                if($class_room == null)
-                    return (new ResponseTransformer)->toJson(400,__('messages.404'),false);
-            }
-
             if(!isset($vendor_payload['productId']) || !isset($vendor_payload['transactionId']))
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
 
-    
 
-
-        if($this->user_login->Subscribe){
-            $check_sub = $this->user_login->Subscribe 
-            ->where('vendor_trx_id',$transaction_id)
-            ->first();
-        } 
+        $check_sub = SubscriberModel::where('vendor_trx_id',$transaction_id)->first();
 
         if($check_sub)
             return (new ResponseTransformer)->toJson(400,__('messages.401'),"Duplicated");
