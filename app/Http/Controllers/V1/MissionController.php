@@ -924,7 +924,7 @@ class MissionController extends Controller
                 return (new ResponseTransformer)->toJson(400,__('messages.404'),["mission_id" => "You have been response this mission before"]);
             
             $model = new MissionAnswerModel;
-
+            
             $multi_c = [
                 'option1',
                 'option2',
@@ -942,7 +942,13 @@ class MissionController extends Controller
             ];
 
             if($question_detail->type == 1){
-                if(!in_array($request->answer,$multi_c))
+                $multiple_answer = $request->answer;
+                $multiple_answer = isset($multiple_answer[0]) ? $multiple_answer[0] : null;
+
+                if(!$multiple_answer)
+                    return (new ResponseTransformer)->toJson(400,__('validation.exists',["attribute" => "answer"]),["answer" => [__('validation.exists',["attribute" => "answer"])]]);
+
+                if(!in_array($multiple_answer,$multi_c))
                     return (new ResponseTransformer)->toJson(400,__('validation.exists',["attribute" => "answer"]),["answer" => [__('validation.exists',["attribute" => "answer"])]]);
                 
                 $exist = MissionAnswerModel::where([
@@ -955,15 +961,15 @@ class MissionController extends Controller
                     $insert->id             = $answer_id = Uuid::uuid4();
                     $insert->user_id        = $this->user_login->id;
                     $insert->question_id    = $request->question_id;
-                    $insert->answer         = $request->answer;
-                    $insert->is_true        = $question_detail->correct_option == $request->answer ? true : false;
+                    $insert->answer         = $multiple_answer;
+                    $insert->is_true        = $question_detail->correct_option == $multiple_answer ? true : false;
                     $insert->payload        = json_encode($payload_current_);
                     $insert->save();
                 }else{
                     $exist->user_id        = $this->user_login->id;
                     $exist->question_id    = $request->question_id;
-                    $exist->answer         = $request->answer;
-                    $exist->is_true        = $question_detail->correct_option == $request->answer ? true : false;
+                    $exist->answer         = $multiple_answer;
+                    $exist->is_true        = $question_detail->correct_option == $multiple_answer ? true : false;
                     $exist->payload        = json_encode($payload_current_);
                     $exist->update();
                     $answer_id = $exist->id;
@@ -972,27 +978,30 @@ class MissionController extends Controller
 
             if($question_detail->type == 2){
                 if(!$request->filled('answer_id')){
-                    $insert                 = new MissionAnswerModel;
-                    $insert->id             = $answer_id = Uuid::uuid4();
-                    $insert->user_id        = $this->user_login->id;
-                    $insert->question_id    = $request->question_id;
-                    $insert->answer         = $request->answer;
-                    $insert->is_true         = 1;
-                    $insert->payload        = json_encode($payload_current_);
-                    $insert->save();  
-                }else{
-                    $update                 = MissionAnswerModel::where('id',$request->answer_id)->first();
-                    $update->answer         = $request->answer;
-                    $update->is_true        = 1;
-                    $update->payload        = json_encode($payload_current_);
-                    $update->update();
-                    $answer_id = $update->id;
-                }
+                    $delete = MissionAnswerModel::where('user_id',$this->user_login->id);
+                    $delete = $delete->where('question_id',$request->question_id); 
+                    $delete = $delete->delete();
+
+                    $answer = $request->answer;
+                    $answers_data = [];
+                    foreach($answer as $ans){
+                        $answers_data[] = [
+                            'id' => $answer_id = Uuid::uuid4(),
+                            'user_id' => $this->user_login->id,
+                            'question_id' =>$request->question_id,
+                            'answer' => $ans,
+                            'is_true' => 1,
+                            'payload' => json_encode($payload_current_)
+                        ];
+                    } 
+
+                    $insert = MissionAnswerModel::insert($answers_data); 
+                } 
             }
 
         DB::commit();
     
-            return (new ResponseTransformer)->toJson(200,__('messages.200'),(object) ["answer_id" => $answer_id]);
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
 
         } catch (\exception $exception){
            
