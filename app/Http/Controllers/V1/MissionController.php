@@ -482,8 +482,8 @@ class MissionController extends Controller
             }
 
             $perPage = $request->input('per_page',10);
-            if($perPage < 10) 
-                $perPage = 20;
+            // if($perPage < 10) 
+            //     $perPage = 20;
                 
             $mission = $mission->paginate($perPage); 
             // $mission = $mission->paginate(30);
@@ -983,9 +983,9 @@ class MissionController extends Controller
                     $delete = $delete->delete();
 
                     $answer = $request->answer;
-                    $answers_data = [];
+                    // $answers_data = [];
                     foreach($answer as $ans){
-                        $answers_data[] = [
+                        $answers_data = [
                             'id' => $answer_id = Uuid::uuid4(),
                             'user_id' => $this->user_login->id,
                             'question_id' =>$request->question_id,
@@ -993,10 +993,11 @@ class MissionController extends Controller
                             'is_true' => 1,
                             'payload' => json_encode($payload_current_)
                         ];
+
+                        $insert = MissionAnswerModel::insert($answers_data); 
                     } 
 
-                    $insert = MissionAnswerModel::insert($answers_data); 
-                } 
+                }
             }
 
         DB::commit();

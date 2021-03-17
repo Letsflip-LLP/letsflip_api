@@ -324,15 +324,21 @@ class ClassRoomController extends Controller
         $class_room = $class_room->first();
    
         if(!$class_room)
-            return (new ResponseTransformer)->toJson(400,__('messages.401'), true);
+            return (new ResponseTransformer)->toJson(400,__('messages.401'),(object)[
+                "access_code" => __('validation.exists',[ "atribute" => "Access code" ])
+            ]);
+            
+        $last_req = ClassroomAccessModel::where('classroom_id',$class_room->id)->where("user_id",$this->user_login->id)->where('status','!=',1)->first();
 
+        if($last_req)
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
 
         $access               = new ClassroomAccessModel;
         $access               = $access->updateOrCreate([
             "classroom_id" => $class_room->id,
+            "user_id"     =>  $this->user_login->id,
         ],
         [
-            "user_id"     =>  $this->user_login->id,
             "id"          =>  $access_id = Uuid::uuid4(),
             "access_code" => $request->access_code ? $request->access_code : null,
             "status"        => $request->filled('access_code') ? 1 : 2
