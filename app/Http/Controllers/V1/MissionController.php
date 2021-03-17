@@ -984,9 +984,11 @@ class MissionController extends Controller
 
                     $answer = $request->answer;
                     // $answers_data = [];
+                    $i = 0;
                     foreach($answer as $ans){
                         $answers_data = [
                             'id' => $answer_id = Uuid::uuid4(),
+                            'index' => $i++,
                             'user_id' => $this->user_login->id,
                             'question_id' =>$request->question_id,
                             'answer' => $ans,
