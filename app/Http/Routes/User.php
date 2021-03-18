@@ -18,6 +18,9 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
 
     // Need Login
     $router->group(['middleware'=> ['auth:api','verified']], function($router){
+        Route::post('subscribe', [UserController::class, 'subscribePremiumAccount'])->name('PostUserControllerSubscribePremiumAccount'); 
+
+        
         $router->group(['prefix' => 'self' ], function($router){
             Route::post('/update-profile', [UserController::class, 'userSelfUpdateProfile'])->name('PostUpdateProfileUserControllerUserSelfUpdateProfile');
 
@@ -35,7 +38,8 @@ $router->group(['middleware'=> [],'prefix' => 'user'], function($router){
     Route::get('list', [UserController::class, 'getPublicList'])->name('GetUserPublictList'); 
     Route::get('detail', [UserController::class, 'getPublicDetailUser'])->name('GetPublicUserDetail'); 
     Route::get('availlable-social-media', [UserController::class, 'availlableSocialMedia'])->name('GetUserControllerAvaillableSocialMedia'); 
-});
+
+ });
 
  
  

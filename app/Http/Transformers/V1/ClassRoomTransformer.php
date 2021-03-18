@@ -38,16 +38,42 @@ class ClassRoomTransformer {
         $temp->total_mission  = $model->Mission ? $model->Mission->where('status',1)->count() : 0;
         $temp->total_respone  = 0;  
         $temp->total_like     = $model->Like ? $model->Like->count() : 0;
-        $temp->liked        = false;
+        
+        $temp->liked            = false;
+        $temp->has_subscribe    = false;
+        $temp->access_code      = false;
 
-        if(auth('api')->user())
+        if(auth('api')->user()){
             $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
+  
+            if($model->type > 1 && auth('api')->user()->PremiumClassRoomAccess){ 
+                $check_access = auth('api')->user()->PremiumClassRoomAccess
+                                ->where('classroom_id',$model->id)->first();
+                    
+                if($check_access && $check_access->status == 1)
+                    $temp->has_subscribe = true;
+            }
+                
+            if(auth('api')->user() && auth('api')->user()->id == $model->User->id){
+                $temp->access_code = $model->access_code;
+            }
+        }
 
-        $temp->user           = UserTransformer::item($model->User);
+        if($model->type == 1)
+            $temp->has_subscribe = true;
 
+        $temp->market_product_id = (object) [
+            "android" => env('STORE_SUB_PRIVATE_PRODUCT_ID'),
+            "ios"     => env('STORE_SUB_PRIVATE_PRODUCT_ID')
+        ];
+
+        $temp->user           = UserTransformer::item($model->User); 
         $temp->share_url = url('/open-app/classroom/'.$model->id);
         
         // $temp->total_respone  = MissionResponeModel::whereIn('id',[1,2,3])->count();
+
+        // $temp->premium_user_access = $model->PremiumUserAccess;
+
 
         $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.'/'.$model->file_name);
         $temp->type         = $this->_type($model->type); 
@@ -60,14 +86,16 @@ class ClassRoomTransformer {
         switch ($type) {
             case 1:
                 return (object) [
-                    "id" => $type,
-                    "name" => "Public Class Room"
+                    "id"    => $type,
+                    "name"  => "Public Class Room",
+                    "price" => 0
                 ];
                 break;
             case 2:
                 return (object) [
-                    "id" => $type,
-                    "name" => "Private Class Room"
+                    "id"    => $type,
+                    "name"  => "Private Class Room",
+                    "price" => env('STORE_SUB_PRIVATE_PRODUCT_PRICE',100)
                 ];
                 break;
             case 3:

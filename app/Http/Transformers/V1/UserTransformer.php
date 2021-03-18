@@ -26,6 +26,12 @@ class UserTransformer {
         if(auth('api')->user() !=null && $model->Followed)
             $temp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
 
+        $temp->type = subsType(1);
+ 
+        if($model->Subscribe && $model->Subscribe->type > 1){
+            $temp->type = subsType($model->Subscribe->type);
+        }
+
         $temp->point      = $model->Point->sum('value');
         $temp->image_profile = defaultImage('user',$model);
         $temp->image_background = $model->image_background_path && $model->image_background_file ? (object) [

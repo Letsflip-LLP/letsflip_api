@@ -14,7 +14,9 @@ class MissionResponeModel extends Model
     public $incrementing = false; 
     protected $table = 'mission_responses';  
 
-
+    protected $fillable = [
+        "id", "user_id", "mission_id", "title", "text", "default_content_id", "image_path", "image_file", "status", "type", "created_at", "updated_at", "deleted_at"
+    ];   
 
     public function MissionContent()
     {

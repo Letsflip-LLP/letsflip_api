@@ -6,11 +6,13 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Transformers\ResponseTransformer; 
 use Carbon\Carbon; 
 use Illuminate\Support\Facades\Storage;
+use App\Http\Transformers\V1\QuickScoreTransformer; 
 
 class MissionTransformer {
 
     public function detail($code,$message,$model){ 
         $data = $this->item($model);
+        // $data->quick_scores = $model->QuickScores;
 
         return (new ResponseTransformer)->toJson($code,$message,$model,$data);
     }
@@ -28,6 +30,7 @@ class MissionTransformer {
  
         $temp = new \stdClass();
         $temp->id                   = $model->id;
+        $temp->difficulty_level     = $model->difficulty_level;
         $temp->title                = $model->title;
         $temp->text                 = $model->text; 
         $temp->status               = $model->status; 
@@ -44,6 +47,9 @@ class MissionTransformer {
                 "status" => $my_response->status
             ];
         }
+
+        $temp->has_learning_journey = $model->QuickScores && $model->QuickScores->where('type',2)->first() ? true : false;
+        $temp->has_quick_score = $model->QuickScores && $model->QuickScores->where('type',1)->first() ? true : false;
 
         $temp->thumbnail    =  [
             "image_path" => $image_path =  $model->image_path ? $model->image_path : "mission/tumbnail/image",

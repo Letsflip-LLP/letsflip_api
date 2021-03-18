@@ -43,7 +43,13 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         // REPORT 
         Route::post('report-content',   [MissionController::class, 'reportActionContent'])->name('PostMissionControllerReportActionContent');
 
- 
+
+        // REVIEW MISSION
+        $router->group(['prefix' => 'review'], function($router){
+            Route::post('add-review', [MissionController::class, 'addReview'])->name('PostMissionControllerAddReviewMission');
+            Route::get('get-review-emotions', [MissionController::class, 'getReviewEmotions'])->name('GetMissionControllerGetReviewEmotions');
+        });
+        
         // Response Mission
         $router->group(['prefix' => 'respone'], function($router){
             // RESPONE
@@ -51,10 +57,22 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             Route::post('delete', [MissionController::class,'deleteResponeMission'])->name('PostMissionControllerDeleteResponeMission'); 
             Route::post('edit', [MissionController::class,'editResponeMission'])->name('PostMissionControllerEditResponeMission'); 
 
+            // COMMENT
             Route::post('comment/add', [MissionCommentController::class, 'addCommentResponeMission'])->name('PostMissionCommentControllerAddCommentResponeMission'); 
             Route::get('comment/list', [MissionCommentController::class, 'getCommentResponeMission'])->name('PostMissionCommentControllerGetCommentResponeMission'); 
             Route::post('comment/delete', [MissionCommentController::class, 'deleteCommentResponeMission'])->name('PostMissionCommentControllerDeleteCommentResponeMission');
+        
+            // GRADE
+            Route::post('grading/add-preview', [MissionController::class, 'addGradingPreview'])->name('PostMissionControllerAddGradingPreview');
+            Route::get('grading/get-answer',  [MissionController::class, 'getAnswerResponseGrade'])->name('GetMissionControllerGetAnswerResponseGrade');
         });
+
+        $router->group(['prefix' => 'question'], function($router){
+            Route::get('list', [MissionController::class, 'getQuestionList'])->name('GetMissionControllerGetQuestionList');
+            Route::get('template', [MissionController::class, 'getQuestionTemplate'])->name('GetMissionControllerGetQuestionTemplate');
+            Route::post('answer',   [MissionController::class, 'submitAnswerOfQuestion'])->name('PostMissionControllerSubmitAnswerOfQuestion');
+        });
+
     });
 
  
@@ -71,6 +89,12 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
     $router->group(['middleware'=> ['auth:api','verified']], function($router){
         Route::post('add', [ClassRoomController::class, 'addClassRoom'])->name('PostClassRoomControllerAddClassRoom');
         Route::post('delete', [ClassRoomController::class, 'deleteClassRoom'])->name('PostClassRoomControllerDeleteClassRoom');
+        
+        // SUBSCRIBE CLASSROOM
+        // Route::post('subscribe', [ClassRoomController::class, 'subscribeClassroom'])->name('PostClassRoomControllerSubscribeClassroom');
+
+        Route::post('get-access', [ClassRoomController::class, 'getAccessClassRoom'])->name('PostClassRoomControllerGetAccess');
+        Route::post('give-access', [ClassRoomController::class, 'giveAccessClassRoom'])->name('PostClassRoomControllerGiveAccessClassRoom');
     });
 
     // Login Not Required

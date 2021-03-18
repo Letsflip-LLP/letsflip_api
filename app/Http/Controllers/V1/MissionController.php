@@ -9,6 +9,8 @@ use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\MissionTransformer; 
+use App\Http\Transformers\V1\QuickScoreTransformer; 
+use App\Http\Transformers\V1\AnswerTransformer; 
 use App\Http\Models\MissionModel;
 use App\Http\Models\MissionContentModel;
 use App\Http\Models\MissionResponeModel;
@@ -19,6 +21,11 @@ use App\Http\Models\MissionReportModel;
 use App\Http\Models\NotificationModel;
 use App\Http\Models\ClassRoomModel;
 use App\Http\Models\UserPointsModel; 
+use App\Http\Models\MissionQuestionModel; 
+use App\Http\Models\MissionAnswerModel;
+use App\Http\Models\ReviewModel;
+use App\Http\Models\GradeOverviewModel;
+
 use Ramsey\Uuid\Uuid;
 use DB;
 use App\Http\Libraries\Notification\NotificationManager;
@@ -53,6 +60,7 @@ class MissionController extends Controller
             // SAVE MISSION
             $mission            = new MissionModel; 
             $mission->id        = $mission_id;
+            $mission->difficulty_level  = $request->difficulty_level;
             $mission->user_id   = $this->user_login->id;
             $mission->title     = $request->title; 
             $mission->text      = $request->text; 
@@ -139,6 +147,17 @@ class MissionController extends Controller
                 }
             }
 
+
+            // QUICK SCORE
+            if($request->filled('quick_scores')){
+                $this->_insertQuickScore($request->quick_scores,$mission_id);
+            }
+
+            // LEARNING JOURNEY
+            if($request->filled('learning_journey')){
+                $this->_insertLearningJourney($request->learning_journey,$mission_id);
+            }
+
     
             //NOTIF FOR OWN OF CLASSROM
             if($mission->status == 1){
@@ -176,6 +195,57 @@ class MissionController extends Controller
         }  
     }
 
+    private function _insertLearningJourney($data,$mission_id){
+        $template = config('static_db.question_template'); 
+        $template = $template['learning_journey'];
+        $quest_ids = $data;
+
+        $include = [];
+        foreach( $template as $dat ){
+           if(in_array($dat['id'],$data)){
+            $quest_id   = Uuid::uuid4();
+            $include[] = [
+                "id"         => $quest_id,
+                "mission_id" => $mission_id,
+                "title"      => $dat['title'],
+                "text"       => $dat['title'],
+                "question_template_id" => $dat['id'],
+                "question_type" => 2,
+                "type" => 2
+            ];
+           }
+         } 
+
+         $model = new MissionQuestionModel;
+         $model = $model->insert($include);
+    }
+
+    private function _insertQuickScore($data,$mission_id){
+        $datas = [];
+        foreach($data as $q){
+            $quest_id   = Uuid::uuid4();
+            $datas[] = [
+                "id"         => $quest_id,
+                "mission_id" => $mission_id,
+                "title"      => $q['title'],
+                "text"       => $q['title'],
+                "option1"    => $q['options'] && isset($q['options'][0]) ? $q['options'][0]["name"] : null,
+                "option2"    => $q['options'] && isset($q['options'][1]) ? $q['options'][1]["name"] : null,
+                "option3"    => $q['options'] && isset($q['options'][2]) ? $q['options'][2]["name"] : null,
+                "option4"    => $q['options'] && isset($q['options'][3]) ? $q['options'][3]["name"] : null,
+                "option5"    => $q['options'] && isset($q['options'][4]) ? $q['options'][4]["name"] : null,
+                "option6"    => $q['options'] && isset($q['options'][5]) ? $q['options'][5]["name"] : null,
+                "option7"    => $q['options'] && isset($q['options'][6]) ? $q['options'][6]["name"] : null,
+                "correct_option" => $q['correct_answer'] ? "option".$q['correct_answer'] : null,
+                "question_type" => $q['type'],
+                "type" => 1
+            ];
+        }
+        
+        $model = new MissionQuestionModel;
+        $model = $model->insert($datas);
+    }
+
     public function addResponeMission(Request $request){
 
         DB::beginTransaction();
@@ -184,11 +254,10 @@ class MissionController extends Controller
            
             $check = MissionResponeModel::where('user_id',$this->user_login->id)->where('mission_id',$request->mission_id)->first();
             
-            // if($check != null)
-            //     return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
+            if($check != null)
+                return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
 
             $mission_detail = MissionModel::where('id',$request->mission_id)->first();
- 
 
             $thumbnail  = null; 
 
@@ -304,18 +373,71 @@ class MissionController extends Controller
                 ]
             ]);
 
- 
+                    
+            // ANSWER POINTING
+            $answer = new MissionAnswerModel;
+            $answer = $answer->where('user_id',$this->user_login->id)->wherehas('Question',function($q) use ($mission_detail){
+                $q->where('mission_questions.mission_id',$mission_detail->id);
+            })->get();
+
+            $point = 0;
+
+            if($answer){
+                foreach($answer as $ans){
+                    if($ans->Question->type == 2 && $ans->is_true == 1){
+                        $point =  env('TYPE_2_TRUE'); 
+                        $ans->update(["point" => $point , "mission_response_id"=> $mission_respone_id ]);
+                    }
+                    if($ans->Question->type == 2 && $ans->is_true == 0){
+                        $point =  env('TYPE_2_FALSE');
+                        $ans->update(["point" => $point, "mission_response_id"=> $mission_respone_id ]);
+                    }
+                    
+                    if($ans->Question->type == 1 && $ans->is_true == 1){
+                        $point =  env('TYPE_1_TRUE');
+                        $ans->update(["point" => $point, "mission_response_id"=> $mission_respone_id ]);
+
+                    }
+                    if($ans->Question->type == 1 && $ans->is_true == 0){
+                        $point =  env('TYPE_1_FALSE');
+                        $ans->update(["point" => $point, "mission_response_id"=> $mission_respone_id ]);
+                    }
+                }
+                // insert point for answer question
+
+                // ADD POINT
+                // UserPointsModel::insert([
+                //     [
+                //         "user_id_to" => $this->user_login->id,
+                //         "mission_id" => $mission_detail->id,
+                //         "respone_id" => $mission_respone_id,
+                //         "value" => $answer_point =  $point,
+                //         "type" => 5,
+                //         "id" => Uuid::uuid4(),
+                //         "created_at" => date('Y-m-d H:i:s'),
+                //         "updated_at" => date('Y-m-d H:i:s')
+                //     ]
+                // ]); 
+            }
+
+            // UPDATE IF ANY REVIEW
+            ReviewModel::where('user_id',$this->user_login->id)
+                    ->where('module','missions')
+                    ->where('module_id',$request->mission_id) 
+                    ->update(['status' => 1]);
+
+
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
 
-        } catch (\exception $exception){
-         
+        } catch (\Exception $exception){
+
+            DB::rollBack();
+
             if(isset($storage) && isset($storage->file_path) && isset($storage->file_name))
                 Storage::disk('gcs')->delete($storage->file_path.'/'.$storage->file_name);  
             
-            DB::rollBack();
-
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
@@ -375,8 +497,8 @@ class MissionController extends Controller
             }
 
             $perPage = $request->input('per_page',10);
-            if($perPage < 10) 
-                $perPage = 20;
+            // if($perPage < 10) 
+            //     $perPage = 20;
                 
             $mission = $mission->paginate($perPage); 
             // $mission = $mission->paginate(30);
@@ -782,5 +904,276 @@ class MissionController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
+    }
+
+    public function getQuestionList(Request $request){
+        $model = new MissionQuestionModel;
+        $model = $model->where('mission_id',$request->mission_id);
+        $model = $model->with('Answer',function($q1){
+            $q1->orderBy('index');
+        });
+        if($request->filled('type'))
+            $model = $model->where('type',$request->type);
+
+        $model = $model->get(); 
+        return (new QuickScoreTransformer)->list(200,__('messages.200'),$model); 
+    }
+
+    public function getQuestionTemplate(Request $request){
+        $data = [];
+        $template = config('static_db.question_template'); 
+        
+        if($request->filled('type') && $request->type == 2)
+            $data = $template['learning_journey'];
+
+        return (new ResponseTransformer)->toJson(200,__('message.200'),$data); 
+    }
+
+    public function submitAnswerOfQuestion(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $answer_id       = null;
+            $mission_detail  = MissionModel::where('id',$request->mission_id)->first();
+            $question_detail = MissionQuestionModel::where('id',$request->question_id)->first();
+            
+            // CHECK SUBMIT RESPONES 
+            if($mission_detail->Respone->where('user_id',$this->user_login->id)->where('status',1)->first())
+                return (new ResponseTransformer)->toJson(400,__('messages.404'),["mission_id" => "You have been response this mission before"]);
+            
+            $model = new MissionAnswerModel;
+            
+            $multi_c = [
+                'option1',
+                'option2',
+                'option3',
+                'option4',
+                'option5',
+                'option6',
+                'option7',
+            ];
+            
+            $payload_current_ = (object) [
+                "question_detail" => $question_detail,
+                "mission_detail"  => $mission_detail,
+                "answer_detail"   => $request->all()
+            ];
+
+            if($question_detail->type == 1){
+                $multiple_answer = $request->answer;
+                $multiple_answer = isset($multiple_answer[0]) ? $multiple_answer[0] : null;
+
+                if(!$multiple_answer)
+                    return (new ResponseTransformer)->toJson(400,__('validation.exists',["attribute" => "answer"]),["answer" => [__('validation.exists',["attribute" => "answer"])]]);
+
+                if(!in_array($multiple_answer,$multi_c))
+                    return (new ResponseTransformer)->toJson(400,__('validation.exists',["attribute" => "answer"]),["answer" => [__('validation.exists',["attribute" => "answer"])]]);
+                
+                $exist = MissionAnswerModel::where([
+                        "user_id" => $this->user_login->id,
+                        "question_id" => $request->question_id
+                    ])->first(); 
+
+                if($exist == null){
+                    $insert                 = new MissionAnswerModel;
+                    $insert->id             = $answer_id = Uuid::uuid4();
+                    $insert->user_id        = $this->user_login->id;
+                    $insert->question_id    = $request->question_id;
+                    $insert->answer         = $multiple_answer;
+                    $insert->is_true        = $question_detail->correct_option == $multiple_answer ? true : false;
+                    $insert->payload        = json_encode($payload_current_);
+                    $insert->save();
+                }else{
+                    $exist->user_id        = $this->user_login->id;
+                    $exist->question_id    = $request->question_id;
+                    $exist->answer         = $multiple_answer;
+                    $exist->is_true        = $question_detail->correct_option == $multiple_answer ? true : false;
+                    $exist->payload        = json_encode($payload_current_);
+                    $exist->update();
+                    $answer_id = $exist->id;
+                }
+            }
+
+            if($question_detail->type == 2){
+                if(!$request->filled('answer_id')){
+                    $delete = MissionAnswerModel::where('user_id',$this->user_login->id);
+                    $delete = $delete->where('question_id',$request->question_id); 
+                    $delete = $delete->delete();
+
+                    $answer = $request->answer;
+                    // $answers_data = [];
+                    $i = 0;
+                    foreach($answer as $ans){
+                        $answers_data = [
+                            'id' => $answer_id = Uuid::uuid4(),
+                            'index' => $i++,
+                            'user_id' => $this->user_login->id,
+                            'question_id' =>$request->question_id,
+                            'answer' => $ans,
+                            'is_true' => 1,
+                            'payload' => json_encode($payload_current_)
+                        ];
+
+                        $insert = MissionAnswerModel::insert($answers_data); 
+                    } 
+
+                }
+            }
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    public function getReviewEmotions(Request $request){
+        $review = config('static_db.review'); 
+        $emots  = $review['emotion_list'];
+
+        $check = null;
+        if($this->user_login->id && $request->mission_id){
+            $check =    new ReviewModel;
+            $check =    $check->where('user_id',$this->user_login->id);
+            $check =    $check->where('module_id',$request->mission_id);
+            $check =    $check->where('module','missions');
+            $check =    $check->first();
+        } 
+        
+        $return = [];
+        foreach($emots as $emot){
+            $tmp =  $emot; 
+            $tmp['selected'] = $check && $check->feeling == $emot['code'] ? true : false;
+            $return[] = $tmp;
+        }
+
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$return);
+    }
+
+    public function addReview(Request $request){
+        DB::beginTransaction();
+
+        try {
+
+            $model = new ReviewModel;
+            $model = $model
+                    ->where('user_id',$this->user_login->id)
+                    ->where('module','missions')
+                    ->where('module_id',$request->mission_id)
+                    ->first();
+
+            if($model == null){
+                $insert             = new ReviewModel;
+                $insert->id         = $review_id = Uuid::uuid4();
+                $insert->user_id    = $this->user_login->id;
+                $insert->module     = 'missions';
+                $insert->module_id  = $request->mission_id;
+                $insert->feeling    = $request->feeling;
+
+                if(!$insert->save())
+                    return (new ResponseTransformer)->toJson(400,__('messages.400'),false);
+            }else{
+                $model->feeling = $request->feeling;
+                $model->update();
+            }
+
+            DB::commit();
+        
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+        
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+
+    public function addGradingPreview(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $respone_detail = MissionResponeModel::where('id',$request->respone_id);
+            $user_login     = $this->user_login;
+            $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
+                $q1->where('user_id',$user_login->id);
+            });
+            $respone_detail =    $respone_detail->first();
+
+            if($respone_detail == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
+            
+            
+            $grade             = new GradeOverviewModel;
+            $grade->updateOrCreate(
+                ["mission_response_id" => $request->respone_id ],
+                [
+                    "id"         => $grade_id = Uuid::uuid4(),
+                    "mission_response_id" =>  $request->respone_id,
+                    "quality"     => $quality = $request->quality,
+                    "creativity"  => $creativity = $request->creativity,
+                    "language"    => $language = $request->language,
+                    "text"        => $request->text,
+                    "point"       => ($quality + $creativity + $language) * env('POINT_TYPE_5')
+                ]
+            );
+
+            DB::commit();
+        
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+        
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+    public function getAnswerResponseGrade(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $respone_detail = MissionResponeModel::where('id',$request->respone_id);
+            $user_login     = $this->user_login;
+
+            $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
+                $q1->where('user_id',$user_login->id); 
+            });
+            
+            $respone_detail = $respone_detail->first();
+
+            if($respone_detail == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
+            
+            
+            $answer = new MissionAnswerModel; 
+
+            if($request->filled('type') && in_array($request->type,[1,2])){
+                $answer = $answer->whereHas('Question',function($q) use ($request){
+                    $q->where('mission_questions.type',$request->type);
+                });
+            }
+            
+
+            $answer = $answer->where('mission_response_id',$request->respone_id);
+            $answer = $answer->get();
+
+            DB::commit();
+        
+            return (new AnswerTransformer)->list(200,__('messages.200'),$answer);
+
+        } catch (\exception $exception){
+        
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
     }
 }

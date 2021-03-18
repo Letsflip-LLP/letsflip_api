@@ -60,3 +60,38 @@ function defaultImage($module,$data = null){
 function getPublicFile($path,$file){
     return  Illuminate\Support\Facades\Storage::disk('gcs')->url($path.'/'.$file);
 }
+
+function subsType($type){
+    switch ($type) {
+        case 1:
+            return (object) [
+                "id" => $type,
+                "name" => "Public"
+            ];
+            break;
+        case 2:
+            return (object) [
+                "id" => $type,
+                "name" => "Private"
+            ];
+            break;
+        case 3:
+            return (object) [
+                "id" => $type,
+                "name" => "Master"
+            ];
+            break;
+        default:
+            return (object) [
+                "id" => $type,
+                "name" => "Undifined"
+            ];
+            break;
+    }
+}
+
+
+function getEmothName(){
+    $emoth = config('static_db.review.emotion_list');
+    return array_column($emoth,'code');
+}

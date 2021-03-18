@@ -34,7 +34,8 @@ class FormValidation
         }
     }
 
-    private function _selector($route,$request){
+    private function _selector($route,$request){ 
+
       switch ($route) { 
         // AUTH
         case 'PostAuthControllerRegister':
@@ -70,6 +71,7 @@ class FormValidation
             'title'  => 'required',
             'text'  => 'required',
             'type'  => 'required|in:1,2',
+            'difficulty_level' => 'in:easy,moderate,difficult',
             'status' => 'in:1,2',
             'file'  => Rule::requiredIf( function () use ($request){
              }),
@@ -242,6 +244,49 @@ class FormValidation
         case 'GetClassRoomControllerGetDetailClassRoom':
           return [
             'classroom_id' => 'required|exists:classrooms,id', 
+          ];
+        break;
+
+        case 'PostClassRoomControllerSubscribeClassroom':
+          return [
+            // 'classroom_id' => 'required|exists:classrooms,id', 
+          ];
+        break;
+
+        case 'PostClassRoomControllerGetAccess':
+          return [
+            'classroom_id' => 'required|exists:classrooms,id', 
+            'access_code' =>  ' exists:classrooms,access_code',
+          ];
+        break;
+
+        case 'PostClassRoomControllerGiveAccessClassRoom':
+          return [
+            'classroom_access_id' => 'required|exists:classroom_accesses,id',  
+          ];
+        break;
+
+        case 'PostMissionControllerSubmitAnswerOfQuestion':
+          return [
+            'mission_id' => 'required|exists:missions,id',
+            'question_id' => 'required|exists:mission_questions,id',
+            'answer_id' => 'exists:mission_answers,id' 
+          ];
+        break;
+
+        case 'PostMissionControllerAddReviewMission':
+          return [
+            'mission_id' => 'required|exists:missions,id', 
+            'feeling'    => 'required|in:'.implode(',',getEmothName())
+          ];
+        break;
+
+        case 'PostMissionControllerAddGradingPreview':
+          return [
+            'respone_id'  => 'required|exists:mission_responses,id', 
+            'quality'     => 'in:1,2,3,4,5',
+            'creativity'  => 'in:1,2,3,4,5',
+            'language'    => 'in:1,2,3,4,5',
           ];
         break;
 

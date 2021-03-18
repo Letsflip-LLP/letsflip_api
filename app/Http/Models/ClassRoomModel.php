@@ -34,4 +34,9 @@ class ClassRoomModel extends Model
     {
         return $this->hasMany('App\Http\Models\LikeModel','classroom_id','id');
     }
+
+    public function PremiumUserAccess()
+    {
+        return $this->hasMany('App\Http\Models\ClassroomAccessModel','classroom_id','id');
+    }
 }

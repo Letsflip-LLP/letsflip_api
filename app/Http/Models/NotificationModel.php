@@ -38,4 +38,14 @@ class NotificationModel extends Model
     {
         return $this->hasOne('App\Http\Models\UserPointsModel','id','point_id');
     }
+
+    public function ClassroomAccess()
+    {
+        return $this->hasOne('App\Http\Models\ClassroomAccessModel','id','classroom_access_id');
+    }
+
+    public function ClassRoom()
+    {
+        return $this->hasOne('App\Http\Models\ClassRoomModel','id','classroom_id');
+    }
 }

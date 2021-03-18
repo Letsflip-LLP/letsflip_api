@@ -10,7 +10,8 @@ return [
         4 => ":user_name_from Liked your Response in Mission : :module_title", 
         11 => "You have earned :point PTS :from", 
         12 => "Points deducted from deleting Mission",
-        13 => "Points deducted from deleting Respones"
+        13 => "Points deducted from deleting Respones",
+        14 => ":user_name_from request to join your Private Classroom: :module_title",
     ],
     "TYPE" => [
         1 => "New Response from My Mission",
@@ -25,6 +26,7 @@ return [
         10 => "New Reply comment in Response",
         11 => "New Point!",
         12 => "Point deducted from deleted Mission",
-        13 => "Point deducted from deleted Respones"
+        13 => "Point deducted from deleted Respones",
+        14 => "Request To Access Classroom"
     ]
 ];

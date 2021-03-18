@@ -10,9 +10,14 @@ use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\ClassRoomTransformer; 
 use App\Http\Models\ClassRoomModel; 
+use App\Http\Models\SubscriberModel; 
+use App\Http\Models\ClassroomAccessModel; 
 use Ramsey\Uuid\Uuid;
 use DB;
 use Jenssegers\Agent\Agent; 
+use Carbon\Carbon;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Libraries\Notification\NotificationManager;
 
 class ClassRoomController extends Controller
 {
@@ -32,10 +37,14 @@ class ClassRoomController extends Controller
             $storage = new StorageManager;
             $storage = $storage->uploadFile("mission",$request->file('file'));   
              
-            $classroom_id   = Uuid::uuid4(); 
+            $classroom_id   = Uuid::uuid4();  
+            $code = explode('-',$classroom_id);
+            $code = $code[count($code)-1];
+            $code = strtoupper($code); 
             
             $class_room                = new ClassRoomModel;
-            $class_room->id            = $classroom_id; 
+            $class_room->id            = $classroom_id;
+            $class_room->access_code   = $code;
             $class_room->title         = $request->title;
             $class_room->user_id       = $this->user_login->id;
             $class_room->text          = $request->text;
@@ -202,5 +211,191 @@ class ClassRoomController extends Controller
         ];
     
         return view('open-app.share-meta',$payload_view);
+    }
+
+    // private function _generateCode(){
+    //     $partOne =  substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 4);    
+    //     $partTwo =  substr(str_shuffle("0123456789"), 0, 4);
+    //     return $partOne.$partTwo;
+    // }
+
+    public function subscribeClassroom(Request $request){
+
+        DB::beginTransaction();
+        try {
+            
+            $product_account = config('account.premium_product');
+            $check_sub  = null;
+            $class_room = null;
+            $product_id = null;
+            $transaction_id = null;
+
+            if(!$request->filled('data'))
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
+
+            $vendor_payload = $request->data;  
+            $product_id = $vendor_payload['productId'];
+            $transaction_id = $vendor_payload['transactionId'];
+            $purchase_token = $vendor_payload['purchaseToken'];
+
+
+            $validate_token_purchase = $this->_purchaseDetail('com.lets_flip',$product_id,$purchase_token);
+
+            if($validate_token_purchase == false)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
+
+            if($request->filled('classroom_id')){
+                $class_room = new ClassRoomModel;
+                $class_room = $class_room->where('id',$request->classroom_id)->first();
+                if($class_room == null)
+                    return (new ResponseTransformer)->toJson(400,__('messages.404'),false);
+            }
+
+            if(!isset($vendor_payload['productId']) || !isset($vendor_payload['transactionId']))
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
+
+    
+
+
+        if($this->user_login->Subscribe){
+            $check_sub = $this->user_login->Subscribe 
+            ->where('vendor_trx_id',$transaction_id)
+            ->first();
+        } 
+
+        if($check_sub)
+            return (new ResponseTransformer)->toJson(400,__('messages.401'),"Duplicated");
+
+        $product_detail = $product_account[$product_id];
+        $subscribe =  SubscriberModel::firstOrCreate(
+            [ 
+                "user_id" => $this->user_login->id,
+                "status" => 1,
+                "vendor_trx_id" => $transaction_id
+            ],
+            [
+                "id"            => Uuid::uuid4(),
+                "date_start"    => date('Y-m-d H:i:s'),
+                "date_end"      => Carbon::now()->add('months',$product_detail['duration'])->format('Y-m-d H:i:s'),
+                "payload"       => json_encode($request->all()),
+                "type"          => $product_detail['type'],
+                "classroom_id"  => $class_room ? $class_room->id : null,
+                "product_id"    => $product_id
+            ]
+        );
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        } 
+    }
+
+    private function _purchaseDetail($package,$sku,$token){
+
+        try{
+            $client = new \Google_Client();
+            $client->useApplicationDefaultCredentials();
+            $client->addScope('https://www.googleapis.com/auth/androidpublisher');
+            $service = new \Google_Service_AndroidPublisher($client);
+            $purchase = $service->purchases_subscriptions->get($package,$sku,$token);
+           
+            return $purchase;
+        } catch (\exception $exception){ 
+            return false;
+        }  
+    }
+
+    public function getAccessClassRoom(Request $request){
+        DB::beginTransaction();
+        try {
+    
+        $class_room = new ClassRoomModel;
+        $class_room = $class_room->where('id',$request->classroom_id);
+
+        if($request->filled('access_code'))
+            $class_room = $class_room->where('access_code',$request->access_code);
+
+        $class_room = $class_room->first();
+   
+        if(!$class_room)
+            return (new ResponseTransformer)->toJson(400,__('messages.401'),(object)[
+                "access_code" => __('validation.exists',[ "atribute" => "Access code" ])
+            ]);
+            
+        $last_req = ClassroomAccessModel::where('classroom_id',$class_room->id)->where("user_id",$this->user_login->id)->where('status','!=',1)->first();
+
+        if($last_req)
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
+
+        $access               = new ClassroomAccessModel;
+        $access               = $access->updateOrCreate([
+            "classroom_id" => $class_room->id,
+            "user_id"     =>  $this->user_login->id,
+        ],
+        [
+            "id"          =>  $access_id = Uuid::uuid4(),
+            "access_code" => $request->access_code ? $request->access_code : null,
+            "status"        => $request->filled('access_code') ? 1 : 2
+        ]);
+         
+        if(!$access)
+            return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+
+        if(!$request->filled('access_code')){
+            //NOTIF FOR OWN OF CLASSROM
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room->user_id,[
+                "classroom_id" => $class_room->id,
+                "classroom_access_id"    => $access_id
+            ],14); 
+        }
+        
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+    public function giveAccessClassRoom(Request $request){
+        DB::beginTransaction();
+        try {
+    
+        $access = new ClassroomAccessModel;
+        $access = $access->where('id',$request->classroom_access_id)->first();
+            
+        if(!$access || !$access->ClassRoom || $access->ClassRoom->user_id != $this->user_login->id)
+            return (new ResponseTransformer)->toJson(400,__('messages.401'), true);
+
+
+        $update = $access->update([
+            "access_code" => $access->ClassRoom->access_code,
+            "status"      => 1
+        ]); 
+
+
+        if(!$update)
+            return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
     }
 }
