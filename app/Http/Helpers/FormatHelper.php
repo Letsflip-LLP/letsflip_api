@@ -93,5 +93,5 @@ function subsType($type){
 
 function getEmothName(){
     $emoth = config('static_db.review.emotion_list');
-    return array_column($emoth,'id');
+    return array_column($emoth,'code');
 }
