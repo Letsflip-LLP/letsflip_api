@@ -372,6 +372,7 @@ class MissionController extends Controller
             ]);
 
                     
+            // ANSWER POINTING
             $answer = new MissionAnswerModel;
             $answer = $answer->where('user_id',$this->user_login->id)->wherehas('Question',function($q) use ($mission_detail){
                 $q->where('mission_questions.mission_id',$mission_detail->id);
@@ -380,7 +381,7 @@ class MissionController extends Controller
             $point = 0;
 
             if($answer){
-                foreach($answer as $ans){ 
+                foreach($answer as $ans){
                     if($ans->Question->type == 2 && $ans->is_true == 1)
                         $point = $point + env('TYPE_2_TRUE');
 
@@ -410,6 +411,11 @@ class MissionController extends Controller
                 ]); 
             }
 
+            // UPDATE IF ANY REVIEW
+            ReviewModel::where('user_id',$this->user_login->id)
+                    ->where('module','missions')
+                    ->where('module_id',$request->mission_id) 
+                    ->update(['status' => 1]);
 
 
         DB::commit();
