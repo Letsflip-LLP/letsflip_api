@@ -23,6 +23,7 @@ use App\Http\Models\UserPointsModel;
 use App\Http\Models\MissionQuestionModel; 
 use App\Http\Models\MissionAnswerModel;
 use App\Http\Models\ReviewModel;
+use App\Http\Models\GradeOverviewModel;
 
 use Ramsey\Uuid\Uuid;
 use DB;
@@ -1090,5 +1091,47 @@ class MissionController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
+    }
+
+
+    public function addGradingPreview(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $respone_detail = MissionResponeModel::where('id',$request->respone_id);
+            $user_login     = $this->user_login;
+            $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
+                $q1->where('user_id',$user_login->id);
+            });
+            $respone_detail =    $respone_detail->first();
+
+            if($respone_detail == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
+            
+            
+            $grade             = new GradeOverviewModel;
+            $grade->updateOrCreate(
+                ["mission_response_id" => $request->respone_id ],
+                [
+                    "id"         => $grade_id = Uuid::uuid4(),
+                    "mission_response_id" =>  $request->respone_id,
+                    "quality"     => $quality = $request->quality,
+                    "creativity"  => $creativity = $request->creativity,
+                    "language"    => $language = $request->language,
+                    "text"        => $request->text,
+                    "point"       => ($quality + $creativity + $language) * env('POINT_TYPE_5')
+                ]
+            );
+
+            DB::commit();
+        
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+        
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
     }
 }

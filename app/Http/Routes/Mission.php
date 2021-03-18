@@ -57,10 +57,13 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             Route::post('delete', [MissionController::class,'deleteResponeMission'])->name('PostMissionControllerDeleteResponeMission'); 
             Route::post('edit', [MissionController::class,'editResponeMission'])->name('PostMissionControllerEditResponeMission'); 
 
+            // COMMENT
             Route::post('comment/add', [MissionCommentController::class, 'addCommentResponeMission'])->name('PostMissionCommentControllerAddCommentResponeMission'); 
             Route::get('comment/list', [MissionCommentController::class, 'getCommentResponeMission'])->name('PostMissionCommentControllerGetCommentResponeMission'); 
             Route::post('comment/delete', [MissionCommentController::class, 'deleteCommentResponeMission'])->name('PostMissionCommentControllerDeleteCommentResponeMission');
         
+            // GRADE
+            Route::post('grading/add-preview', [MissionController::class, 'addGradingPreview'])->name('PostMissionControllerAddGradingPreview');
         });
 
         $router->group(['prefix' => 'question'], function($router){
