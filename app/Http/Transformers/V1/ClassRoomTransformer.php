@@ -43,6 +43,9 @@ class ClassRoomTransformer {
         $temp->has_subscribe    = false;
         $temp->access_code      = false;
 
+        if($model->type == 1)
+            $temp->has_subscribe = true;
+
         if(auth('api')->user()){
             $temp->liked = $model->Like->where('user_id',auth('api')->user()->id)->count() > 0 ? true : false;
   
@@ -50,7 +53,7 @@ class ClassRoomTransformer {
                 $check_access = auth('api')->user()->PremiumClassRoomAccess
                                 ->where('classroom_id',$model->id)->first();
                     
-                if($check_access && $check_access->status == 1)
+                if($check_access)
                     $temp->has_subscribe = true;
             }
                 
