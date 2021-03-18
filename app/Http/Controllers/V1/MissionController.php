@@ -459,10 +459,13 @@ class MissionController extends Controller
             if($request->filled('search'))
                 $mission = $mission->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
 
-            if($request->filled('classroom_id'))
+            if($request->filled('classroom_id')){
                 $mission = $mission->whereHas('ClassRoomTag',function($q) use($request) {
                     $q->where('foreign_id',$request->classroom_id);
                 });
+            }else{
+                $mission = $mission->where('type',1);
+            }
 
             if($request->filled('order_by')){
                 $order_by = explode('-',$request->order_by); 
