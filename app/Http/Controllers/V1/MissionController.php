@@ -1017,11 +1017,27 @@ class MissionController extends Controller
         }  
     }
 
-    public function getReviewEmotions(){
+    public function getReviewEmotions(Request $request){
         $review = config('static_db.review'); 
         $emots  = $review['emotion_list'];
 
-        return (new ResponseTransformer)->toJson(200,__('messages.200'),$emots);
+        $check = null;
+        if($this->user_login->id && $request->mission_id){
+            $check =    new ReviewModel;
+            $check =    $check->where('user_id',$this->user_login->id);
+            $check =    $check->where('module_id',$request->mission_id);
+            $check =    $check->where('module','missions');
+            $check =    $check->first();
+        } 
+        
+        $return = [];
+        foreach($emots as $emot){
+            $tmp =  $emot; 
+            $tmp['selected'] = $check && $check->feeling == $emot['code'] ? true : false;
+            $return[] = $tmp;
+        }
+
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$return);
     }
 
     public function addReview(Request $request){
