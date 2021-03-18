@@ -16,6 +16,6 @@ class GradeOverviewModel extends Model
     protected $table = 'grade_overviews'; 
     protected $fillable = [
         "id", "mission_response_id", "text", "quality", "creativity", "language", "point", "created_at", "updated_at", "deleted_at"
-    ]; 
+    ];
 
 }

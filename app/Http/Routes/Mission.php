@@ -64,6 +64,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         
             // GRADE
             Route::post('grading/add-preview', [MissionController::class, 'addGradingPreview'])->name('PostMissionControllerAddGradingPreview');
+            Route::get('grading/get-answer',  [MissionController::class, 'getAnswerResponseGrade'])->name('GetMissionControllerGetAnswerResponseGrade');
         });
 
         $router->group(['prefix' => 'question'], function($router){

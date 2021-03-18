@@ -11,7 +11,7 @@ class MissionAnswerModel extends Model
     public $incrementing = false;
     protected $table = 'mission_answers';
     protected $fillable = [
-        "id", "question_id", "user_id", "answer", "index", "point", "created_at", "updated_at", "deleted_at", "is_true", "payload"
+        "id", "mission_response_id","question_id", "user_id", "answer", "index", "point", "created_at", "updated_at", "deleted_at", "is_true", "payload"
     ];
 
 

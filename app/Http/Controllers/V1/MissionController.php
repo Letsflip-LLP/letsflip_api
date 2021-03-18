@@ -10,6 +10,7 @@ use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\MissionTransformer; 
 use App\Http\Transformers\V1\QuickScoreTransformer; 
+use App\Http\Transformers\V1\AnswerTransformer; 
 use App\Http\Models\MissionModel;
 use App\Http\Models\MissionContentModel;
 use App\Http\Models\MissionResponeModel;
@@ -385,21 +386,21 @@ class MissionController extends Controller
                 foreach($answer as $ans){
                     if($ans->Question->type == 2 && $ans->is_true == 1){
                         $point =  env('TYPE_2_TRUE'); 
-                        $ans->update(["point" => $point]);
+                        $ans->update(["point" => $point , "mission_response_id"=> $mission_respone_id ]);
                     }
                     if($ans->Question->type == 2 && $ans->is_true == 0){
                         $point =  env('TYPE_2_FALSE');
-                        $ans->update(["point" => $point]);
+                        $ans->update(["point" => $point, "mission_response_id"=> $mission_respone_id ]);
                     }
                     
                     if($ans->Question->type == 1 && $ans->is_true == 1){
                         $point =  env('TYPE_1_TRUE');
-                        $ans->update(["point" => $point]);
+                        $ans->update(["point" => $point, "mission_response_id"=> $mission_respone_id ]);
 
                     }
                     if($ans->Question->type == 1 && $ans->is_true == 0){
                         $point =  env('TYPE_1_FALSE');
-                        $ans->update(["point" => $point]);
+                        $ans->update(["point" => $point, "mission_response_id"=> $mission_respone_id ]);
                     }
                 }
                 // insert point for answer question
@@ -1126,6 +1127,47 @@ class MissionController extends Controller
             DB::commit();
         
             return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+        
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+    public function getAnswerResponseGrade(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $respone_detail = MissionResponeModel::where('id',$request->respone_id);
+            $user_login     = $this->user_login;
+
+            // $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
+            //     $q1->where('user_id',$user_login->id); 
+            // });
+            
+            $respone_detail = $respone_detail->first();
+
+            if($respone_detail == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
+            
+            
+            $answer = new MissionAnswerModel; 
+
+            if($request->filled('type') && in_array($request->type,[1,2])){
+                $answer = $answer->whereHas('Question',function($q) use ($request){
+                    $q->where('mission_questions.type',$request->type);
+                });
+            }
+            
+
+            $answer = $answer->where('mission_response_id',$request->respone_id);
+            $answer = $answer->get();
+
+            DB::commit();
+        
+            return (new AnswerTransformer)->list(200,__('messages.200'),$answer);
 
         } catch (\exception $exception){
         
