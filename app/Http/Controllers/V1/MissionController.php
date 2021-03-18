@@ -382,33 +382,40 @@ class MissionController extends Controller
 
             if($answer){
                 foreach($answer as $ans){
-                    if($ans->Question->type == 2 && $ans->is_true == 1)
-                        $point = $point + env('TYPE_2_TRUE');
-
-                    if($ans->Question->type == 2 && $ans->is_true == 0)
-                        $point = $point + env('TYPE_2_FALSE');
+                    if($ans->Question->type == 2 && $ans->is_true == 1){
+                        $point =  env('TYPE_2_TRUE'); 
+                        $ans->update(["point" => $point]);
+                    }
+                    if($ans->Question->type == 2 && $ans->is_true == 0){
+                        $point =  env('TYPE_2_FALSE');
+                        $ans->update(["point" => $point]);
+                    }
                     
-                    if($ans->Question->type == 1 && $ans->is_true == 1)
-                        $point = $point + env('TYPE_1_TRUE');
+                    if($ans->Question->type == 1 && $ans->is_true == 1){
+                        $point =  env('TYPE_1_TRUE');
+                        $ans->update(["point" => $point]);
 
-                    if($ans->Question->type == 1 && $ans->is_true == 0)
-                        $point = $point + env('TYPE_1_FALSE');
+                    }
+                    if($ans->Question->type == 1 && $ans->is_true == 0){
+                        $point =  env('TYPE_1_FALSE');
+                        $ans->update(["point" => $point]);
+                    }
                 }
                 // insert point for answer question
 
                 // ADD POINT
-                UserPointsModel::insert([
-                    [
-                        "user_id_to" => $this->user_login->id,
-                        "mission_id" => $mission_detail->id,
-                        "respone_id" => $mission_respone_id,
-                        "value" => $answer_point =  $point,
-                        "type" => 5,
-                        "id" => Uuid::uuid4(),
-                        "created_at" => date('Y-m-d H:i:s'),
-                        "updated_at" => date('Y-m-d H:i:s')
-                    ]
-                ]); 
+                // UserPointsModel::insert([
+                //     [
+                //         "user_id_to" => $this->user_login->id,
+                //         "mission_id" => $mission_detail->id,
+                //         "respone_id" => $mission_respone_id,
+                //         "value" => $answer_point =  $point,
+                //         "type" => 5,
+                //         "id" => Uuid::uuid4(),
+                //         "created_at" => date('Y-m-d H:i:s'),
+                //         "updated_at" => date('Y-m-d H:i:s')
+                //     ]
+                // ]); 
             }
 
             // UPDATE IF ANY REVIEW

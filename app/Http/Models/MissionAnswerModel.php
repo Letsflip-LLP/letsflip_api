@@ -10,7 +10,10 @@ class MissionAnswerModel extends Model
     use HasFactory;
     public $incrementing = false;
     protected $table = 'mission_answers';
- 
+    protected $fillable = [
+        "id", "question_id", "user_id", "answer", "index", "point", "created_at", "updated_at", "deleted_at", "is_true", "payload"
+    ];
+
 
     public function Question()
     {
