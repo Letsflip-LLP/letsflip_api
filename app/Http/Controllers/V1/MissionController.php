@@ -1143,9 +1143,9 @@ class MissionController extends Controller
             $respone_detail = MissionResponeModel::where('id',$request->respone_id);
             $user_login     = $this->user_login;
 
-            // $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
-            //     $q1->where('user_id',$user_login->id); 
-            // });
+            $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
+                $q1->where('user_id',$user_login->id); 
+            });
             
             $respone_detail = $respone_detail->first();
 
