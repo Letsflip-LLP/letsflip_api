@@ -21,22 +21,22 @@ return [
     "review" => [
         "emotion_list" => [
             [
-                "id"   => "happy",
+                "code"   => "happy",
                 "title" => "Happy",
                 "image" => 'https://storage.googleapis.com/staging_lets_flip/assets/images/emots/happy.png'
             ],
             [
-                "id"   => "excited",
+                "code"   => "excited",
                 "title" => "Excited",
                 "image" => 'https://storage.googleapis.com/staging_lets_flip/assets/images/emots/excited.png'
             ],
             [
-                "id"   => "chillax",
+                "code"   => "chillax",
                 "title" => "Chillax",
                 "image" => 'https://storage.googleapis.com/staging_lets_flip/assets/images/emots/chillax.png'
             ],
             [
-                "id"   => "upset",
+                "code"   => "upset",
                 "title" => "Upset",
                 "image" => 'https://storage.googleapis.com/staging_lets_flip/assets/images/emots/upset.png'
             ],
