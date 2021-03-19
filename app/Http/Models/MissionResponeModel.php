@@ -55,7 +55,7 @@ class MissionResponeModel extends Model
 
     public function Point()
     {
-        return $this->hasOne('App\Http\Models\UserPointsModel','respone_id','id');
+        return $this->hasOne('App\Http\Models\UserPointsModel','respone_id','id')->where('type',5);
     }
 
 }
