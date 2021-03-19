@@ -23,6 +23,7 @@ use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite;
 use App\Mail\verificationUserRegister;
 use App\Http\Models\UserDeviceModel;
+use App\Http\Transformers\V1\UserTransformer; 
 
 class AuthController extends Controller
 {
@@ -356,7 +357,7 @@ class AuthController extends Controller
 
         DB::commit();
                
-        return (new AuthTransformer)->detail(200,__("messages.200"),$user); 
+        return (new UserTransformer)->detail(200,__("messages.200"),$user); 
 
         } catch (\exception $exception){
             DB::rollBack();
