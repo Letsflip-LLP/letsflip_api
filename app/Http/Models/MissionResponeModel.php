@@ -58,4 +58,8 @@ class MissionResponeModel extends Model
         return $this->hasOne('App\Http\Models\UserPointsModel','respone_id','id')->where('type',5);
     }
 
+    public function GradeOverview(){
+        return $this->hasOne('App\Http\Models\GradeOverviewModel','mission_response_id','id');
+    }
+
 }

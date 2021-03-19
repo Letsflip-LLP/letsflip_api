@@ -1102,7 +1102,7 @@ class MissionController extends Controller
         DB::beginTransaction();
 
         try {
-            $respone_detail = MissionResponeModel::where('id',$request->respone_id);
+            $respone_detail = MissionResponeModel::where('id',$request->response_id);
             $user_login     = $this->user_login;
             $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
                 $q1->where('user_id',$user_login->id);
@@ -1115,10 +1115,10 @@ class MissionController extends Controller
             
             $grade             = new GradeOverviewModel;
             $grade->updateOrCreate(
-                ["mission_response_id" => $request->respone_id ],
+                ["mission_response_id" => $request->response_id ],
                 [
                     "id"         => $grade_id = Uuid::uuid4(),
-                    "mission_response_id" =>  $request->respone_id,
+                    "mission_response_id" =>  $request->response_id,
                     "quality"     => $quality = $request->quality,
                     "creativity"  => $creativity = $request->creativity,
                     "language"    => $language = $request->language,
@@ -1178,5 +1178,45 @@ class MissionController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }
+    }
+
+
+    public function getGradingPreview(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+             
+            $respone_mission = new MissionResponeModel; 
+            $respone_mission = $respone_mission->where('id',$request->response_id);
+            $respone_mission = $respone_mission->first();
+
+            $grade_review = $respone_mission->GradeOverview ? $respone_mission->GradeOverview : null;
+            $grade = null;
+            
+            if($grade_review){
+                $grade = new \stdClass();
+                $grade->quality = $grade_review->quality;
+                $grade->creativity = $grade_review->creativity;
+                $grade->language =  $grade_review->language;
+                $grade->text      = $grade_review->text;
+            }
+
+            $return          = new \stdClass();
+            $return->preview = $grade;
+            $return->scale   = (object) [
+                "point_per_star" => env('GRADE_PREVIEW_STAR',0)
+            ]; 
+
+            DB::commit();
+        
+                return (new ResponseTransformer)->toJson(200,__('messages.200'),$return);
+
+        } catch (\exception $exception){
+         
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 }

@@ -283,10 +283,16 @@ class FormValidation
 
         case 'PostMissionControllerAddGradingPreview':
           return [
-            'respone_id'  => 'required|exists:mission_responses,id', 
+            'response_id'  => 'required|exists:mission_responses,id', 
             'quality'     => 'in:1,2,3,4,5',
             'creativity'  => 'in:1,2,3,4,5',
             'language'    => 'in:1,2,3,4,5',
+          ];
+        break;
+
+        case 'PostMissionControllerGetGradingPreview':
+          return [
+            'response_id'  => 'required|exists:mission_responses,id'
           ];
         break;
 
