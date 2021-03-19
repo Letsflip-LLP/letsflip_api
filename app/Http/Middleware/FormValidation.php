@@ -290,9 +290,16 @@ class FormValidation
           ];
         break;
 
-        case 'PostMissionControllerGetGradingPreview':
+        case 'GettMissionControllerGetGradingPreview':
           return [
             'response_id'  => 'required|exists:mission_responses,id'
+          ];
+        break;
+
+        case 'PostMissionControllerAddSubmitGradeAnswer':
+          return [
+            'response_id'  => 'required|exists:mission_responses,id',
+            'type'  => 'required|in:1,2'
           ];
         break;
 

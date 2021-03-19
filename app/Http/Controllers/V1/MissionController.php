@@ -1123,7 +1123,7 @@ class MissionController extends Controller
                     "creativity"  => $creativity = $request->creativity,
                     "language"    => $language = $request->language,
                     "text"        => $request->text,
-                    "point"       => ($quality + $creativity + $language) * env('POINT_TYPE_5')
+                    "point"       => ($quality + $creativity + $language) * env('GRADE_PREVIEW_STAR',0)
                 ]
             );
 
@@ -1181,36 +1181,100 @@ class MissionController extends Controller
     }
 
 
+    private function _getTotalPointFromResponse($request){
+        $respone_mission = new MissionResponeModel; 
+        $respone_mission = $respone_mission->where('id',$request->response_id);
+        $respone_mission = $respone_mission->first();
+        $point           = 0;
+
+        $grade_review = $respone_mission->GradeOverview ? $respone_mission->GradeOverview : null;
+        $grade = null;
+        
+        if($grade_review){
+            $grade = new \stdClass();
+            $grade->quality    = $quality = $grade_review->quality;
+            $grade->creativity = $creativity = $grade_review->creativity;
+            $grade->language   = $language = $grade_review->language;
+            $grade->text       = $grade_review->text;
+
+            $point = $point + $quality  + $creativity + $language;
+        }
+
+        $answer = new MissionAnswerModel;
+        $answer = $answer->where('mission_response_id',$request->response_id);
+        $answer = $answer->get(); 
+
+        $point = $point+ $answer->sum('point');
+
+        $return              = new \stdClass();
+        $return->preview     = $grade;
+        $return->total_point = $point;
+        $return->scale       = (object) [
+            "point_per_star" => env('GRADE_PREVIEW_STAR',0)
+        ]; 
+
+        return $return;
+    }
+
     public function getGradingPreview(Request $request){
 
         DB::beginTransaction();
 
         try {
              
-            $respone_mission = new MissionResponeModel; 
-            $respone_mission = $respone_mission->where('id',$request->response_id);
-            $respone_mission = $respone_mission->first();
-
-            $grade_review = $respone_mission->GradeOverview ? $respone_mission->GradeOverview : null;
-            $grade = null;
-            
-            if($grade_review){
-                $grade = new \stdClass();
-                $grade->quality = $grade_review->quality;
-                $grade->creativity = $grade_review->creativity;
-                $grade->language =  $grade_review->language;
-                $grade->text      = $grade_review->text;
-            }
-
-            $return          = new \stdClass();
-            $return->preview = $grade;
-            $return->scale   = (object) [
-                "point_per_star" => env('GRADE_PREVIEW_STAR',0)
-            ]; 
+            $data = $this->_getTotalPointFromResponse($request);
 
             DB::commit();
         
-                return (new ResponseTransformer)->toJson(200,__('messages.200'),$return);
+                return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+
+        } catch (\exception $exception){
+         
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+ 
+    public function addSubmitGradeAnswer(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+             
+            $respone_detail = MissionResponeModel::where('id',$request->response_id);
+            $user_login     = $this->user_login;
+
+            $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
+                $q1->where('user_id',$user_login->id); 
+            });
+            
+            $respone_detail = $respone_detail->first();
+
+            if($respone_detail == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
+            
+            $data = $this->_getTotalPointFromResponse($request);
+            
+            // ADD POINT
+            UserPointsModel::updateOrCreate(
+                [
+                    "respone_id" => $respone_detail->id,
+                    "type" => 5
+                ],
+                [
+                    "user_id_to" => $this->user_login->id,
+                    "mission_id" => $respone_detail->mission_id, 
+                    "value" => $data->total_point, 
+                    "id" => Uuid::uuid4(),
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ]
+              );
+
+            DB::commit();
+        
+                return (new ResponseTransformer)->toJson(200,__('messages.200'),false);
 
         } catch (\exception $exception){
          
