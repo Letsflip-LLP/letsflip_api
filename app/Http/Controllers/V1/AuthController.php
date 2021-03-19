@@ -343,18 +343,20 @@ class AuthController extends Controller
             );
         }
 
-        $data = new \stdClass();
-        $data->id = $user->id;
-        $data->first_name = $user->first_name;
-        $data->last_name = $user->last_name;
-        $data->email = $user->email;
-        $data->email = $user->email;
-        $data->image_profile = defaultImage('user',$user);
-        $data->access_token = $this->createToken($user);
+        // $data = new \stdClass();
+        // $data->id = $user->id;
+        // $data->first_name = $user->first_name;
+        // $data->last_name = $user->last_name;
+        // $data->email = $user->email;
+        // $data->email = $user->email;
+        // $data->image_profile = defaultImage('user',$user);
+        // $data->access_token = $this->createToken($user);
+ 
+        $user->accessToken = $this->createToken($user);
 
         DB::commit();
                
-        return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+        return (new AuthTransformer)->detail(200,__("messages.200"),$user); 
 
         } catch (\exception $exception){
             DB::rollBack();
