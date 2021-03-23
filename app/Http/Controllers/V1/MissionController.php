@@ -1156,21 +1156,21 @@ class MissionController extends Controller
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
             
             
-            $answer = new MissionAnswerModel; 
+            $quest = new MissionQuestionModel;
 
-            if($request->filled('type') && in_array($request->type,[1,2])){
-                $answer = $answer->whereHas('Question',function($q) use ($request){
-                    $q->where('mission_questions.type',$request->type);
-                });
-            }
+            if($request->filled('type') && in_array($request->type,[1,2]))
+                $quest =  $quest->where('mission_questions.type',$request->type);
             
-
-            $answer = $answer->where('mission_response_id',$request->respone_id);
-            $answer = $answer->get();
+            $quest = $quest->where('mission_id',$respone_detail->mission_id); 
+            $quest = $quest->whereHas('Answer',function($q) use ($respone_detail){
+                $q->where('mission_response_id',$respone_detail->id);
+            });  
+             
+            $quest = $quest->get();
 
             DB::commit();
         
-            return (new AnswerTransformer)->list(200,__('messages.200'),$answer);
+            return (new AnswerTransformer)->list(200,__('messages.200'),$quest);
 
         } catch (\exception $exception){
         
