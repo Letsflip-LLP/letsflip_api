@@ -1191,13 +1191,15 @@ class MissionController extends Controller
         $grade = null;
         
         if($grade_review){
+            $bobot = env('GRADE_PREVIEW_STAR');
+
             $grade = new \stdClass();
             $grade->quality    = $quality = $grade_review->quality;
             $grade->creativity = $creativity = $grade_review->creativity;
             $grade->language   = $language = $grade_review->language;
             $grade->text       = $grade_review->text;
 
-            $point = $point + $quality  + $creativity + $language;
+            $point = $point + ($quality*$bobot)  + ($creativity*$bobot) + ($language*$bobot);
         }
 
         $answer = new MissionAnswerModel;
