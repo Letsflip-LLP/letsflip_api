@@ -49,9 +49,9 @@ class AnswerTransformer {
         $data = [];
         foreach($answers as $ans){
             $data[] = [
-                "my_answer"     => $ans->answer,
-                "true_answer"   => $ans->Question[$ans->answer] ,//$model->Question[$model->Question['correct_option']];
-                "title"         => $ans[$ans->Question['correct_option']],
+                "my_answer"     => $ans->Question[$ans->answer],
+                "true_answer"   => $ans->Question[$ans->Question["correct_option"]],//$model->Question[$model->Question['correct_option']];
+                "title"         => $ans->Question[$ans->answer],
             ];
         }
 
