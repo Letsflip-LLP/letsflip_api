@@ -36,7 +36,8 @@ class AnswerTransformer {
         $tmp->id            = $model->id; 
         $tmp->point         = [];
         $tmp->answer        = $this->generateAnswer($model->Answer);
-
+        $tmp->point         = $model->Answer->sum('point');
+        
         $tmp->question   = [
             "title" => $model->title
         ];
