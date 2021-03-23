@@ -1291,9 +1291,9 @@ class MissionController extends Controller
         try {
              
             $data = new MissionResponeModel;
-
+            $data = $data->where('id',$request->response_id);
             $data = $data->first();
-
+             
             DB::commit();
         
                 return (new MissionTransformer)->detail(200,__('messages.200'),$data);
