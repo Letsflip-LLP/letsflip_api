@@ -254,8 +254,8 @@ class MissionController extends Controller
            
             $check = MissionResponeModel::where('user_id',$this->user_login->id)->where('mission_id',$request->mission_id)->first();
             
-            if($check != null)
-                return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
+            // if($check != null)
+            //     return (new ResponseTransformer)->toJson(400,"You have responed this mission before",(object) ['error' => ["You have responed this mission before"]]);
 
             $mission_detail = MissionModel::where('id',$request->mission_id)->first();
 
@@ -1304,5 +1304,34 @@ class MissionController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         } 
+    }
+
+
+    public function getTopGrade(Request $request){
+
+        DB::beginTransaction();
+
+        try { 
+            $point = new UserPointsModel;
+            $point = $point->where('mission_id',$request->mission_id)->where('type',5);
+            $point = $point->orderBy('value','DESC');
+            $point = $point->paginate($request->input('per_page',5));
+            
+            $return = [];
+
+            foreach($point as $pt){
+                $return[] = $pt->Respone;
+            }
+  
+            DB::commit();
+        
+                return (new MissionTransformer)->list(200,__('messages.200'),$return);
+
+        } catch (\exception $exception){
+         
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
     }
 }

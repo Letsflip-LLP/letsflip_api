@@ -22,4 +22,9 @@ class UserPointsModel extends Model
     {
         return $this->hasOne('App\Http\Models\User','id','user_id');
     } 
+
+    public function Respone()
+    {
+        return $this->hasOne('App\Http\Models\MissionResponeModel','id','respone_id');
+    } 
 }

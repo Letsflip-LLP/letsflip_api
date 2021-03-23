@@ -49,10 +49,12 @@ class MissionTransformer {
                 ];
             }
 
-            if($model->Point){
+               
+            if($model->Point && $model->Point){
+                $check_point = $model->Point; 
                 $temp->point = (object) [
-                    "id" => $model->Point->id,
-                    "value" => $model->Point->value
+                    "id" => $check_point->id,
+                    "value" => $check_point->value
                 ];
             }
         }
