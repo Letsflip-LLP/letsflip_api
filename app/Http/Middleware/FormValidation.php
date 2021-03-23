@@ -303,6 +303,12 @@ class FormValidation
           ];
         break;
 
+        case 'GetMissionControllerGetDetailResponeMission':
+          return [
+            'response_id'  => 'required|exists:mission_responses,id'
+          ];
+        break;
+
         default:
           return [];
       }
