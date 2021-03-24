@@ -46,12 +46,12 @@ class AnswerTransformer {
     }
 
     public function generateAnswer($answers){
-        $data = [];
+         $data = [];
         foreach($answers as $ans){
             $data[] = [
-                "my_answer"     => $ans->Question[$ans->answer],
-                "true_answer"   => $ans->Question[$ans->Question["correct_option"]],//$model->Question[$model->Question['correct_option']];
-                "title"         => $ans->Question[$ans->answer],
+                "my_answer"     => $ans->Question['type'] == 1 ? $ans->Question[$ans->answer] : $ans->answer,
+                "true_answer"   => $ans->Question['type'] == 1 ? $ans->Question[$ans->Question["correct_option"]] : null,//$model->Question[$model->Question['correct_option']];
+                "title"         => $ans->Question['type'] == 1 ? $ans->Question[$ans->answer] : $ans->answer,
             ];
         }
 
