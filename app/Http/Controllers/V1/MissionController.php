@@ -1258,6 +1258,11 @@ class MissionController extends Controller
             
             $data = $this->_getTotalPointFromResponse($request);
             
+            if($request->filled('text'))
+                GradeOverviewModel::where('mission_response_id',$request->response_id)->update([
+                    "text" => $request->text
+                ]);
+
             // ADD POINT
             UserPointsModel::updateOrCreate(
                 [
