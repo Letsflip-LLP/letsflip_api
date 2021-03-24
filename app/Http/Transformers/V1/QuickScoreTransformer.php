@@ -29,7 +29,7 @@ class QuickScoreTransformer {
         $tmp->id        = $model->id;
         $tmp->title     = $model->title;
         $tmp->my_answer = null;
-        $my_answer      = $model->Answer->where('user_id',auth('api')->user()->id);
+        $my_answer      = $model->Answer->where('user_id',auth('api')->user()->id)->whereNull('mission_response_id');
 
         if($my_answer != null){
             $tmp->my_answer= [];

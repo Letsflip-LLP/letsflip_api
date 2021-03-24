@@ -975,7 +975,7 @@ class MissionController extends Controller
                 $exist = MissionAnswerModel::where([
                         "user_id" => $this->user_login->id,
                         "question_id" => $request->question_id
-                    ])->first(); 
+                    ])->whereNull('mission_response_id')->first(); 
 
                 if($exist == null){
                     $insert                 = new MissionAnswerModel;
