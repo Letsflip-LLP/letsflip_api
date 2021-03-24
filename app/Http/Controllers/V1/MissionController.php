@@ -1316,6 +1316,7 @@ class MissionController extends Controller
         try { 
             $point = new UserPointsModel;
             $point = $point->where('mission_id',$request->mission_id)->where('type',5);
+            $point = $point->whereHas('Respone');
             $point = $point->orderBy('value','DESC');
             $point = $point->paginate($request->input('per_page',5));
             
