@@ -37,16 +37,16 @@ class MissionTransformer {
 
         $temp->my_response           = null;
         
-        if(auth('api')->user()){
-            
+        if(auth('api')->user()){ 
             if($model->Respone){
                 $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first(); 
                 if($my_response)
-                $temp->my_response  = (object) [
-                    "id" => $my_response->id,
-                    "title" => $my_response->title,
-                    "status" => $my_response->status
-                ];
+                    $this->item($my_response);
+                // $temp->my_response  = (object) [
+                //     "id" => $my_response->id,
+                //     "title" => $my_response->title,
+                //     "status" => $my_response->status
+                // ];
             }
 
                
