@@ -1152,7 +1152,7 @@ class MissionController extends Controller
             
             $respone_detail = $respone_detail->first();
 
-            if($respone_detail->user_id != $user_login->id || $respone_detail->Mission->user_id != $user_login->id)
+            if($respone_detail->user_id != $user_login->id && $respone_detail->Mission->user_id != $user_login->id)
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
             
             $quest = new MissionQuestionModel;
