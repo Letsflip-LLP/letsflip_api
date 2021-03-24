@@ -1319,8 +1319,21 @@ class MissionController extends Controller
 
         try { 
             $point = new UserPointsModel;
-            $point = $point->where('mission_id',$request->mission_id)->where('type',5);
+             $point = $point->where('type',5);
             $point = $point->whereHas('Respone');
+            
+            if($request->filled('mission_id'))
+                $point = $point->where('mission_id',$request->mission_id);
+
+            
+            if($request->filled('classroom_id')){
+                $point = $point->whereHas('Mission',function($q1) use ($request){
+                    $q1->whereHas('ClassRoomTag',function($q2) use ($request) {
+                        $q2->where('classrooms.id',$request->classroom_id);
+                    });
+                });
+            }
+
             $point = $point->orderBy('value','DESC');
             $point = $point->paginate($request->input('per_page',5));
             

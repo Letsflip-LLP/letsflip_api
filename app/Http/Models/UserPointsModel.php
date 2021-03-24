@@ -27,4 +27,9 @@ class UserPointsModel extends Model
     {
         return $this->hasOne('App\Http\Models\MissionResponeModel','id','respone_id');
     } 
+
+    public function Mission()
+    {
+        return $this->hasOne('App\Http\Models\MissionModel','id','mission_id');
+    } 
 }

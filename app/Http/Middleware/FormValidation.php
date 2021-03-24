@@ -309,6 +309,13 @@ class FormValidation
           ];
         break;
 
+        case 'GetMissionControllerGetTopGrade':
+          return [
+            'classroom_id'  => 'exists:classrooms,id',
+            'mission_id'  => 'exists:missions,id' 
+          ];
+        break;
+
         default:
           return [];
       }
