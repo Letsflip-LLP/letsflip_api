@@ -39,6 +39,8 @@ $router->group(['middleware'=> [],'prefix' => 'user'], function($router){
     Route::get('detail', [UserController::class, 'getPublicDetailUser'])->name('GetPublicUserDetail'); 
     Route::get('availlable-social-media', [UserController::class, 'availlableSocialMedia'])->name('GetUserControllerAvaillableSocialMedia'); 
 
+    // PRODUCT
+    Route::get('product/detail', [UserController::class, 'getProductPremiumDetail'])->name('GetUserControllergetProductPremiumDetail'); 
  });
 
  

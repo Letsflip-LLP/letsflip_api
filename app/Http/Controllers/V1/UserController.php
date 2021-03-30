@@ -192,8 +192,7 @@ class UserController extends Controller
         }  
     }
 
-    public function subscribePremiumAccount(Request $request){
-
+    private function androidVlidateSubscription($request){
         DB::beginTransaction();
         try {
             
@@ -214,10 +213,10 @@ class UserController extends Controller
             }
             
             $vendor_payload = $request->data;  
+            
             $product_id = $vendor_payload['productId'];
             $transaction_id = $vendor_payload['transactionId'];
-            $purchase_token = $vendor_payload['purchaseToken'];
-
+            $purchase_token = $vendor_payload['purchaseToken']; 
 
             $validate_token_purchase = $this->_purchaseDetail('com.lets_flip',$product_id,$purchase_token);
 
@@ -271,5 +270,54 @@ class UserController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         } 
+    }
+
+    private function iosVlidateSubscription($request){
+        $data       = $request->data; 
+
+        $product_account = config('account.premium_product');
+        $product_detail = $product_account[$data['productId']];
+        
+        $vendor_trx_id = $data['transactionId'];
+        $sub_start_date = date('Y-m-d H:i:s',$data['transactionDate']/1000);
+        $sub_end_date = Carbon::parse($sub_start_date)->add('months',$product_detail['duration'])->format('Y-m-d H:i:s');
+  
+        $subscribe =  SubscriberModel::firstOrCreate(
+            [ 
+                "user_id" => $this->user_login->id,
+                "status" => 1,
+                "vendor_trx_id" => $vendor_trx_id
+            ],
+            [
+                "id"            => Uuid::uuid4(),
+                "date_start"    => $sub_start_date, 
+                "date_end"      => $sub_end_date, 
+                "payload"       => json_encode($request->all()),
+                "type"          => $product_detail['type'],
+                "classroom_id"  => $request->classroom_id ? $request->classroom_id : null,
+                "product_id"    => $product_detail['id']
+            ]
+        );
+
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),true); 
+    }
+
+    public function subscribePremiumAccount(Request $request){
+
+        if($request->data['platform'] == 'android' || !isset($request->data['platform']))
+            return $this->androidVlidateSubscription($request);
+
+        if($request->data['platform'] == 'ios')
+            return $this->iosVlidateSubscription($request);
+         
+    }
+
+
+
+    public function getProductPremiumDetail(Request $request){
+        $product_account = config('account.premium_product'); 
+
+        dd($product_account);
+        
     }
 }
