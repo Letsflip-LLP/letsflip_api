@@ -77,7 +77,7 @@ class ClassRoomTransformer {
 
         // $temp->premium_user_access = $model->PremiumUserAccess;
 
-        $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.'/'.$model->file_name);
+        $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.'/small/'.$model->file_name);
         $temp->type         = $this->_type($model->type); 
         $temp->created_at   = dateFormat($model->created_at);
 
