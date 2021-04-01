@@ -45,7 +45,12 @@ class UserController extends Controller
             $users = $users->orWhere('last_name','LIKE',"%".$request->search."%");
             $users = $users->orWhere('email','LIKE',"%".$request->search."%"); 
         }
- 
+        
+        if($request->filled('friends_only') && $request->friends_only == true)
+            $users = $users->whereHas('Follower',function($q1){
+                $q1->where('user_id_from',$this->user_login->id);
+            });
+
         $users = $users->paginate($request->input('per_page',10));
 
         return (new UserTransformer)->list(200,"Success",$users);
