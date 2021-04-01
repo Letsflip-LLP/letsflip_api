@@ -9,7 +9,7 @@
     <a href="{{$redirect_url}}">Click</a>
 
 <script>
-    setTimeout(function(){ location.href = '{{$redirect_url}}';},25); 
+    setTimeout(function(){ location.href = '{{$redirect_url}}';},100);
     location.href = '{{$deeplink_url}}'; 
 </script>
 
