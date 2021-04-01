@@ -625,7 +625,7 @@ class MissionController extends Controller
         try {
 
             $model1 = new MissionReportModel;
-            $model2 = new MissionReportModel;
+            $model2 = new MissionReportModel; 
             $model1 = $model1->where('user_id',$this->user_login->id);
      
             if($request->filled("mission_id")){
@@ -642,6 +642,11 @@ class MissionController extends Controller
                  $model1 = $model1->where('mission_respone_id',$request->mission_respone_id);
                  $model2->mission_respone_id = $request->mission_respone_id;
              }
+
+             if($request->filled("classroom_id")){
+                $model1 = $model1->where('classroom_id',$request->classroom_id);
+                $model2->classroom_id = $request->classroom_id;
+            }
      
              if($model1->first() == null){
                  $model2->id      = Uuid::uuid4();
