@@ -148,7 +148,7 @@ return [
         'social_media_availlable' => [
             "youtube" => [
                 "id" => "youtube",
-                "title" => "TouTube",
+                "title" => "YouTube",
                 "image" => (object)[
                     "file_path" => "",
                     "file_name" => "",
@@ -166,7 +166,7 @@ return [
             ],
             "linkedin" => [
                 "id" => "linkedin",
-                "title" => "Linkedin",
+                "title" => "LinkedIn",
                 "image" => (object)[
                     "file_path" => "",
                     "file_name" => "",

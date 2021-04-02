@@ -12,7 +12,7 @@ use App\Http\Models\MissionResponeModel;
 class ClassRoomTransformer {
 
     public function detail($code,$message,$model){
-        $custome_model = $this->item($model);
+        $custome_model = $this->item($model,'detail');
 
         return (new ResponseTransformer)->toJson($code,$message,$model,$custome_model);
     }
@@ -20,13 +20,13 @@ class ClassRoomTransformer {
     public function list($code,$message,$models){
         $custome_model = []; 
         foreach($models as $model ){
-            $custome_model[] = $this->item($model);
+            $custome_model[] = $this->item($model,'list');
         }
 
         return (new ResponseTransformer)->toJson($code,$message,$models,$custome_model);
     }
 
-    public function item($model){
+    public function item($model,$type=null){
 
         $temp = new \stdClass(); 
         $temp->id           = $model->id;
@@ -76,9 +76,8 @@ class ClassRoomTransformer {
         // $temp->total_respone  = MissionResponeModel::whereIn('id',[1,2,3])->count();
 
         // $temp->premium_user_access = $model->PremiumUserAccess;
-
-
-        $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.'/'.$model->file_name);
+        $file_size = $type == 'detail' ? '/large/' : '/small/';
+        $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.$file_size.$model->file_name);
         $temp->type         = $this->_type($model->type); 
         $temp->created_at   = dateFormat($model->created_at);
 

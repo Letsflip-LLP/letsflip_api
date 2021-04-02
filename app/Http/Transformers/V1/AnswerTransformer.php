@@ -18,6 +18,7 @@ class AnswerTransformer {
     }
 
     public function list($code,$message,$models){
+        // dd($models);
        $datas = [];// $this->item($model);
         foreach($models as $model){
             $datas[] =  $this->item($model); 
@@ -30,22 +31,30 @@ class AnswerTransformer {
         return (new ResponseTransformer)->toJson($code,$message,$models,$return);
     }
 
-    public function item($model){
+    public function item($model){ 
         $tmp                = new \stdClass();
         $tmp->id            = $model->id; 
-        $tmp->point         = $model->point;
-        $tmp->answer        = [
-                        "my_answer"     => $model->answer,
-                        "true_answer"   => $model->Question['correct_option'],//$model->Question[$model->Question['correct_option']];
-                        "title"   => $model->Question[$model->Question['correct_option']],
-        ];
-
+        $tmp->point         = [];
+        $tmp->answer        = $this->generateAnswer($model->Answer);
+        $tmp->point         = $model->Answer->sum('point');
+        
         $tmp->question   = [
-            "title" => $model->Question->title
+            "title" => $model->title
         ];
-
-   
-
+ 
         return $tmp;
+    }
+
+    public function generateAnswer($answers){
+         $data = [];
+        foreach($answers as $ans){
+            $data[] = [
+                "my_answer"     => $ans->Question['type'] == 1 ? $ans->Question[$ans->answer] : $ans->answer,
+                "true_answer"   => $ans->Question['type'] == 1 ? $ans->Question[$ans->Question["correct_option"]] : null,//$model->Question[$model->Question['correct_option']];
+                "title"         => $ans->Question['type'] == 1 ? $ans->Question[$ans->answer] : $ans->answer,
+            ];
+        }
+
+        return $data;
     }
 }

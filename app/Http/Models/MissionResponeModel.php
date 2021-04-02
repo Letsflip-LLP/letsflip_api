@@ -48,10 +48,18 @@ class MissionResponeModel extends Model
         return $this->hasMany('App\Http\Models\MissionReportModel','mission_respone_id','id');
     }
 
-
     public function Mission()
     {
         return $this->hasOne('App\Http\Models\MissionModel','id','mission_id');
+    }
+
+    public function Point()
+    {
+        return $this->hasOne('App\Http\Models\UserPointsModel','respone_id','id')->where('type',5);
+    }
+
+    public function GradeOverview(){
+        return $this->hasOne('App\Http\Models\GradeOverviewModel','mission_response_id','id');
     }
 
 }

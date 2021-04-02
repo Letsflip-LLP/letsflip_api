@@ -625,7 +625,7 @@ class MissionController extends Controller
         try {
 
             $model1 = new MissionReportModel;
-            $model2 = new MissionReportModel;
+            $model2 = new MissionReportModel; 
             $model1 = $model1->where('user_id',$this->user_login->id);
      
             if($request->filled("mission_id")){
@@ -642,6 +642,11 @@ class MissionController extends Controller
                  $model1 = $model1->where('mission_respone_id',$request->mission_respone_id);
                  $model2->mission_respone_id = $request->mission_respone_id;
              }
+
+             if($request->filled("classroom_id")){
+                $model1 = $model1->where('classroom_id',$request->classroom_id);
+                $model2->classroom_id = $request->classroom_id;
+            }
      
              if($model1->first() == null){
                  $model2->id      = Uuid::uuid4();
@@ -975,7 +980,7 @@ class MissionController extends Controller
                 $exist = MissionAnswerModel::where([
                         "user_id" => $this->user_login->id,
                         "question_id" => $request->question_id
-                    ])->first(); 
+                    ])->whereNull('mission_response_id')->first(); 
 
                 if($exist == null){
                     $insert                 = new MissionAnswerModel;
@@ -1102,7 +1107,7 @@ class MissionController extends Controller
         DB::beginTransaction();
 
         try {
-            $respone_detail = MissionResponeModel::where('id',$request->respone_id);
+            $respone_detail = MissionResponeModel::where('id',$request->response_id);
             $user_login     = $this->user_login;
             $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
                 $q1->where('user_id',$user_login->id);
@@ -1115,15 +1120,15 @@ class MissionController extends Controller
             
             $grade             = new GradeOverviewModel;
             $grade->updateOrCreate(
-                ["mission_response_id" => $request->respone_id ],
+                ["mission_response_id" => $request->response_id ],
                 [
                     "id"         => $grade_id = Uuid::uuid4(),
-                    "mission_response_id" =>  $request->respone_id,
+                    "mission_response_id" =>  $request->response_id,
                     "quality"     => $quality = $request->quality,
                     "creativity"  => $creativity = $request->creativity,
                     "language"    => $language = $request->language,
                     "text"        => $request->text,
-                    "point"       => ($quality + $creativity + $language) * env('POINT_TYPE_5')
+                    "point"       => ($quality + $creativity + $language) * env('GRADE_PREVIEW_STAR',0)
                 ]
             );
 
@@ -1146,6 +1151,106 @@ class MissionController extends Controller
             $respone_detail = MissionResponeModel::where('id',$request->respone_id);
             $user_login     = $this->user_login;
 
+            // $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
+            //     $q1->where('user_id',$user_login->id);
+            // });
+            
+            $respone_detail = $respone_detail->first();
+
+            if($respone_detail->user_id != $user_login->id && $respone_detail->Mission->user_id != $user_login->id)
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
+            
+            $quest = new MissionQuestionModel;
+
+            if($request->filled('type') && in_array($request->type,[1,2]))
+                $quest =  $quest->where('mission_questions.type',$request->type);
+            
+            $quest = $quest->where('mission_id',$respone_detail->mission_id); 
+            $quest = $quest->whereHas('Answer',function($q) use ($respone_detail){
+                $q->where('mission_response_id',$respone_detail->id);
+            });  
+             
+            $quest = $quest->get();
+
+            DB::commit();
+        
+            return (new AnswerTransformer)->list(200,__('messages.200'),$quest);
+
+        } catch (\exception $exception){
+        
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+
+    private function _getTotalPointFromResponse($request){
+        $respone_mission = new MissionResponeModel; 
+        $respone_mission = $respone_mission->where('id',$request->response_id);
+        $respone_mission = $respone_mission->first();
+        $point           = 0;
+
+        $grade_review = $respone_mission->GradeOverview ? $respone_mission->GradeOverview : null;
+        $grade = null;
+        
+        if($grade_review){
+            $bobot = env('GRADE_PREVIEW_STAR');
+
+            $grade = new \stdClass();
+            $grade->quality    = $quality = $grade_review->quality;
+            $grade->creativity = $creativity = $grade_review->creativity;
+            $grade->language   = $language = $grade_review->language;
+            $grade->text       = $grade_review->text;
+
+            $point = $point + ($quality*$bobot)  + ($creativity*$bobot) + ($language*$bobot);
+        }
+
+        $answer = new MissionAnswerModel;
+        $answer = $answer->where('mission_response_id',$request->response_id);
+        $answer = $answer->get(); 
+
+        $point = $point+ $answer->sum('point');
+
+        $return              = new \stdClass();
+        $return->preview     = $grade;
+        $return->total_point = $point;
+        $return->scale       = (object) [
+            "point_per_star" => env('GRADE_PREVIEW_STAR',0)
+        ]; 
+
+        return $return;
+    }
+
+    public function getGradingPreview(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+             
+            $data = $this->_getTotalPointFromResponse($request);
+
+            DB::commit();
+        
+                return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+
+        } catch (\exception $exception){
+         
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+ 
+    public function addSubmitGradeAnswer(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+             
+            $respone_detail = MissionResponeModel::where('id',$request->response_id);
+            $user_login     = $this->user_login;
+
             $respone_detail = $respone_detail->whereHas('Mission',function($q1) use ($user_login){
                 $q1->where('user_id',$user_login->id); 
             });
@@ -1155,25 +1260,100 @@ class MissionController extends Controller
             if($respone_detail == null)
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),true);
             
+            $data = $this->_getTotalPointFromResponse($request);
             
-            $answer = new MissionAnswerModel; 
+            if($request->filled('text'))
+                GradeOverviewModel::where('mission_response_id',$request->response_id)->update([
+                    "text" => $request->text
+                ]);
 
-            if($request->filled('type') && in_array($request->type,[1,2])){
-                $answer = $answer->whereHas('Question',function($q) use ($request){
-                    $q->where('mission_questions.type',$request->type);
-                });
-            }
-            
-
-            $answer = $answer->where('mission_response_id',$request->respone_id);
-            $answer = $answer->get();
+            // ADD POINT
+            UserPointsModel::updateOrCreate(
+                [
+                    "respone_id" => $respone_detail->id,
+                    "type" => 5
+                ],
+                [
+                    "user_id_to" => $this->user_login->id,
+                    "mission_id" => $respone_detail->mission_id, 
+                    "value" => $data->total_point, 
+                    "id" => Uuid::uuid4(),
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ]
+              );
 
             DB::commit();
         
-            return (new AnswerTransformer)->list(200,__('messages.200'),$answer);
+                return (new ResponseTransformer)->toJson(200,__('messages.200'),false);
 
         } catch (\exception $exception){
+         
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    public function getDetailResponeMission(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+             
+            $data = new MissionResponeModel;
+            $data = $data->where('id',$request->response_id);
+            $data = $data->first();
+             
+            DB::commit();
         
+                return (new MissionTransformer)->detail(200,__('messages.200'),$data);
+
+        } catch (\exception $exception){
+         
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        } 
+    }
+
+
+    public function getTopGrade(Request $request){
+
+        DB::beginTransaction();
+
+        try { 
+            $point = new UserPointsModel;
+             $point = $point->where('type',5);
+            $point = $point->whereHas('Respone');
+            
+            if($request->filled('mission_id'))
+                $point = $point->where('mission_id',$request->mission_id);
+
+            
+            if($request->filled('classroom_id')){
+                $point = $point->whereHas('Mission',function($q1) use ($request){
+                    $q1->whereHas('ClassRoomTag',function($q2) use ($request) {
+                        $q2->where('classrooms.id',$request->classroom_id);
+                    });
+                });
+            }
+
+            $point = $point->orderBy('value','DESC');
+            $point = $point->paginate($request->input('per_page',5));
+            
+            $return = [];
+
+            foreach($point as $pt){
+                $return[] = $pt->Respone;
+            }
+  
+            DB::commit();
+        
+                return (new MissionTransformer)->list(200,__('messages.200'),$return);
+
+        } catch (\exception $exception){
+         
             DB::rollBack();
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);

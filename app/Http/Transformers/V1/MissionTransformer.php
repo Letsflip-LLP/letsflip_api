@@ -27,25 +27,36 @@ class MissionTransformer {
     }
 
     public function item($model){
- 
         $temp = new \stdClass();
         $temp->id                   = $model->id;
         $temp->difficulty_level     = $model->difficulty_level;
         $temp->title                = $model->title;
         $temp->text                 = $model->text; 
         $temp->status               = $model->status; 
+        $temp->point                = null; 
 
         $temp->my_response           = null;
         
-        if(auth('api')->user() && $model->Respone){
-            $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first();
+        if(auth('api')->user()){
             
-            if($my_response)
-            $temp->my_response  = (object) [
-                "id" => $my_response->id,
-                "title" => $my_response->title,
-                "status" => $my_response->status
-            ];
+            if($model->Respone){
+                $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first(); 
+                if($my_response)
+                    $temp->my_response  = (object) [
+                        "id" => $my_response->id,
+                        "title" => $my_response->title,
+                        "status" => $my_response->status
+                    ];
+            }
+
+               
+            if($model->Point && $model->Point){
+                $check_point = $model->Point; 
+                $temp->point = (object) [
+                    "id" => $check_point->id,
+                    "value" => $check_point->value
+                ];
+            }
         }
 
         $temp->has_learning_journey = $model->QuickScores && $model->QuickScores->where('type',2)->first() ? true : false;
@@ -104,7 +115,7 @@ class MissionTransformer {
         return $return;
     }
 
-    private function _user($model){
+    private function _user($model){ 
         $tmp = new \stdClass;
         $tmp->id            = $model->id;
         $tmp->first_name    = $model->first_name;

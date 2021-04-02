@@ -23,6 +23,7 @@ use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite;
 use App\Mail\verificationUserRegister;
 use App\Http\Models\UserDeviceModel;
+use App\Http\Transformers\V1\UserTransformer; 
 
 class AuthController extends Controller
 {
@@ -101,7 +102,7 @@ class AuthController extends Controller
 
             DB::commit();
 
-            return (new AuthTransformer)->detail(200,__("messages.200"),$user); 
+            return (new UserTransformer)->detail(200,__("messages.200"),$user); 
 
         } catch (\exception $exception){
             DB::rollBack();
@@ -343,18 +344,20 @@ class AuthController extends Controller
             );
         }
 
-        $data = new \stdClass();
-        $data->id = $user->id;
-        $data->first_name = $user->first_name;
-        $data->last_name = $user->last_name;
-        $data->email = $user->email;
-        $data->email = $user->email;
-        $data->image_profile = defaultImage('user',$user);
-        $data->access_token = $this->createToken($user);
+        // $data = new \stdClass();
+        // $data->id = $user->id;
+        // $data->first_name = $user->first_name;
+        // $data->last_name = $user->last_name;
+        // $data->email = $user->email;
+        // $data->email = $user->email;
+        // $data->image_profile = defaultImage('user',$user);
+        // $data->access_token = $this->createToken($user);
+ 
+        $user->accessToken = $this->createToken($user);
 
         DB::commit();
                
-        return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+        return (new UserTransformer)->detail(200,__("messages.200"),$user); 
 
         } catch (\exception $exception){
             DB::rollBack();
@@ -437,17 +440,17 @@ class AuthController extends Controller
             $user->id = $uuid;
         }
         
-        $data = new \stdClass();
-        $data->id = $user->id;
-        $data->first_name = $user->first_name;
-        $data->last_name = $user->last_name;
-        $data->email = $user->email;
-        $data->image_profile    = defaultImage('user',$user);
-        $data->access_token = $this->createToken($user);
+        // $data = new \stdClass();
+        // $data->id = $user->id;
+        // $data->first_name = $user->first_name;
+        // $data->last_name = $user->last_name;
+        // $data->email = $user->email;
+        // $data->image_profile    = defaultImage('user',$user);
+        $user->accessToken = $this->createToken($user);
 
         DB::commit();
                
-        return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+        return (new UserTransformer)->detail(200,__("messages.200"),$user); 
 
         } catch (\exception $exception){
             DB::rollBack();

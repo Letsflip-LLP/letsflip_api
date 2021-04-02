@@ -56,6 +56,7 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             Route::post('add', [MissionController::class, 'addResponeMission'])->name('PostMissionResponeControllerAddRespone'); 
             Route::post('delete', [MissionController::class,'deleteResponeMission'])->name('PostMissionControllerDeleteResponeMission'); 
             Route::post('edit', [MissionController::class,'editResponeMission'])->name('PostMissionControllerEditResponeMission'); 
+            Route::get('detail', [MissionController::class,'getDetailResponeMission'])->name('GetMissionControllerGetDetailResponeMission'); 
 
             // COMMENT
             Route::post('comment/add', [MissionCommentController::class, 'addCommentResponeMission'])->name('PostMissionCommentControllerAddCommentResponeMission'); 
@@ -65,6 +66,9 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
             // GRADE
             Route::post('grading/add-preview', [MissionController::class, 'addGradingPreview'])->name('PostMissionControllerAddGradingPreview');
             Route::get('grading/get-answer',  [MissionController::class, 'getAnswerResponseGrade'])->name('GetMissionControllerGetAnswerResponseGrade');
+            Route::get('grading/get-preview', [MissionController::class, 'getGradingPreview'])->name('GettMissionControllerGetGradingPreview');
+            Route::post('grading/submit-grade-answer', [MissionController::class, 'addSubmitGradeAnswer'])->name('PostMissionControllerAddSubmitGradeAnswer');
+            Route::get('grading/top-grade', [MissionController::class, 'getTopGrade'])->name('GetMissionControllerGetTopGrade');
         });
 
         $router->group(['prefix' => 'question'], function($router){
