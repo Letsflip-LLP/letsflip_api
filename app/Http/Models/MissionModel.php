@@ -54,8 +54,8 @@ class MissionModel extends Model
     public function LastRespone()
     { 
         return $this->hasMany('App\Http\Models\MissionResponeModel','mission_id','id')
-                ->where('mission_responses.created_at','<=',Carbon::now()->format('Y-m-d'))
-                ->where('mission_responses.created_at','>=',Carbon::now()->subDays(2)->format('Y-m-d'));
+                ->where('created_at','<=',Carbon::now()->format('Y-m-d'))
+                ->where('created_at','>=',Carbon::now()->subDays(1)->format('Y-m-d'));
     }
 
     public function ClassRoomTag()
