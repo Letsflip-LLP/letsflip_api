@@ -474,7 +474,7 @@ class MissionController extends Controller
                     $mission = $mission->orderBy($order_by[0],$order_by[1]);
 
                 if($order_by[0] == 'trending'){
-                    $mission = $mission->withCount('Respone')->orderBy('respone_count', 'desc');
+                    $mission = $mission->withCount('LastRespone')->orderBy('last_respone_count', 'desc')->orderBy('created_at','desc');
                 }
             }else{
                 $mission = $mission->orderBy('created_at','DESC'); 
