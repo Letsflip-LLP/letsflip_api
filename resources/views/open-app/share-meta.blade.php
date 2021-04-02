@@ -11,10 +11,10 @@
 <script>
     setTimeout(function(){ 
         if(document.hidden == false) location.href = '{{$redirect_url}}';
-     }
-    ,100); 
+    }
+    ,1000); 
     location.href = '{{$deeplink_url}}';
- </script>
+</script>
 
 </html>  
 
