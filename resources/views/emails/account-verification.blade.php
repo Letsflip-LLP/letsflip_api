@@ -15,7 +15,7 @@
             <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px"> <span style="font-weight:bold;display:inline-block">Email Address:</span> <a href="mailto:andhi.saputro1508@gmail.com" target="_blank">{{$email}}</a> </td>
          </tr>
          <tr>
-            <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px"> <span style="font-weight:bold;display:inline-block">Password:</span> {{$password}} </td>
+            <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px"> <span style="font-weight:bold;display:inline-block">Password:</span> ******** </td> <!--{{$password}} -->
          </tr>
          <tr>
             <td style="text-align:center;"> <a href="{{$activate_url}}" style="

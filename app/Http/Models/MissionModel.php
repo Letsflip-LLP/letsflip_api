@@ -5,6 +5,7 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model; 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class MissionModel extends Model
 {
@@ -48,6 +49,13 @@ class MissionModel extends Model
     public function Respone()
     {
         return $this->hasMany('App\Http\Models\MissionResponeModel','mission_id','id');
+    }
+
+    public function LastRespone()
+    { 
+        return $this->hasMany('App\Http\Models\MissionResponeModel','mission_id','id')
+                ->where('mission_responses.created_at','<=',Carbon::now()->format('Y-m-d'))
+                ->where('mission_responses.created_at','>=',Carbon::now()->subDays(2)->format('Y-m-d'));
     }
 
     public function ClassRoomTag()
