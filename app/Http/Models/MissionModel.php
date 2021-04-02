@@ -55,7 +55,7 @@ class MissionModel extends Model
     { 
         return $this->hasMany('App\Http\Models\MissionResponeModel','mission_id','id')
                 ->where('created_at','<=',Carbon::now()->format('Y-m-d'))
-                ->where('created_at','>=',Carbon::now()->subDays(1)->format('Y-m-d'));
+                ->where('created_at','>=',Carbon::now()->subDays(7)->format('Y-m-d'));
     }
 
     public function ClassRoomTag()
