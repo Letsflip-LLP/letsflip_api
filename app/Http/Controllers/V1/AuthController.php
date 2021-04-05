@@ -343,15 +343,6 @@ class AuthController extends Controller
                 [ 'id' => Uuid::uuid4()]
             );
         }
-
-        // $data = new \stdClass();
-        // $data->id = $user->id;
-        // $data->first_name = $user->first_name;
-        // $data->last_name = $user->last_name;
-        // $data->email = $user->email;
-        // $data->email = $user->email;
-        // $data->image_profile = defaultImage('user',$user);
-        // $data->access_token = $this->createToken($user);
  
         $user->accessToken = $this->createToken($user);
 
@@ -385,14 +376,8 @@ class AuthController extends Controller
             );
             $user->id = $uuid;
         }
-        
-        $data = new \stdClass();
-        $data->id = $user->id;
-        $data->first_name = $user->first_name;
-        $data->last_name = $user->last_name;
-        $data->email = $user->email;
-        $data->image_profile = defaultImage('user',$user);
-        $data->access_token = $this->createToken($user);
+         
+        $user->accessToken = $this->createToken($user);
 
         if($request->filled('notif_player_id') && $request->filled('platform')){
             $check = UserDeviceModel::where('player_id',$request->notif_player_id)->first(); 
@@ -405,8 +390,8 @@ class AuthController extends Controller
         }
         
         DB::commit();
-               
-        return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+                
+        return (new UserTransformer)->detail(200,__("messages.200"),$user); 
 
         } catch (\exception $exception){
             DB::rollBack();
