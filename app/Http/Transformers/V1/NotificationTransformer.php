@@ -21,9 +21,10 @@ class NotificationTransformer {
             'title' => __('notification.TYPE.'.$model->type)
         ];
 
-        if($model->type == 14 && $model->ClassroomAccess)
+        if($model->ClassroomAccess)
             $temp->module_detail = (object) [
-                "id" => $model->ClassroomAccess->id
+                "id"     => $model->ClassroomAccess->id,
+                "status" => $model->ClassroomAccess->status
             ];
 
         $temp->text     = "";
@@ -62,7 +63,7 @@ class NotificationTransformer {
         if($model->type ==  12 || $model->type ==  13)
             $temp->text  =   __('notification.TEXT.'.$model->type);
             
-        if($model->type == 14)
+        if($model->type == 14 || $model->type == 15 || $model->type == 16) 
             $temp->text  =   __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $model->ClassRoom->title ]);
 
         $temp->title        =   __('notification.TYPE.'.$model->type);

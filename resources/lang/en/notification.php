@@ -12,6 +12,8 @@ return [
         12 => "Points deducted from deleting Mission",
         13 => "Points deducted from deleting Respones",
         14 => ":user_name_from request to join your Private Classroom: :module_title",
+        15 => ":user_name_from Accepted you to join Private Classroom: :module_title",
+        16 => ":user_name_from Rejected you to join Private Classroom: :module_title",
     ],
     "TYPE" => [
         1 => "New Response from My Mission",
@@ -27,6 +29,8 @@ return [
         11 => "New Point!",
         12 => "Point deducted from deleted Mission",
         13 => "Point deducted from deleted Respones",
-        14 => "Request To Access Classroom"
+        14 => "Request To Access Classroom",
+        15 => "Accepted Classroom Access",
+        16 => "Rejected Classroom Access"
     ]
 ];
