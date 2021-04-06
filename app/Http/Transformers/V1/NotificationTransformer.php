@@ -21,9 +21,10 @@ class NotificationTransformer {
             'title' => __('notification.TYPE.'.$model->type)
         ];
 
-        if($model->type == 14 && $model->ClassroomAccess)
+        if($model->ClassroomAccess)
             $temp->module_detail = (object) [
-                "id" => $model->ClassroomAccess->id
+                "id"     => $model->ClassroomAccess->id,
+                "status" => $model->ClassroomAccess->status
             ];
 
         $temp->text     = "";
