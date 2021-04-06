@@ -386,7 +386,7 @@ class ClassRoomController extends Controller
         if(!$update)
             return (new ResponseTransformer)->toJson(400,__('messages.400'),$status);
  
-        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$access->ClassRoom->user_id,[
+        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$access->user_id,[
             "classroom_id"        => $access->classroom_id,
             "classroom_access_id" => $access->id
         ],$status == 1 ? 15 : 16);
