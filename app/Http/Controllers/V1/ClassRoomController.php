@@ -380,16 +380,20 @@ class ClassRoomController extends Controller
 
         $update = $access->update([
             "access_code" => $access->ClassRoom->access_code,
-            "status"      => 1
+            "status"      => $status = !$request->filled('allow') ? 1 : ($request->allow == "true" ? 1 : 2)
         ]); 
 
-
         if(!$update)
-            return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+            return (new ResponseTransformer)->toJson(400,__('messages.400'),$status);
+ 
+        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$access->ClassRoom->user_id,[
+            "classroom_id"        => $access->classroom_id,
+            "classroom_access_id" => $access->id
+        ],$status == 1 ? 15 : 16);
 
         DB::commit();
     
-            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), $request->allow );
 
         } catch (\exception $exception){ 
 
