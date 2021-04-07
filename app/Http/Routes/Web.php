@@ -17,7 +17,8 @@ use App\Http\Controllers\V1\ClassRoomController;
 */
 
 Route::get('/',function(){
-    return view('index');
+    return redirect()->to('https://getletsflip.com');
+    // return view('index');
 });
 
 $router->group(['middleware'=> ['form'] ], function($router){
