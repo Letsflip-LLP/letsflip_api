@@ -19,6 +19,7 @@ use Illuminate\Support\MessageBag;
 use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite; 
 use Session;
+use App\Http\Models\UserModel; 
 
 class AdminDashboardController extends Controller
 {
@@ -38,6 +39,7 @@ class AdminDashboardController extends Controller
 
     public function subscriberList(Request $request){
         $subscribers = new SubscriberModel;
+        $subscribers = $subscribers->orderBy('created_at','desc');
         $subscribers = $subscribers->paginate(5);
         $data  = [
             "page" => "Subscribers",
@@ -50,5 +52,30 @@ class AdminDashboardController extends Controller
         ];
 
         return view('admin.dashboard.subscription-list',$data);
+    }
+
+    public function inviteSubscriber(Request $request){
+        DB::beginTransaction();
+        try { 
+            DB::commit(); 
+            
+            $subscribers             = new SubscriberModel;
+            $subscribers->id         = $subscribers_id = Uuid::uuid4(); 
+            $subscribers->email      = $request->email;
+            $subscribers->type       = $request->type;
+            $subscribers->date_start = $request->date_start;
+            $subscribers->date_end   = $request->date_end;
+            $subscribers->status     = 1;
+            $subscribers->vendor_trx_id = $subscribers_id;
+            $subscribers->product_id = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
+
+            $subscribers->save();
+
+            return redirect()->back();
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return redirect()->back();
+        }  
     }
 }

@@ -26,6 +26,7 @@ $router->group(['middleware'=> ['admin_dashboard']], function($router){
     });
 
     $router->group(['prefix' => 'user'], function($router){
-        Route::get('/subscribers', [AdminDashboardController::class,'subscriberList']);     
+        Route::get('/subscribers', [AdminDashboardController::class,'subscriberList']);  
+        Route::post('/subscribers', [AdminDashboardController::class,'inviteSubscriber']);     
     });
 }); 
