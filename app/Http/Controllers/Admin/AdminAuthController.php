@@ -53,10 +53,10 @@ class AdminAuthController extends Controller
                 'password' => 'required|string|min:6',
             ]);
  
-            if (!$token = auth('api')->attempt($loginData))
+            if (!$token = Auth::attempt($loginData))
                 return (new ResponseTransformer)->toJson(400,__('validation.password'),false);  
             
-            $user  =  auth('api')->user(); 
+            $user  =  Auth::user();
             
             if($user->email_verified_at == null)
                 return (new ResponseTransformer)->toJson(400,__('passwords.email_verification'),false);  

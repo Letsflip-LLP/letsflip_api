@@ -1,14 +1,19 @@
 @extends ('admin.meta',array())
 @section('content')
+
+@php
+  $user = Auth::user();
+@endphp
+
 <div class="container-scroller">
   <!-- partial:partials/_navbar.html -->
   <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-      <a class="navbar-brand brand-logo" href="index.html"><img src="images/logo.svg" alt="logo"/></a>
-      <a class="navbar-brand brand-logo-mini" href="index.html"><img src="images/logo-mini.svg" alt="logo"/></a>
+      <a class="navbar-brand brand-logo" href="index.html"><img src="{{url('web/admin/images/logo.png')}}" alt="logo"/></a>
+      <a class="navbar-brand brand-logo-mini" href="#"><img src="{{url('web/admin/images/logo.png')}}" alt="logo"/></a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-stretch">
-      <div class="search-field d-none d-md-block">
+      {{-- <div class="search-field d-none d-md-block">
         <form class="d-flex align-items-center h-100" action="#">
           <div class="input-group">
             <div class="input-group-prepend bg-transparent">
@@ -17,16 +22,16 @@
             <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
           </div>
         </form>
-      </div>
+      </div> --}}
       <ul class="navbar-nav navbar-nav-right">
         <li class="nav-item nav-profile dropdown">
           <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
             <div class="nav-profile-img">
-              <img src="images/faces/face1.jpg" alt="image">
+              <img src="{{defaultImage('user',$user)['file_full_path']}}" alt="image">
               <span class="availability-status online"></span>             
             </div>
             <div class="nav-profile-text">
-              <p class="mb-1 text-black">David Greymaax</p>
+              <p class="mb-1 text-black">{{$user->first_name}}&nbsp;{{$user->last_name}}</p>
             </div>
           </a>
           <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
@@ -46,7 +51,7 @@
             <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
           </a>
         </li>
-        <li class="nav-item dropdown">
+        {{-- <li class="nav-item dropdown">
           <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
             <i class="mdi mdi-email-outline"></i>
             <span class="count-symbol bg-warning"></span>
@@ -145,17 +150,17 @@
             <div class="dropdown-divider"></div>
             <h6 class="p-3 mb-0 text-center">See all notifications</h6>
           </div>
-        </li>
+        </li> --}}
         <li class="nav-item nav-logout d-none d-lg-block">
           <a class="nav-link" href="#">
             <i class="mdi mdi-power"></i>
           </a>
         </li>
-        <li class="nav-item nav-settings d-none d-lg-block">
+        {{-- <li class="nav-item nav-settings d-none d-lg-block">
           <a class="nav-link" href="#">
             <i class="mdi mdi-format-line-spacing"></i>
           </a>
-        </li>
+        </li> --}}
       </ul>
       <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
         <span class="mdi mdi-menu"></span>
@@ -169,93 +174,36 @@
       <ul class="nav">
         <li class="nav-item nav-profile">
           <a href="#" class="nav-link">
-            <div class="nav-profile-image">
+            {{-- <div class="nav-profile-image">
               <img src="images/faces/face1.jpg" alt="profile">
               <span class="login-status online"></span> <!--change to offline or busy as needed-->              
-            </div>
+            </div> --}}
             <div class="nav-profile-text d-flex flex-column">
-              <span class="font-weight-bold mb-2">David Grey. H</span>
-              <span class="text-secondary text-small">Project Manager</span>
+              <span class="font-weight-bold mb-2">{{$user->first_name}}&nbsp;{{$user->last_name}}</span>
+              {{-- <span class="text-secondary text-small">Project Manager</span> --}}
             </div>
             <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="{{url('admin/dashboard')}}">
             <span class="menu-title">Dashboard</span>
             <i class="mdi mdi-home menu-icon"></i>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-            <span class="menu-title">UI Elements</span>
+            <span class="menu-title">Users</span>
             <i class="menu-arrow"></i>
             <i class="mdi mdi-crosshairs-gps menu-icon"></i>
           </a>
           <div class="collapse" id="ui-basic">
             <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
-              <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
+              <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Invite</a></li>
+              {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
             </ul>
           </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pages/icons/mdi.html">
-            <span class="menu-title">Icons</span>
-            <i class="mdi mdi-contacts menu-icon"></i>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pages/forms/basic_elements.html">
-            <span class="menu-title">Forms</span>
-            <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pages/charts/chartjs.html">
-            <span class="menu-title">Charts</span>
-            <i class="mdi mdi-chart-bar menu-icon"></i>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pages/tables/basic-table.html">
-            <span class="menu-title">Tables</span>
-            <i class="mdi mdi-table-large menu-icon"></i>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
-            <span class="menu-title">Sample Pages</span>
-            <i class="menu-arrow"></i>
-            <i class="mdi mdi-medical-bag menu-icon"></i>
-          </a>
-          <div class="collapse" id="general-pages">
-            <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
-              <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-              <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
-              <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-              <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
-            </ul>
-            </div>
-        </li>
-        <li class="nav-item sidebar-actions">
-          <span class="nav-link">
-            <div class="border-bottom">
-              <h6 class="font-weight-normal mb-3">Projects</h6>                
-            </div>
-            <button class="btn btn-block btn-lg btn-gradient-primary mt-4">+ Add a project</button>
-            <div class="mt-4">
-              <div class="border-bottom">
-                <p class="text-secondary">Categories</p>                  
-              </div>
-              <ul class="gradient-bullet-list mt-4">
-                <li>Free</li>
-                <li>Pro</li>
-              </ul>
-            </div>
-          </span>
-        </li>
+        </li> 
       </ul>
     </nav>
     <!-- partial -->
@@ -268,8 +216,8 @@
       <!-- partial:partials/_footer.html -->
       <footer class="footer">
         <div class="d-sm-flex justify-content-center justify-content-sm-between">
-          <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2017 <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap Dash</a>. All rights reserved.</span>
-          <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="mdi mdi-heart text-danger"></i></span>
+          <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021 <a href="https://scorecampus.com" target="_blank">Let's FL!P 2021 </a>. All rights reserved.</span>
+          {{-- <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="mdi mdi-heart text-danger"></i></span> --}}
         </div>
       </footer>
       <!-- partial -->

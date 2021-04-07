@@ -20,6 +20,6 @@ $router->group(['prefix' => 'auth'], function($router){
     Route::post('login', [AdminAuthController::class, 'postLogin']);
 });
 
-$router->group(['prefix' => 'dashboard'], function($router){
+$router->group(['middleware'=> ['admin_dashboard'], 'prefix' => 'dashboard'], function($router){
     Route::get('/', [AdminDashboardController::class,'index']); 
 }); 
