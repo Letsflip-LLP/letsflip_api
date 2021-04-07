@@ -320,9 +320,6 @@ class UserController extends Controller
 
 
     public function getProductPremiumDetail(Request $request){
-        $product_account = config('account.premium_product'); 
-
-        dd($product_account);
-        
+        $product_account = config('account.premium_product');  
     }
 }

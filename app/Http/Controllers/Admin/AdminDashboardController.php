@@ -19,7 +19,8 @@ use Illuminate\Support\MessageBag;
 use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite; 
 use Session;
-use App\Http\Models\UserModel; 
+use App\Http\Models\User; 
+use App\Mail\subscribeInvitationToRegister;
 
 class AdminDashboardController extends Controller
 {
@@ -51,25 +52,33 @@ class AdminDashboardController extends Controller
             "subscribers" => $subscribers
         ];
 
+        // return view('emails.subscribe-invitation-register',['account_type'=> 'Private Account', 'email' => 'email@email.com']);
+
         return view('admin.dashboard.subscription-list',$data);
     }
 
     public function inviteSubscriber(Request $request){
         DB::beginTransaction();
         try { 
-            DB::commit(); 
             
-            $subscribers             = new SubscriberModel;
-            $subscribers->id         = $subscribers_id = Uuid::uuid4(); 
-            $subscribers->email      = $request->email;
-            $subscribers->type       = $request->type;
-            $subscribers->date_start = $request->date_start;
-            $subscribers->date_end   = $request->date_end;
-            $subscribers->status     = 1;
+            $user = User::where('email',$request->email)->first();
+             
+            $subscribers                = new SubscriberModel;
+            $subscribers->id            = $subscribers_id = Uuid::uuid4(); 
+            $subscribers->user_id       = $user ? $user->id : null;
+            $subscribers->email         = $request->email;
+            $subscribers->type          = $request->type;
+            $subscribers->date_start    = $request->date_start;
+            $subscribers->date_end      = $request->date_end;
+            $subscribers->status        = 1;
             $subscribers->vendor_trx_id = $subscribers_id;
-            $subscribers->product_id = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
+            $subscribers->product_id    = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
 
             $subscribers->save();
+
+            DB::commit(); 
+
+            $send_mail = \Mail::to($request->email)->queue(new subscribeInvitationToRegister($subscribers));
 
             return redirect()->back();
 

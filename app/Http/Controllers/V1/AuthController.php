@@ -23,7 +23,8 @@ use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite;
 use App\Mail\verificationUserRegister;
 use App\Http\Models\UserDeviceModel;
-use App\Http\Transformers\V1\UserTransformer; 
+use App\Http\Transformers\V1\UserTransformer;  
+use App\Http\Models\SubscriberModel;
 
 class AuthController extends Controller
 {
@@ -37,6 +38,20 @@ class AuthController extends Controller
         $this->agent = new Agent();   
     }
 
+    public function subsAcceptInvitation(){
+        $agent = new Agent();
+        
+        $redirect_url = 'https://getletsflip.com';
+        
+        if($this->agent->isAndroidOS())
+            $redirect_url = env('ANDROID_PLAYSTORE_URL');
+
+        if($this->agent->is('iPhone') || $this->agent->platform() == 'IOS')
+            $redirect_url = env('IOS_APP_STORE_URL');
+
+        return redirect()->to($redirect_url);
+    }
+
     public function register(Request $request)
     {
         DB::beginTransaction();
@@ -46,16 +61,23 @@ class AuthController extends Controller
             $validatedData['first_name'] = $request->first_name;
             $validatedData['last_name'] = $request->last_name;
             $validatedData['email'] = $request->email;
-            $validatedData['id'] = Uuid::uuid4();
+            $validatedData['id'] = $user_id = Uuid::uuid4();
 
             $user = User::create($validatedData);
  
             $validatedData['activate_url'] = env('WEB_PAGE_URL',url('/')).'/account/verification/verify?temporary_token='.Crypt::encryptString($validatedData['email']);
             $validatedData['password'] = $request->password;
-            $send_mail = \Mail::to($validatedData['email'])->queue(new verificationUserRegister($validatedData));
+            
+            $sub = new SubscriberModel;
+            $sub = $sub->where('email',$request->email);
+            $sub =  $sub->first();
+
+            if( $sub != null)  $sub->update(['user_id' => $user_id]);
 
         DB::commit();
- 
+
+        $send_mail = \Mail::to($validatedData['email'])->queue(new verificationUserRegister($validatedData));
+
         return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
 
         } catch (\exception $exception){
