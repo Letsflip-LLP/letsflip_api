@@ -21,6 +21,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Session;
 use App\Http\Models\User; 
 use App\Mail\subscribeInvitationToRegister;
+use App\Mail\subscribeInvitationHasAccount;
 
 class AdminDashboardController extends Controller
 {
@@ -52,7 +53,7 @@ class AdminDashboardController extends Controller
             "subscribers" => $subscribers
         ];
 
-        // return view('emails.subscribe-invitation-register',['account_type'=> 'Private Account', 'email' => 'email@email.com']);
+        // return view('emails.subscribe-invitation-has-acount',['account_type'=> 'Private Account', 'email' => 'email@email.com']);
 
         return view('admin.dashboard.subscription-list',$data);
     }
@@ -77,9 +78,15 @@ class AdminDashboardController extends Controller
             $subscribers->save();
 
             DB::commit(); 
+ 
 
-            $send_mail = \Mail::to($request->email)->queue(new subscribeInvitationToRegister($subscribers));
+            if(!$user)
+                $send_mail = \Mail::to($request->email)->queue(new subscribeInvitationToRegister(['email'=> $request->email ,'account_type' => subsType($request->type)->name ]));
 
+
+            if($user)
+                $send_mail = \Mail::to($request->email)->queue(new subscribeInvitationHasAccount(['email'=> $request->email ,'account_type' => subsType($request->type)->name ]));
+            
             return redirect()->back();
 
         } catch (\exception $exception){

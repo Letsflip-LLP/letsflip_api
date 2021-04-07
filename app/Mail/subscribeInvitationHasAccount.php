@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class subscribeInvitationToRegister extends Mailable
+class subscribeInvitationHasAccount extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,6 +29,6 @@ class subscribeInvitationToRegister extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.subscribe-invitation-register',$this->data);
+        return $this->view('emails.subscribe-invitation-has-acount',$this->data);
     }
 }
