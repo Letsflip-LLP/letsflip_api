@@ -20,6 +20,12 @@ $router->group(['prefix' => 'auth'], function($router){
     Route::post('login', [AdminAuthController::class, 'postLogin']);
 });
 
-$router->group(['middleware'=> ['admin_dashboard'], 'prefix' => 'dashboard'], function($router){
-    Route::get('/', [AdminDashboardController::class,'index']); 
+$router->group(['middleware'=> ['admin_dashboard']], function($router){
+    $router->group(['prefix' => 'dashboard'], function($router){
+        Route::get('/', [AdminDashboardController::class,'index']);        
+    });
+
+    $router->group(['prefix' => 'user'], function($router){
+        Route::get('/subscribers', [AdminDashboardController::class,'subscriberList']);     
+    });
 }); 

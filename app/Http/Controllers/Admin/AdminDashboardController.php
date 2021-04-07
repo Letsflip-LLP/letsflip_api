@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Models\User;
-use App\Http\Models\PasswordResetModel;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Transformers\ResponseTransformer; 
-use App\Http\Transformers\V1\AuthTransformer; 
+use Illuminate\Http\Request; 
+use App\Http\Models\SubscriberModel;
+use Illuminate\Support\Facades\Hash; 
 use Illuminate\Auth\Events\Registered;
 use DB;
 use Illuminate\Support\Facades\Crypt;
@@ -30,7 +27,7 @@ class AdminDashboardController extends Controller
      *
      * @return void
      */
-    public function __construct(){ 
+    public function __construct(){
         $this->agent = new Agent();   
     }
 
@@ -38,4 +35,20 @@ class AdminDashboardController extends Controller
     {
         return view('admin.dashboard.index');
     } 
+
+    public function subscriberList(Request $request){
+        $subscribers = new SubscriberModel;
+        $subscribers = $subscribers->paginate(5);
+        $data  = [
+            "page" => "Subscribers",
+            "breadcrumbs" => [
+                [ "name" => "Dashboard" , "url" => url('/admin/dashboard') ],
+                [ "name" => "User" , "url" => url('/admin/user/subscribers') ],
+                [ "name" => "Subscribers" , "url" => url('/admin/user/subscribers') ]
+            ],
+            "subscribers" => $subscribers
+        ];
+
+        return view('admin.dashboard.subscription-list',$data);
+    }
 }

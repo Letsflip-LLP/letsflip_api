@@ -27,7 +27,7 @@
         <li class="nav-item nav-profile dropdown">
           <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
             <div class="nav-profile-img">
-              <img src="{{defaultImage('user',$user)['file_full_path']}}" alt="image">
+              {{-- <img src="{{defaultImage('user',$user)['file_full_path']}}" alt="image"> --}}
               <span class="availability-status online"></span>             
             </div>
             <div class="nav-profile-text">
@@ -199,7 +199,7 @@
           </a>
           <div class="collapse" id="ui-basic">
             <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Invite</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{{url('admin/user/subscribers')}}">Subscribers</a></li>
               {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
             </ul>
           </div>
@@ -209,9 +209,23 @@
     <!-- partial -->
     <div class="main-panel">
       <div class="content-wrapper">
+        <div class="page-header">
+          <h3 class="page-title">
+            {{isset($page) ? $page : "Untitled page"}}
+          </h3>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              @if(isset($breadcrumbs))
+                @foreach ($breadcrumbs as $breadcrumb)
+                  <li class="breadcrumb-item"><a href="{{$breadcrumb['url']}}">{{$breadcrumb['name']}}</a></li> 
+                @endforeach 
+              @endif
+            </ol>
+          </nav>
+        </div>
         @section('wrapper') 
         @show
-      </div>
+     </div> 
       <!-- content-wrapper ends -->
       <!-- partial:partials/_footer.html -->
       <footer class="footer">
