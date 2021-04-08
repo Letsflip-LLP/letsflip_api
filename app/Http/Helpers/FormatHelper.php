@@ -72,13 +72,13 @@ function subsType($type){
         case 2:
             return (object) [
                 "id" => $type,
-                "name" => "Private"
+                "name" => "Private Classroom"
             ];
             break;
         case 3:
             return (object) [
                 "id" => $type,
-                "name" => "Master"
+                "name" => "Master Classroom"
             ];
             break;
         default:
