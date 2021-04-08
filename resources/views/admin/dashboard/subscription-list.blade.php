@@ -36,10 +36,10 @@
           <tbody>
           <tr>
             <td>
-              <input   placeholder="Email" name="email" class="form-control"/>
+              <input  required placeholder="Email" name="email" class="form-control"/>
             </td> 
             <td>
-              <select   placeholder="Type" name="type" class="form-control">
+              <select  required placeholder="Type" name="type" class="form-control">
                 <option>-- Account Type --</option>
                 <option value="1">Basic</option>
                 <option value="2">Private</option>
@@ -47,10 +47,10 @@
               </select>
             </td>
             <td>
-              <input   type="date" placeholder="Start Date" name="date_start" class="form-control"/>
+              <input required  type="date" placeholder="Start Date" name="date_start" class="form-control"/>
             </td>
             <td>
-              <input   type="date" placeholder="End Date" name="date_end" class="form-control"/>
+              <input required  type="date" placeholder="End Date" name="date_end" class="form-control"/>
             </td>
             <td>
               <button type="submit" class="btn btn-sm btn-gradient-primary btn-fw"><i class="mdi mdi-account-plus"></i>&nbsp;Invite</button>
