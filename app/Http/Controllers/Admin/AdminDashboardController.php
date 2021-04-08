@@ -41,8 +41,24 @@ class AdminDashboardController extends Controller
 
     public function subscriberList(Request $request){
         $subscribers = new SubscriberModel;
-        $subscribers = $subscribers->orderBy('created_at','desc');
-        $subscribers = $subscribers->paginate(5);
+ 
+        if($request->filled('email'))
+            $subscribers = $subscribers->where('email','LIKE','%'.$request->email.'%');
+
+        if($request->filled('type') && $request->type != 'all')
+            $subscribers = $subscribers->where('type',$request->type);
+
+        if($request->filled('status') && $request->status != 'all'){ 
+            if($request->status == 1)
+                $subscribers = $subscribers->whereHas('User'); 
+
+            if($request->status == 2)
+                $subscribers = $subscribers->doesntHave('User'); 
+        }
+ 
+        $subscribers = $subscribers->orderBy('created_at','desc'); 
+        $subscribers = $subscribers->paginate($request->input('per_page',5));
+
         $data  = [
             "page" => "Subscribers",
             "breadcrumbs" => [

@@ -49,7 +49,7 @@
               <input required type="date" placeholder="End Date" name="date_end" class="form-control"/>
             </td>
             <td>
-              <button type="submit" class="btn btn-sm btn-gradient-primary btn-fw">Invite</button>
+              <button type="submit" class="btn btn-sm btn-gradient-primary btn-fw"><i class="mdi mdi-account-plus"></i>&nbsp;Invite</button>
             </td>
           </tr>
           </tbody>
@@ -64,12 +64,57 @@
     <div class="card-hader">  
     </div>
     <div class="card-body"> 
-      <table class="table table-striped">
+      <form method="GET" action="{{url('admin/user/subscribers')}}">
+        {{ csrf_field() }}
+        <table class="table table-striped">  
+          <tbody>
+          <tr>
+            <td>
+              <input value="{{request()->input('email')}}" placeholder="Email" name="email" class="form-control"/>
+            </td> 
+            <td>
+              <select placeholder="Type" name="type" class="form-control">
+                <option value="all">-- All Type --</option>
+                <option value="1" {{request()->input('type') == 1 ? 'selected' : ''}}>Basic</option>
+                <option value="2" {{request()->input('type') == 2 ? 'selected' : ''}}>Private</option>
+                <option value="3" {{request()->input('type') == 3 ? 'selected' : ''}}>Master</option>
+              </select>
+            </td>
+            <td>
+              <input type="date" placeholder="Start Date" name="date_start" class="form-control"/>
+            </td>
+            <td>
+              <input type="date" placeholder="End Date" name="date_end" class="form-control"/>
+            </td>
+            <td>
+              <select placeholder="Type" name="status" class="form-control">
+                <option value="all">-- All Status --</option>
+                <option value="1" {{request()->input('status') == 1 ? 'selected' : ''}}>Registered</option>
+                <option value="2" {{request()->input('status') == 2 ? 'selected' : ''}}>Waiting Register</option> 
+              </select>
+            </td>
+            <td>
+              <select placeholder="Type" name="per_page" class="form-control">
+                <option value="5" {{request()->input('per_page') == 5 ? 'selected' : ''}}>-- Per Page (5) --</option>
+                <option value="10" {{request()->input('per_page') == 10 ? 'selected' : ''}}>Per Page 10</option>
+                <option value="20" {{request()->input('per_page') == 20 ? 'selected' : ''}}>Per Page 20</option> 
+                <option value="30" {{request()->input('per_page') == 30 ? 'selected' : ''}}>Per Page 30</option> 
+              </select>
+            </td>
+            <td>
+              <button type="submit" class="btn btn-gradient-info btn-rounded btn-fw"><i class="mdi mdi-account-search"></i>&nbsp;Search</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </form>
+
+      <table class="table table-striped"> 
         <thead>
           <tr> 
             <th>
               Email
-            </th> 
+            </th>   
             <th>
               Name
             </th>  
@@ -84,10 +129,10 @@
             </th>
             <th>
               Status
-            </th>
+            </th> 
           </tr>
         </thead>
-        <tbody> 
+        <tbody>
           @foreach ($subscribers as $subs)
             <tr> 
               <td>
@@ -118,7 +163,7 @@
       </table>   
       
     <div style="margin-top : 20">
-      {{ $subscribers->links("pagination::bootstrap-4") }}
+      {{ $subscribers->appends(request()->input())->links("pagination::bootstrap-4") }}
     </div>
 
   </div> 

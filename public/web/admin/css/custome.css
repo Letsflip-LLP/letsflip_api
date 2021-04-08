@@ -9,3 +9,6 @@
     font-size: 2rem !important;
 }
  
+select.form-control{
+    color  : black !important;
+}
