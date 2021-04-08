@@ -104,7 +104,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne('App\Http\Models\SubscriberModel','user_id','id')
                 ->where('date_start','<=',date('Y-m-d H:i:s'))
-                ->where('date_end','>=',date('Y-m-d H:i:s'));
+                ->where('date_end','>=',date('Y-m-d H:i:s'))
+                ->where('status',1);
     }
 
     public function PremiumClassRoomAccess()

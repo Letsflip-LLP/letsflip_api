@@ -18,6 +18,9 @@
             <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px"> <span style="font-weight:bold;display:inline-block">Account Type:&nbsp;</span>{{$account_type}}</td>
         </tr>
         <tr>
+            <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px"> Please click on the invite link to begin your Let’s Fl!p journey with us! Have fun and we wish you all the best.</td>
+        </tr>
+        <tr>
         </tr>
         </tbody>
     </table>

@@ -41,9 +41,7 @@ class AuthController extends Controller
     public function subsAcceptInvitation(Request $request){
         DB::beginTransaction();
         try {
-        
-        // return view('emails.subscribe-invitation-register',['url'=> url('subscription/accept-invitation?temporary_token='.Crypt::encryptString('142d3688-05ca-4d06-8412-af5f1c7dbfbf')),'email' => "email",'account_type' => 'private']);
-
+        // return view('emails.subscribe-invitation-has-acount',['url'=> url('subscription/accept-invitation?temporary_token='.Crypt::encryptString('142d3688-05ca-4d06-8412-af5f1c7dbfbf')),'email' => "email",'account_type' => 'private']);
         $sub_id = Crypt::decryptString($request->temporary_token);
         $sub_detail = SubscriberModel::where('id',$sub_id);
         $sub_detail = $sub_detail->first();
