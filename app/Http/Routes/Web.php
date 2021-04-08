@@ -16,9 +16,8 @@ use App\Http\Controllers\V1\ClassRoomController;
 |
 */
 
-Route::get('/',function(){
-    return view('index');
-});
+Route::get('/subscription/accept-invitation', [AuthController::class, 'subsAcceptInvitation']);
+
 
 $router->group(['middleware'=> ['form'] ], function($router){
     $router->group(['prefix' => 'account'], function($router){

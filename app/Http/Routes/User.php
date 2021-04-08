@@ -28,7 +28,6 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
 
             Route::get('/', [UserController::class, 'self'])->name('GetUserControllerSelf');
             Route::get('notification', [UserController::class, 'getSelfNotification'])->name('GetUserControllerSelf');
-
         
             Route::post('/follow/action', [UserController::class, 'userFollowAction'])->name('GetUserControllerAddUserFollow');
         });

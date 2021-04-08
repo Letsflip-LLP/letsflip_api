@@ -187,10 +187,10 @@
                                                                                     <tr>
                                                                                        <td style="with:20%"></td>
                                                                                        <td style="width:123px;">
-                                                                                          <img height="auto" src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/5ff711237b674/1610027956.jpg" style="margin-right:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="123">
+                                                                                          <img height="auto" src="{{url('/web/images/app-store.png')}}" style="margin-right:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="123">
                                                                                        </td>
                                                                                        <td style="width:135px;">
-                                                                                          <img height="auto" src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/5ff711237b674/1610027965.jpg" style="margin-left:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="135">
+                                                                                          <img height="auto" src="{{url('/web/images/play-store.png')}}" style="margin-left:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="135">
                                                                                        </td>
                                                                                        <td style="with:20%"></td>
                                                                                     </tr> 

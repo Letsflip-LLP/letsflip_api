@@ -66,7 +66,7 @@ function subsType($type){
         case 1:
             return (object) [
                 "id" => $type,
-                "name" => "Public"
+                "name" => "Basic"
             ];
             break;
         case 2:
