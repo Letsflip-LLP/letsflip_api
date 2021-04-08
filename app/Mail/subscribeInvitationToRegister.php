@@ -29,6 +29,8 @@ class subscribeInvitationToRegister extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.subscribe-invitation-register',$this->data);
+        return $this->view('emails.subscribe-invitation-register',$this->data)
+                ->subject("Let's Fli!p | Invitation");
+
     }
 }

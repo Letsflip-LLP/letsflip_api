@@ -7,6 +7,10 @@
       {{-- <button type="button" class="btn btn-gradient-primary btn-rounded btn-fw">
         <i class="mdi-large mdi mdi-account-multiple-plus"></i><br/>Invite</button> --}}
       
+      @if($errors->any())
+        <p class="text-danger">{{$errors->first()}}</p>
+      @endif 
+
       <form method="POST" action="{{url('admin/user/subscribers')}}">
         {{ csrf_field() }}
         <table class="table table-striped"> 
@@ -32,10 +36,10 @@
           <tbody>
           <tr>
             <td>
-              <input required placeholder="Email" name="email" class="form-control"/>
+              <input   placeholder="Email" name="email" class="form-control"/>
             </td> 
             <td>
-              <select required placeholder="Type" name="type" class="form-control">
+              <select   placeholder="Type" name="type" class="form-control">
                 <option>-- Account Type --</option>
                 <option value="1">Basic</option>
                 <option value="2">Private</option>
@@ -43,10 +47,10 @@
               </select>
             </td>
             <td>
-              <input required type="date" placeholder="Start Date" name="date_start" class="form-control"/>
+              <input   type="date" placeholder="Start Date" name="date_start" class="form-control"/>
             </td>
             <td>
-              <input required type="date" placeholder="End Date" name="date_end" class="form-control"/>
+              <input   type="date" placeholder="End Date" name="date_end" class="form-control"/>
             </td>
             <td>
               <button type="submit" class="btn btn-sm btn-gradient-primary btn-fw"><i class="mdi mdi-account-plus"></i>&nbsp;Invite</button>

@@ -78,8 +78,32 @@ class AdminDashboardController extends Controller
         DB::beginTransaction();
         try { 
             
-            $user = User::where('email',$request->email)->first();
-             
+            // INVITATION CHECK
+            $invitation_check = new SubscriberModel;
+            $invitation_check = $invitation_check->where('email',$request->email);
+            $invitation_check = $invitation_check->where('date_start','<=',date('Y-m-d')); 
+            $invitation_check = $invitation_check->where('date_end','>=',date('Y-m-d'));  
+            $invitation_check = $invitation_check->where('type','!=',1);
+            $invitation_check = $invitation_check->whereNotNull('email');
+            $invitation_check = $invitation_check->first(); 
+            if($invitation_check)
+                return Redirect::back()->withErrors(['Error! An invitation with the same email and validity of an active subscription has been inputted previously. Email : '.$request->email]);
+
+
+            // REGISTERD USER CHECK
+            $account_check = new SubscriberModel;
+            $account_check = $account_check->whereHas('User',function($q) use ($request){
+                $q->where('email',$request->email);
+            });
+            $account_check = $account_check->where('date_start','<=',date('Y-m-d')); 
+            $account_check = $account_check->where('date_end','>=',date('Y-m-d'));   
+            $account_check = $account_check->first();
+
+            if($account_check)
+                return Redirect::back()->withErrors(['Error! The email that is inputted already has an active premium account. Email : '.$request->email]);
+
+
+            $user = User::where('email',$request->email)->first(); 
             $subscribers                = new SubscriberModel;
             $subscribers->id            = $subscribers_id = Uuid::uuid4(); 
             $subscribers->user_id       = $user ? $user->id : null;
@@ -107,6 +131,7 @@ class AdminDashboardController extends Controller
 
         } catch (\exception $exception){
             DB::rollBack();
+            dd($exception);
             return redirect()->back();
         }  
     }

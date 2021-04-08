@@ -16,7 +16,6 @@
 			<div class="left-side">
 				<p>
 					{{$message}}
-					{{$deeplink_url}}
 				</p>
 				<h3>
 					The world<br />
