@@ -60,7 +60,7 @@ class AuthController extends Controller
             $deepLinkUrl .='?mission_respone_id='.$request->mission_respone_id;
         
         $agent = new Agent();
-        
+                
         if($agent->isAndroidOS())
             $redirect_url = env('ANDROID_PLAYSTORE_URL'); 
 
@@ -73,11 +73,10 @@ class AuthController extends Controller
             [
                 'redirect_url' => $redirect_url,
                 'deeplink_url' => $deepLinkUrl,
-                'title'=> $data->title,
-                'description'=>$data->text,
-                'og_image'=>Storage::disk('gcs')->url($data->image_path.'/'.$data->image_file)
+                'title'=> "Let's FL!P | Accept Invitation",
+                'description' => "Let's FL!P | Accept Invitation",
+                'og_image'=> ''
             ]); 
-
         }catch (\exception $exception){
             DB::rollBack();
             return redirect()->to('https://getletsflip.com');
