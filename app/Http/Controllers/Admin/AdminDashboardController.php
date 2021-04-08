@@ -111,27 +111,24 @@ class AdminDashboardController extends Controller
             $subscribers->type          = $request->type;
             $subscribers->date_start    = $request->date_start;
             $subscribers->date_end      = $request->date_end;
-            $subscribers->status        = 1;
+            $subscribers->status        = 2;
             $subscribers->vendor_trx_id = $subscribers_id;
             $subscribers->product_id    = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
 
             $subscribers->save();
 
             DB::commit(); 
- 
 
             if(!$user)
-                $send_mail = \Mail::to($request->email)->queue(new subscribeInvitationToRegister(['email'=> $request->email ,'account_type' => subsType($request->type)->name ]));
-
+                $send_mail = \Mail::to($request->email)->queue(new subscribeInvitationToRegister(['url' => url('subscription/accept-invitation?temporary_token='.Crypt::encryptString($subscribers_id)),'email'=> $request->email ,'account_type' => subsType($request->type)->name ]));
 
             if($user)
-                $send_mail = \Mail::to($request->email)->queue(new subscribeInvitationHasAccount(['email'=> $request->email ,'account_type' => subsType($request->type)->name ]));
+                $send_mail = \Mail::to($request->email)->queue(new subscribeInvitationHasAccount(['url' => url('subscription/accept-invitation?temporary_token='.Crypt::encryptString($subscribers_id)),'email'=> $request->email ,'account_type' => subsType($request->type)->name ]));
             
             return redirect()->back();
 
         } catch (\exception $exception){
             DB::rollBack();
-            dd($exception);
             return redirect()->back();
         }  
     }
