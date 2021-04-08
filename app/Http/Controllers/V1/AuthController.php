@@ -65,7 +65,7 @@ class AuthController extends Controller
             $redirect_url = env('ANDROID_PLAYSTORE_URL'); 
 
         if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
-            $redirect_url = env('IOS_APP_STORE_URL');
+            $redirect_url = 'https://apps.apple.com/us/app/lets-fl-p/id1538266714';//env('IOS_APP_STORE_URL');
 
         DB::commit();
 
