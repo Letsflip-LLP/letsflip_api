@@ -36,7 +36,7 @@
           <tbody>
           <tr>
             <td>
-              <input  required placeholder="Email" name="email" class="form-control"/>
+              <input type="email" required placeholder="Email" name="email" class="form-control"/>
             </td> 
             <td>
               <select  required placeholder="Type" name="type" class="form-control">
