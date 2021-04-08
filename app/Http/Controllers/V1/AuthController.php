@@ -55,10 +55,7 @@ class AuthController extends Controller
  
         $redirect_url   = 'https://getletsflip.com';
         $deepLinkUrl    = 'letsflip://'.$request->getHost().'/open-app/subscribe/accept-invitation';
-
-        if($request->mission_respone_id)
-            $deepLinkUrl .='?mission_respone_id='.$request->mission_respone_id;
-        
+ 
         $agent = new Agent();
                 
         if($agent->isAndroidOS())
@@ -72,7 +69,7 @@ class AuthController extends Controller
         return view('open-app.share-meta',
             [
                 'redirect_url' => $redirect_url,
-                'deeplink_url' => $deepLinkUrl,
+                'deeplink_url' => $redirect_url,
                 'title'=> "Let's FL!P | Accept Invitation",
                 'description' => "Let's FL!P | Accept Invitation",
                 'og_image'=> ''
