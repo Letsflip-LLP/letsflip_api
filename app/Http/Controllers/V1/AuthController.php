@@ -38,18 +38,50 @@ class AuthController extends Controller
         $this->agent = new Agent();   
     }
 
-    public function subsAcceptInvitation(){
+    public function subsAcceptInvitation(Request $request){
+        DB::beginTransaction();
+        try {
+        // return view('emails.subscribe-invitation-has-acount',['url'=> url('subscription/accept-invitation?temporary_token='.Crypt::encryptString('142d3688-05ca-4d06-8412-af5f1c7dbfbf')),'email' => "email",'account_type' => 'private']);
+        $sub_id = Crypt::decryptString($request->temporary_token);
+        $sub_detail = SubscriberModel::where('id',$sub_id);
+        $sub_detail = $sub_detail->first();
+        
+        if($sub_detail == null)
+            return redirect()->to('https://getletsflip.com');
+        
+        $sub_detail->update([
+            'status' => 1
+        ]);
+ 
+        $redirect_url   = 'https://getletsflip.com';
+        $deepLinkUrl    = 'letsflip://'.$request->getHost().'/open-app/subscribe/accept-invitation';
+
+        if($request->mission_respone_id)
+            $deepLinkUrl .='?mission_respone_id='.$request->mission_respone_id;
+        
         $agent = new Agent();
         
-        $redirect_url = 'https://getletsflip.com';
-        
-        if($this->agent->isAndroidOS())
-            $redirect_url = env('ANDROID_PLAYSTORE_URL');
+        if($agent->isAndroidOS())
+            $redirect_url = env('ANDROID_PLAYSTORE_URL'); 
 
-        if($this->agent->is('iPhone') || $this->agent->platform() == 'IOS')
+        if($agent->is('iPhone') || $agent->platform() == 'IOS' ||  $agent->platform() == 'iOS' || $agent->platform() == 'ios' )
             $redirect_url = env('IOS_APP_STORE_URL');
 
-        return redirect()->to($redirect_url);
+        DB::commit();
+
+        return view('open-app.share-meta',
+            [
+                'redirect_url' => $redirect_url,
+                'deeplink_url' => $deepLinkUrl,
+                'title'=> $data->title,
+                'description'=>$data->text,
+                'og_image'=>Storage::disk('gcs')->url($data->image_path.'/'.$data->image_file)
+            ]); 
+
+        }catch (\exception $exception){
+            DB::rollBack();
+            return redirect()->to('https://getletsflip.com');
+        }
     }
 
     public function register(Request $request)
@@ -68,11 +100,10 @@ class AuthController extends Controller
             $validatedData['activate_url'] = env('WEB_PAGE_URL',url('/')).'/account/verification/verify?temporary_token='.Crypt::encryptString($validatedData['email']);
             $validatedData['password'] = $request->password;
             
-            $sub = new SubscriberModel;
-            $sub = $sub->where('email',$request->email);
-            $sub =  $sub->first();
-
-            if( $sub != null)  $sub->update(['user_id' => $user_id]);
+            // $sub = new SubscriberModel;
+            // $sub = $sub->where('email',$request->email);
+            // $sub =  $sub->first();
+            // if( $sub != null)  $sub->update(['user_id' => $user_id]);
 
         DB::commit();
 

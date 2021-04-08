@@ -187,10 +187,14 @@
                                                                                     <tr>
                                                                                        <td style="with:20%"></td>
                                                                                        <td style="width:123px;">
-                                                                                          <img height="auto" src="{{url('/web/images/app-store.png')}}" style="margin-right:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="123">
+                                                                                          <a href="https://apps.apple.com/us/app/lets-fl-p/id1538266714">
+                                                                                             <img height="auto" src="{{url('/web/images/app-store.png')}}" style="margin-right:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="123">
+                                                                                          </a>  
                                                                                        </td>
                                                                                        <td style="width:135px;">
-                                                                                          <img height="auto" src="{{url('/web/images/play-store.png')}}" style="margin-left:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="135">
+                                                                                          <a href="{{env('ANDROID_PLAYSTORE_URL')}}">
+                                                                                             <img height="auto" src="{{url('/web/images/play-store.png')}}" style="margin-left:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="135">
+                                                                                          </a>
                                                                                        </td>
                                                                                        <td style="with:20%"></td>
                                                                                     </tr> 
