@@ -23,6 +23,8 @@ class AdminDashboard extends Middleware
         
         if (!Auth::user()) return redirect('/admin/auth/login'); 
          
+        if (Auth::user()->is_admin != 1) return redirect('/admin/auth/login'); 
+
         return $next($request);
     }
 

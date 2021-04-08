@@ -58,6 +58,9 @@ class AdminAuthController extends Controller
             
             $user  =  Auth::user();
             
+            if($user->is_admin != 1)
+                return Redirect::back()->withErrors([__('messages.401')]);
+
             if($user->email_verified_at == null)
                 return (new ResponseTransformer)->toJson(400,__('passwords.email_verification'),false);  
      
@@ -86,4 +89,13 @@ class AdminAuthController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout(); 
+        $request->session()->invalidate(); 
+        $request->session()->regenerateToken(); 
+        return redirect()->to(url('admin/auth/login'));
+    }
+
 }

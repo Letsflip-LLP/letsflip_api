@@ -18,6 +18,9 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 $router->group(['prefix' => 'auth'], function($router){
     Route::get('login', [AdminAuthController::class, 'login']);
     Route::post('login', [AdminAuthController::class, 'postLogin']);
+
+    Route::get('logout', [AdminAuthController::class, 'logout']);
+    Route::post('logout', [AdminAuthController::class, 'logout']);
 });
 
 $router->group(['middleware'=> ['admin_dashboard']], function($router){
