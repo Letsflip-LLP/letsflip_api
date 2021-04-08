@@ -54,7 +54,7 @@ class AdminAuthController extends Controller
             ]);
  
             if (!$token = Auth::attempt($loginData))
-                return (new ResponseTransformer)->toJson(400,__('validation.password'),false);  
+                return Redirect::back()->withErrors([__('validation.password')]);
             
             $user  =  Auth::user();
             

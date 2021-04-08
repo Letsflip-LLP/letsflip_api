@@ -9,6 +9,11 @@
           <div class="auth-form-light text-left p-5"> 
             <h4>Hello! Welcome Back</h4>
             <h6 class="font-weight-light">Sign in to continue.</h6>
+           
+            @if($errors->any())
+              <p style="color:red">{{$errors->first()}}</p>
+            @endif 
+
             <form action="{{url('admin/auth/login')}}" class="pt-3" method="POST">
               {{ csrf_field() }}
               <div class="form-group">
@@ -19,7 +24,7 @@
               </div>
               <div class="mt-3">
                 <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" href="../../index.html">SIGN IN</button>
-              </div> 
+              </div>
             </form>
           </div>
         </div>
