@@ -115,6 +115,8 @@ class AuthController extends Controller
 
     public function login(Request $request)
     { 
+        dd(date_default_timezone_get());
+
         DB::beginTransaction();
         try {
             $loginData = [
