@@ -1,19 +1,25 @@
 <?php
-  
+use Illuminate\Http\Request;
+
 function dateFormat($date){
+     
+    $client_timezone = request()->client_timezone;
+
     $sort = $date->diffForHumans(null,true);
     $sort = explode(' ',$sort); 
 
     return (object) [
-        "date_time" =>\Carbon\Carbon::parse($date)->format("Y-m-d H:i:s"),
-        "date" =>\Carbon\Carbon::parse($date)->format("D, M Y"),
+        "date_time" =>\Carbon\Carbon::parse($date)->setTimezone($client_timezone)->format("Y-m-d H:i:s"),
+        "date" =>\Carbon\Carbon::parse($date,)->setTimezone($client_timezone)->format("D, M Y"),
         "diff" => diffFormatTableOfTime($date),
         "sort_diff" => $sort[0]." ".strtolower($sort[1][0]),
     ];
 }
 
 function diffFormatTableOfTime($date){
-    $diffSecond = \Carbon\Carbon::now()->diffInSeconds($date);
+    $client_timezone = request()->client_timezone;
+
+    $diffSecond = \Carbon\Carbon::now($client_timezone)->diffInSeconds($date);
  
     switch($diffSecond){
         case $diffSecond <= 60 :

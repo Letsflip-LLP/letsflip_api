@@ -21,8 +21,9 @@ class Application
     public function handle($request, Closure $next, $guard = null)
     { 
         $timezone = $request->header('TimeZone','Asia/Singapore');
-        date_default_timezone_set($timezone);
-
+        // date_default_timezone_set($timezone);
+        $request->client_timezone = $timezone;
+        
         return $next($request);
     }
 
