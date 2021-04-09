@@ -1162,6 +1162,10 @@ class MissionController extends Controller
             
             $quest = new MissionQuestionModel;
 
+            $quest =  $quest->with(['Answer'=> function($q) use ($respone_detail) {
+                $q->where('user_id',$respone_detail->user_id);
+            }]);
+
             if($request->filled('type') && in_array($request->type,[1,2]))
                 $quest =  $quest->where('mission_questions.type',$request->type);
             
