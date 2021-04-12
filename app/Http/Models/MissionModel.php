@@ -60,12 +60,12 @@ class MissionModel extends Model
 
     public function ClassRoomTag()
     {
-         return $this->belongsToMany('App\Http\Models\ClassRoomModel','tags','module_id','foreign_id')->where('tags.type',1);
+         return $this->belongsToMany('App\Http\Models\ClassRoomModel','tags','module_id','foreign_id')->where('tags.type',1)->where('module','mission');
     }
 
     public function UserTag()
     {
-        return $this->belongsToMany('App\Http\Models\User','tags','module_id','foreign_id')->where('tags.type',2);
+        return $this->belongsToMany('App\Http\Models\User','tags','module_id','foreign_id')->where('tags.type',2)->where('module','mission');
     }
 
     public function QuickScores()

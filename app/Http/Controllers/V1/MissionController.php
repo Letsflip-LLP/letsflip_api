@@ -106,7 +106,6 @@ class MissionController extends Controller
                 $insert_class_tags = [];
                 foreach($classroom_id as $cl_id){
                     $class_room_detail = ClassRoomModel::where('id',$cl_id)->first();
-
                     if($class_room_detail){
                         $temp_id[$cl_id] = Uuid::uuid4(); 
                         $tag_model = new TagModel; 
@@ -133,7 +132,7 @@ class MissionController extends Controller
                 $user_ids = explode(',',$request->tag_user_ids);
                 $insert_class_tags = [];
                 foreach($user_ids as $u_id){
-                    $temp_id[$u_id] = Uuid::uuid4(); 
+                    $temp_id[$u_id] = Uuid::uuid4();
 
                     $tag_model = new TagModel; 
                     $tag_model->firstOrCreate(
@@ -144,6 +143,10 @@ class MissionController extends Controller
                             "id" => Uuid::uuid4()
                         ]
                     );
+
+                    $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$u_id,[
+                        "mission_id" => $mission_id,
+                    ],17); 
                 }
             }
 
@@ -426,7 +429,30 @@ class MissionController extends Controller
                     ->where('module_id',$request->mission_id) 
                     ->update(['status' => 1]);
 
+                
+        if($request->filled('tag_user_ids')){
+            $user_ids = explode(',',$request->tag_user_ids);
+            $insert_class_tags = [];
+            foreach($user_ids as $u_id){
+                $temp_id[$u_id] = Uuid::uuid4();
 
+                $tag_model = new TagModel; 
+                $tag_model->firstOrCreate(
+                    [
+                        "module" => "response", "module_id" => $mission_respone_id , "foreign_id" =>  $u_id , "type" => 2
+                    ],
+                    [
+                        "id" => Uuid::uuid4()
+                    ]
+                );
+
+                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$u_id,[
+                    "mission_id" => $request->mission_id,
+                    "respone_id" => $mission_respone_id,
+                ],18); 
+            }
+        }
+            
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );

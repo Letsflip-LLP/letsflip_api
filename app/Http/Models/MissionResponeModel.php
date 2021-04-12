@@ -62,4 +62,14 @@ class MissionResponeModel extends Model
         return $this->hasOne('App\Http\Models\GradeOverviewModel','mission_response_id','id');
     }
 
+    public function ClassRoomTag()
+    {
+         return $this->belongsToMany('App\Http\Models\ClassRoomModel','tags','module_id','foreign_id')->where('tags.type',1)->where('module','response');
+    }
+
+    public function UserTag()
+    {
+        return $this->belongsToMany('App\Http\Models\User','tags','module_id','foreign_id')->where('tags.type',2)->where('module','response');
+    }
+
 }

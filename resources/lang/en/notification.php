@@ -14,6 +14,8 @@ return [
         14 => ":user_name_from request to join your Private Classroom: :module_title",
         15 => ":user_name_from Accepted you to join Private Classroom: :module_title",
         16 => ":user_name_from Rejected you to join Private Classroom: :module_title",
+        17 => ":user_name_from is Tagging you in Mission: :module_title",
+        18 => ":user_name_from is Tagging you in Response, Mission: :module_title"
     ],
     "TYPE" => [
         1 => "New Response from My Mission",
@@ -31,6 +33,8 @@ return [
         13 => "Point deducted from deleted Respones",
         14 => "Request To Access Classroom",
         15 => "Accepted Classroom Access",
-        16 => "Rejected Classroom Access"
+        16 => "Rejected Classroom Access",
+        17 => "Tag in Mission",
+        18 => "Tag in Respone"
     ]
 ];
