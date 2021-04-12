@@ -36,9 +36,20 @@ class NotificationTransformer {
 
         if($model->type == 1 || $model->type== 2){
             $text_ = $model->Mission ? $model->Mission->title : 'deleted mission';
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_ ]);    
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'type'=> subsType($model->type)->name, 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_ ]);    
+        
+            if($model->type == 2){
+                $module_detail = $model->Mission->ClassRoomTag->where('id','c776ce4a-95e8-428d-a665-4285b22a9232');
+                // dd($module_detail);
+                if($module_detail && isset($module_detail[0])){
+                    $temp->module_detail = (object)[
+                        "id" => $module_detail[0]->pivot->id,
+                        "status" => $module_detail[0]->pivot->status
+                    ];
+                }
+            }
         }
-             
+        
         if($model->type ==  3 || $model->type ==  4){
             if($model->type==3)
                 $text_ = $model->Mission ? $model->Mission->title : 'deleted mission';
@@ -64,7 +75,7 @@ class NotificationTransformer {
             $temp->text  =   __('notification.TEXT.'.$model->type);
             
         if($model->type == 14 || $model->type == 15 || $model->type == 16) 
-            $temp->text  =   __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $model->ClassRoom->title ]);
+            $temp->text  =   __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' =>  $model->ClassRoom ? $model->ClassRoom->title : '']);
 
         if($model->type == 17 || $model->type == 18) 
             $temp->text  =   __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $model->Mission ? $model->Mission->title : 'Deleted mission']);

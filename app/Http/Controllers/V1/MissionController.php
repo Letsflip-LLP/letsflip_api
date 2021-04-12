@@ -108,10 +108,13 @@ class MissionController extends Controller
                     $class_room_detail = ClassRoomModel::where('id',$cl_id)->first();
                     if($class_room_detail){
                         $temp_id[$cl_id] = Uuid::uuid4(); 
+
+                        $classroom_tag_status = $class_room_detail->user_id != $this->user_login->id && $class_room_detail->type !=1 ? 2 : 1;
+
                         $tag_model = new TagModel; 
                         $tag_model->firstOrCreate(
                             [
-                                "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $cl_id , "type" => 1
+                                "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $cl_id , "type" => 1 , "status" => $classroom_tag_status
                             ],
                             [
                                 "id" => Uuid::uuid4()
