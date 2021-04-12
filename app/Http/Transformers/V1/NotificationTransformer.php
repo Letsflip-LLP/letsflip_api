@@ -38,8 +38,8 @@ class NotificationTransformer {
             $text_ = $model->Mission ? $model->Mission->title : 'deleted mission';
             $temp->text    = __('notification.TEXT.'.$model->type,[ 'type'=> subsType($model->type)->name, 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_ ]);    
         
-            if($model->type == 2){
-                $module_detail = $model->Mission->ClassRoomTag->where('id','c776ce4a-95e8-428d-a665-4285b22a9232');
+            if($model->type == 2 && $model->Mission && $model->Mission->ClassRoomTag){ 
+                $module_detail = $model->Mission->ClassRoomTag->where('id',$model->classroom_id);
                 // dd($module_detail);
                 if($module_detail && isset($module_detail[0])){
                     $temp->module_detail = (object)[
