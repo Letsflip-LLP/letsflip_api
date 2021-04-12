@@ -34,8 +34,12 @@ class NotificationManager {
             $notif_mission = new NotificationModel;
             $data = $notif_mission->insert($data); 
             
-            $getDevices = User::where('id',$user_id_to)->first()->Device;
-            
+            $getDevices = User::where('id',$user_id_to)->first();
+
+            if(!$getDevices) return false;
+
+            $getDevices = $getDevices->Device;
+
             $player_id = [];
             foreach($getDevices as $device){
                 $player_id[] = $device->player_id;
