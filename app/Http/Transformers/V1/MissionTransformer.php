@@ -93,7 +93,7 @@ class MissionTransformer {
 
         $temp->tags = (object) [
             "user" => $model->UserTag ? $this->_tags($model->UserTag) : [],
-            "classroom" => $model->ClassRoomTag ? $this->_tags($model->ClassRoomTag) : [],
+            "classroom" => $model->ClassRoomTag->where('status',1) ? $this->_tags($model->ClassRoomTag->where('status',1)) : [],
         ];
 
 

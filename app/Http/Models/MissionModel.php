@@ -60,7 +60,7 @@ class MissionModel extends Model
 
     public function ClassRoomTag()
     {
-         return $this->belongsToMany('App\Http\Models\ClassRoomModel','tags','module_id','foreign_id')->where('tags.type',1)->where('module','mission');
+         return $this->belongsToMany('App\Http\Models\ClassRoomModel','tags','module_id','foreign_id')->where('tags.type',1)->where('module','mission')->withPivot(['status','id']);
     }
 
     public function UserTag()
