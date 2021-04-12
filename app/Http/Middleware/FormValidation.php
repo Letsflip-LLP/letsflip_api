@@ -316,6 +316,12 @@ class FormValidation
           ];
         break;
 
+        case 'PostGiveAccessTagClassroom':
+          return [
+            'tag_id'  => 'exists:tags,id'
+          ];
+        break;
+        
         default:
           return [];
       }
