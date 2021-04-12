@@ -76,7 +76,7 @@ class ClassRoomTransformer {
         // $temp->total_respone  = MissionResponeModel::whereIn('id',[1,2,3])->count();
 
         // $temp->premium_user_access = $model->PremiumUserAccess;
-        $file_size = $type == 'detail' ? '/large/' : '/small/';
+        $file_size = $type == 'detail' ? '/large/' : '/medium/';
         $temp->file_full_path = Storage::disk('gcs')->url($model->file_path.$file_size.$model->file_name);
         $temp->type         = $this->_type($model->type); 
         $temp->created_at   = dateFormat($model->created_at);
