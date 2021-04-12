@@ -324,6 +324,10 @@ class ClassRoomController extends Controller
 
         $class_room = $class_room->first();
    
+        if($class_room->type == 1)
+            return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+
+
         if(!$class_room)
             return (new ResponseTransformer)->toJson(400,__('messages.401'),(object)[
                 "access_code" => __('validation.exists',[ "atribute" => "Access code" ])
