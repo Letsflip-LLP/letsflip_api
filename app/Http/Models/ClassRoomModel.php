@@ -22,7 +22,7 @@ class ClassRoomModel extends Model
 
     public function Tag()
     {
-        return $this->hasMany('App\Http\Models\TagModel','foreign_id','id')->where('tags.type',1); // module id = classroom , foreign_id = mission id
+        return $this->hasMany('App\Http\Models\TagModel','foreign_id','id')->where('tags.type',1)->module('mission'); // module id = classroom , foreign_id = mission id
     }
 
     public function User()
