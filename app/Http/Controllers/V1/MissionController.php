@@ -491,7 +491,7 @@ class MissionController extends Controller
             if($request->filled('classroom_id')){
                 $mission = $mission->whereHas('ClassRoomTag',function($q) use($request){
                     $q->where('foreign_id',$request->classroom_id);
-                    $mission->whereHas('Tag',function($q2){
+                    $q->whereHas('Tag',function($q2){
                         $q2->where('status',1);
                     });
                 });
