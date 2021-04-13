@@ -24,7 +24,8 @@ class NotificationTransformer {
         if($model->ClassroomAccess)
             $temp->module_detail = (object) [
                 "id"     => $model->ClassroomAccess->id,
-                "status" => $model->ClassroomAccess->status
+                "status" => $model->ClassroomAccess->status,
+                "status_name" => statusRequestName($model->ClassroomAccess->status)
             ];
 
         $temp->text     = "";
@@ -42,9 +43,11 @@ class NotificationTransformer {
                 $module_detail = $model->Mission->ClassRoomTag->where('id',$model->classroom_id);
                 // dd($module_detail);
                 if($module_detail && isset($module_detail[0])){
+                    $piv_status = $module_detail[0]->pivot->status;
                     $temp->module_detail = (object)[
                         "id" => $module_detail[0]->pivot->id,
-                        "status" => $module_detail[0]->pivot->status
+                        "status" => $piv_status,
+                        "status_name" => statusRequestName($piv_status)
                     ];
                 }
             }
@@ -87,7 +90,7 @@ class NotificationTransformer {
 
         return $temp;
     } 
- 
+    
     public function list($code,$message,$models){
         $custome_model = []; 
         foreach($models as $model ){

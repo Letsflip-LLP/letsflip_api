@@ -101,3 +101,21 @@ function getEmothName(){
     $emoth = config('static_db.review.emotion_list');
     return array_column($emoth,'code');
 }
+ 
+function statusRequestName($id){
+    $name = 'N/A';
+    switch($id){
+        case 1:
+            $name = "Allowed";
+        break;
+        case 2:
+            $name = "Request";
+        break;
+        case 3:
+            $name = "Rejected";
+        default:
+            $name = "Untitled";
+    }
+
+    return $name;
+}
