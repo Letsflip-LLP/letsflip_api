@@ -10,6 +10,7 @@ use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
 use App\Http\Transformers\V1\ClassRoomTransformer; 
 use App\Http\Models\ClassRoomModel; 
+use App\Http\Models\TagModel; 
 use App\Http\Models\SubscriberModel; 
 use App\Http\Models\ClassroomAccessModel; 
 use Ramsey\Uuid\Uuid;
@@ -323,6 +324,10 @@ class ClassRoomController extends Controller
 
         $class_room = $class_room->first();
    
+        if($class_room->type == 1)
+            return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+
+
         if(!$class_room)
             return (new ResponseTransformer)->toJson(400,__('messages.401'),(object)[
                 "access_code" => __('validation.exists',[ "atribute" => "Access code" ])
@@ -380,8 +385,8 @@ class ClassRoomController extends Controller
 
         $update = $access->update([
             "access_code" => $access->ClassRoom->access_code,
-            "status"      => $status = !$request->filled('allow') ? 1 : ($request->allow == "true" ? 1 : 2)
-        ]); 
+            "status"      => $status =  $request->allow == "true" ? 1 : 3
+        ]);
 
         if(!$update)
             return (new ResponseTransformer)->toJson(400,__('messages.400'),$status);
@@ -390,6 +395,41 @@ class ClassRoomController extends Controller
             "classroom_id"        => $access->classroom_id,
             "classroom_access_id" => $access->id
         ],$status == 1 ? 15 : 16);
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), $request->allow );
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+    public function giveClassroomTagAccess(Request $request){
+        DB::beginTransaction();
+        try {
+    
+        $tag = new TagModel;
+        $tag = $tag->where('id',$request->tag_id)->first();
+          
+        if($tag == null)
+            return (new ResponseTransformer)->toJson(400,__('messages.400'), false );
+        
+        $classroom = ClassRoomModel::where('id',$tag->foreign_id)->first();
+
+        if($classroom->user_id != $this->user_login->id)
+            return (new ResponseTransformer)->toJson(400,__('messages.401'), false );
+        
+        $update = $tag->update([
+            'status' => $request->allow == 'true' ? 1 : 3
+        ]);
+        
+        if(!$update)
+            return (new ResponseTransformer)->toJson(500,__('messages.500'), false );
+
 
         DB::commit();
     

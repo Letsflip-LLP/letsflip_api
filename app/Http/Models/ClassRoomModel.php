@@ -17,7 +17,7 @@ class ClassRoomModel extends Model
 
     public function Mission()
     {
-        return $this->belongsToMany('App\Http\Models\MissionModel','tags','foreign_id','module_id')->where('tags.type',1); // module id = classroom , foreign_id = mission id
+        return $this->belongsToMany('App\Http\Models\MissionModel','tags','foreign_id','module_id')->where('tags.type',1)->where('tags.status',1); // module id = classroom , foreign_id = mission id
     }
 
     public function Tag()
