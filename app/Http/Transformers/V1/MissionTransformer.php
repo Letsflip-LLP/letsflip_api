@@ -84,6 +84,7 @@ class MissionTransformer {
         $temp->user                 = $this->_user($model->User);
         $temp->type                 = $this->_type($model->type);
         $temp->default_content      = $this->_defaultContent($model->MissionContentDefault);
+        $temp->collaboration        = $model->CollaborationContent ? $this->_collaborationRender($model->CollaborationContent) : null;
         $temp->created_at           = dateFormat($model->created_at);
         $temp->liked                = false;
         $temp->total_comment        = $model->Comment == null ? 0 : $model->Comment->count();
@@ -114,6 +115,17 @@ class MissionTransformer {
         }
 
         return $return;
+    }
+
+    private function _collaborationRender($model){
+        $tmp = new \stdClass;
+        $tmp->id = $model->id;
+        $tmp->text = $model->text;
+        $tmp->file_path = $model->file_path;
+        $tmp->file_name = $model->file_name;
+        $tmp->file_mime = $model->file_mime;
+        $tmp->file_full_path = Storage::disk('gcs')->url($model->file_path.'/'.$model->file_name);
+        return $tmp;
     }
 
     private function _user($model){ 

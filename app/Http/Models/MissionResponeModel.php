@@ -25,7 +25,12 @@ class MissionResponeModel extends Model
 
     public function MissionContentDefault()
     {
-        return $this->hasOne('App\Http\Models\MissionResponeContentModel','id','default_content_id');
+        return $this->hasOne('App\Http\Models\MissionResponeContentModel','id','default_content_id')->where('type',1);
+    }
+
+    public function CollaborationContent()
+    {
+        return $this->hasOne('App\Http\Models\MissionResponeContentModel','mission_response_id','id')->where('type',2);
     }
 
     public function User()

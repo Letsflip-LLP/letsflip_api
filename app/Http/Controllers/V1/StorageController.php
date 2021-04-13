@@ -24,6 +24,9 @@ class StorageController extends Controller
         $storage      = new StorageManager;
         $storage      = $storage->uploadFile($request->module,$request->file('file')); 
         $return->thumbnail = null ;
+ 
+        if($request->thumbnail == null && ($request->module== "respone" || $request->module== "mission"))
+            return (new ResponseTransformer)->toJson(400,__('messages.400'),["thumbnail" => ["The thumbnail field is required"]]);
 
 
         if($request->thumbnail != null){
@@ -37,12 +40,11 @@ class StorageController extends Controller
                 'image_full_path' => getPublicFile($thumbnail->file_path,$thumbnail->file_name)
             ];
         } 
-
+        
         $return->file_path     = $storage->file_path;
         $return->file_name     = $storage->file_name;
         $return->file_mime     = $storage->file_mime;
         $return->file_full_path= getPublicFile($storage->file_path,$storage->file_name);
-
 
         return (new ResponseTransformer)->toJson(200,"Success",$return);
     } 

@@ -196,7 +196,7 @@ class FormValidation
           return [
             'file' => 'required',
             'module' => 'required',
-            'thumbnail' => 'required'
+            // 'thumbnail' => 'required'
           ];
         break;
 

@@ -315,6 +315,19 @@ class MissionController extends Controller
             }
 
             $save2 = $mission_content->save();
+
+
+            if($request->filled('collaboration_file_path') && $request->filled('collaboration_file_name')){
+                $collaboration_content = new MissionResponeContentModel;
+                $collaboration_content->id = Uuid::uuid4();
+                $collaboration_content->file_path = $request->collaboration_file_path; 
+                $collaboration_content->file_name = $request->collaboration_file_name; 
+                $collaboration_content->file_mime = $request->collaboration_file_mime; 
+                $collaboration_content->text = $request->collaboration_file_description; 
+                $collaboration_content->mission_response_id = $mission_respone_id;
+                $collaboration_content->type = 2; 
+                $collaboration_content->save();
+            }
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
