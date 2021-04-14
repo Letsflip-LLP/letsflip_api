@@ -37,7 +37,7 @@ class NotificationTransformer {
 
         if($model->type == 1 || $model->type== 2){
             $text_ = $model->Mission ? $model->Mission->title : 'deleted mission';
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'type'=> subsType($model->type)->name, 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_ ]);    
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'type'=> $model->ClassRoom && $model->ClassRoom->type !=1 ? subsType($model->ClassRoom->type)->name : '', 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_ ]);    
         
             if($model->type == 2 && $model->Mission && $model->Mission->ClassRoomTag){ 
                 $module_detail = $model->Mission->ClassRoomTag->where('id',$model->classroom_id);

@@ -4,8 +4,8 @@
 return [
     "TEXT" => [
         1 => ":user_name_from has responded to your Mission: :module_title",
-        2 => ":user_name_from Created a mission in your :type : :module_title'",
-        3 => ":user_name_from liked your mission: :module_title'",
+        2 => ":user_name_from Created a mission in your :type :module_title",
+        3 => ":user_name_from Liked your Mission : :module_title'",
         // 4 => ":user_name_from Liked your Response : :module_title'",
         4 => ":user_name_from Liked your Response in Mission : :module_title", 
         11 => "You have earned :point PTS :from", 
