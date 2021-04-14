@@ -602,10 +602,11 @@ class MissionController extends Controller
              // Notify to user  
              if($model1 == null){
                 $mission_detail = MissionModel::where('id',$request->mission_id)->first();
-                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
-                [ 
-                    "mission_id"  => $request->mission_id
-                ],3);
+                if($this->user_login->id != $mission_detail->user_id)
+                    $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
+                    [ 
+                        "mission_id"  => $request->mission_id
+                    ],3);
              } 
        }
 
@@ -621,11 +622,12 @@ class MissionController extends Controller
             // Notify to user
            if($model1 == null){
                 $res_mission_detail = MissionResponeModel::where('id',$request->mission_respone_id)->first();
-                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$res_mission_detail->user_id,
-                [ 
-                    "mission_id"  => $res_mission_detail->mission_id,
-                    "respone_id"  => $request->mission_respone_id
-                ],4);
+                if($this->user_login->id != $res_mission_detail->user_id)
+                    $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$res_mission_detail->user_id,
+                    [
+                        "mission_id"  => $res_mission_detail->mission_id,
+                        "respone_id"  => $request->mission_respone_id
+                    ],4);
             }
         }
 

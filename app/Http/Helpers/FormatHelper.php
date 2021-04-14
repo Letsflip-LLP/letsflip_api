@@ -113,6 +113,7 @@ function statusRequestName($id){
         break;
         case 3:
             $name = "Rejected";
+        break; 
         default:
             $name = "Untitled";
     }
