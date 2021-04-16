@@ -58,9 +58,9 @@ class UserController extends Controller
 
     public function getSelfNotification(Request $request){
 
-        //     DB::beginTransaction();
+            DB::beginTransaction();
 
-        // try {
+        try {
 
             $user = auth('api')->user(); 
         
@@ -68,14 +68,14 @@ class UserController extends Controller
             $notif = $notif->orderBy('created_at','DESC');
             $notif = $notif->paginate($request->input('per_page',10));
             
-        // DB::commit();
+        DB::commit();
 
             return (new NotificationTransformer)->list(200,"Success",$notif);
 
-        // } catch (\exception $exception){ 
-        //     DB::rollBack(); 
-        //     return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
-        // }  
+        } catch (\exception $exception){ 
+            DB::rollBack(); 
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
 
     }
 

@@ -83,6 +83,12 @@ class NotificationTransformer {
         if($model->type == 17 || $model->type == 18) 
             $temp->text  =   __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $model->Mission ? $model->Mission->title : 'Deleted mission']);
 
+        if($model->type == 19)
+            $temp->text  =   __('notification.TEXT.'.$model->type,['module_title' => $model->ClassRoom ? $model->ClassRoom->title : '']);
+
+        if($model->type == 20)
+            $temp->text  =   __('notification.TEXT.'.$model->type,['classroom_title' => $model->ClassRoom ? $model->ClassRoom->title : '','mission_title' => $model->Mission ? $model->Mission->title : '']);
+
         $temp->title        =   __('notification.TYPE.'.$model->type);
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
 

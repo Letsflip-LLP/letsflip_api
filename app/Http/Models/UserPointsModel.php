@@ -15,7 +15,7 @@ class UserPointsModel extends Model
     protected $table = 'user_points';
     
     protected $fillable = [
-        "id", "value", "classroom_id", "mission_id", "respone_id", "user_id_from", "user_id_to", "mission_comment_id", "respone_comment_id", "type", "read_at", "created_at", "updated_at", "deleted_at"
+        "status","id", "value", "classroom_id", "mission_id", "respone_id", "user_id_from", "user_id_to", "mission_comment_id", "respone_comment_id", "type", "read_at", "created_at", "updated_at", "deleted_at"
     ];
     
     public function User()
