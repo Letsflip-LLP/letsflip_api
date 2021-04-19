@@ -110,7 +110,7 @@ class MissionTransformer {
         foreach($tags as $tag){
             $return[] = (object) [
                 "id"    => $tag->id,
-                "title" => $tag->type == 1 ? $tag->title : $tag->first_name." ".$tag->last_name,
+                "title" => $tag->type == 2 ? $tag->title : $tag->first_name." ".$tag->last_name,
             ];
         }
 
