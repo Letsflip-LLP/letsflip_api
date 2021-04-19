@@ -20,7 +20,7 @@ class NotificationManager {
 
         try {  
             $data = [];
-            $data['id'] = $uuid = Uuid::uuid4(); 
+            $data['id'] = $uuid = Uuid::uuid4();
             $data["user_id_from"]   = $user_id_from;
             $data["user_id_to"]     = $user_id_to;
             $data["created_at"]     = date('Y-m-d H:i:s');
@@ -31,7 +31,9 @@ class NotificationManager {
                 $data[$key] = $val;
             }
 
-            $notif_mission = new NotificationModel;
+            $delete_current = NotificationModel::where(['user_id_from' => $user_id_from,'user_id_to' => $user_id_to,'type'=> $type])->delete();
+            
+            $notif_mission = new NotificationModel; 
             $data = $notif_mission->insert($data); 
             
             $getDevices = User::where('id',$user_id_to)->first();
