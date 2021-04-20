@@ -31,7 +31,7 @@ class NotificationManager {
                 $data[$key] = $val;
             }
 
-            $delete_current = NotificationModel::where(['user_id_from' => $user_id_from,'user_id_to' => $user_id_to,'type'=> $type])->delete();
+            // $delete_current = NotificationModel::where(['user_id_from' => $user_id_from,'user_id_to' => $user_id_to,'type'=> $type])->delete();
             
             $notif_mission = new NotificationModel; 
             $data = $notif_mission->insert($data); 
