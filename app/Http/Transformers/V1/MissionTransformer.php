@@ -93,8 +93,8 @@ class MissionTransformer {
         $temp->LastRespone          = $model->LastRespone == null ? 0 : $model->LastRespone->count();
 
         $temp->tags = (object) [
-            "user" => $model->UserTag ? $this->_tags($model->UserTag) : [],
-            "classroom" => $this->_tags($model->ClassRoomTag),
+            "user" => $model->UserTag ? $this->_tagsFriend($model->UserTag) : [],
+            "classroom" => $this->_tagsClass($model->ClassRoomTag),
         ];
 
 
@@ -104,13 +104,26 @@ class MissionTransformer {
         return $temp;
     }
 
-    private function _tags($tags){
+    private function _tagsClass($tags){
         $return = [];
 
         foreach($tags as $tag){
             $return[] = (object) [
                 "id"    => $tag->id,
-                "title" => $tag->type == 2 ? $tag->title : $tag->first_name." ".$tag->last_name,
+                "title" => $tag->title  
+            ];
+        }
+
+        return $return;
+    }
+
+    private function _tagsFriend($tags){
+        $return = [];
+
+        foreach($tags as $tag){
+            $return[] = (object) [
+                "id"    => $tag->id,
+                "title" =>  $tag->first_name." ".$tag->last_name,
             ];
         }
 
