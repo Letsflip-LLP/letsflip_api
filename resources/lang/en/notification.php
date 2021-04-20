@@ -12,10 +12,13 @@ return [
         12 => "Points deducted from deleting Mission",
         13 => "Points deducted from deleting Respones",
         14 => ":user_name_from request to join your Private Classroom: :module_title",
-        15 => ":user_name_from Accepted you to join Private Classroom: :module_title",
+        15 => ":user_name_from has accepted your request to join Private Classroom: :module_title",
         16 => ":user_name_from Rejected you to join Private Classroom: :module_title",
         17 => ":user_name_from is Tagging you in Mission: :module_title",
-        18 => ":user_name_from is Tagging you in Response, Mission: :module_title"
+        18 => ":user_name_from is Tagging you in Response, Mission: :module_title",
+        19 => "Mission successfully created, waiting for approval to be enrolled in the classroom.",
+        20 => "Your mission :mission_title is Approved to be listed in the Classroom: :classroom_title",
+        21 => "Your mission :mission_title is Rejected to be listed in the Classroom: :classroom_title"
     ],
     "TYPE" => [
         1 => "New Response from My Mission",
@@ -35,6 +38,10 @@ return [
         15 => "Accepted Classroom Access",
         16 => "Rejected Classroom Access",
         17 => "Tag in Mission",
-        18 => "Tag in Respone"
+        18 => "Tag in Respone",
+        19 => "Classroom tag waiting approval",
+        19 => "Waiting for Approval from Classroom Creator",
+        20 => "Classroom Tagging Approved",
+        21 => "Classroom Tagging Rejected"
     ]
 ];

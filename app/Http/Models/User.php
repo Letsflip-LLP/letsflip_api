@@ -82,7 +82,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function Point()
     {
-        return $this->hasMany('App\Http\Models\UserPointsModel','user_id_to','id');
+        return $this->hasMany('App\Http\Models\UserPointsModel','user_id_to','id')->where('status',1);
     }
 
     public function Followed()
@@ -111,5 +111,10 @@ class User extends Authenticatable implements JWTSubject
     public function PremiumClassRoomAccess()
     {
         return $this->hasMany('App\Http\Models\ClassroomAccessModel','user_id','id');
+    }
+
+    public function Mission()
+    {
+        return $this->hasMany('App\Http\Models\MissionModel','user_id','id');
     }
 }

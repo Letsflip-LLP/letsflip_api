@@ -99,22 +99,24 @@ class MissionController extends Controller
             $save2 = $mission_content->save();
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
-
-                               
+            
+             
+            $class_room_detail = null;
             if($request->filled('tag_classroom_ids')){
-                $classroom_id = explode(',',$request->tag_classroom_ids);
-                $insert_class_tags = [];
-                foreach($classroom_id as $cl_id){
-                    $class_room_detail = ClassRoomModel::where('id',$cl_id)->first();
+                    $classroom_id = $request->tag_classroom_ids;
+            //      $insert_class_tags = [];
+            //      foreach($classroom_id as $cl_id){
+                    $class_room_detail = ClassRoomModel::where('id',$classroom_id)->first();
                     if($class_room_detail){
-                        $temp_id[$cl_id] = Uuid::uuid4(); 
+                        // $temp_id[$cl_id] = Uuid::uuid4(); 
+                        $classroom_type  = $class_room_detail->type;
 
                         $classroom_tag_status = $class_room_detail->user_id != $this->user_login->id && $class_room_detail->type !=1 ? 2 : 1;
 
                         $tag_model = new TagModel; 
                         $tag_model->firstOrCreate(
                             [
-                                "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $cl_id , "type" => 1 , "status" => $classroom_tag_status
+                                "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $request->tag_classroom_ids , "type" => 1 , "status" => $classroom_tag_status
                             ],
                             [
                                 "id" => Uuid::uuid4()
@@ -122,12 +124,13 @@ class MissionController extends Controller
                         );
 
                         //NOTIF FOR OWN OF CLASSROM
-                        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room_detail->user_id,[
-                            "mission_id" => $mission_id,
-                            "classroom_id" => $class_room_detail->id
-                        ],2); 
+                        if($class_room_detail->user_id != $this->user_login->id)
+                            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room_detail->user_id,[
+                                "mission_id" => $mission_id,
+                                "classroom_id" => $class_room_detail->id
+                            ],2); 
                     }
-                }
+                // }
             }
 
 
@@ -165,27 +168,39 @@ class MissionController extends Controller
             }
 
     
-            //NOTIF FOR OWN OF CLASSROM
+            //NOTIF FOR CREATOR
             if($mission->status == 1){
                 $is_first = UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() ? false : true;
-                UserPointsModel::insert([
-                    "user_id_to" => $this->user_login->id,
-                    "mission_id" => $mission_id,
-                    "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
-                    "type" => $is_first ? 1 : 2,
-                    "id" => $point_id = Uuid::uuid4()
-                ]); 
-    
-                $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
-                    "mission_id" => $mission_id,
-                    "point_id" => $point_id
-                ],11,[
-                    "type"=>"point",
-                    "payload"=>[
-                        "title"=>"CONGRATULATIONS!",
-                        "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
-                        "value"=> $earn_point ]
-                ]);
+
+                    UserPointsModel::insert([
+                        "user_id_to" => $this->user_login->id,
+                        "mission_id" => $mission_id,
+                        "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
+                        "type" => $is_first ? 1 : 2,
+                        "id" => $point_id = Uuid::uuid4(),
+                        "status" => !$class_room_detail || ($class_room_detail && $class_room_detail->type == 1) || $class_room_detail->user_id == $this->user_login->id ? 1 : 2
+                    ]); 
+        
+                    if(!$class_room_detail || ($class_room_detail && $class_room_detail->type == 1) || $class_room_detail->user_id == $this->user_login->id){
+                        $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                            "mission_id" => $mission_id,
+                            "point_id" => $point_id
+                        ],11,[
+                            "type"=>"point",
+                            "payload"=>[
+                                "title"=>"CONGRATULATIONS!",
+                                "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
+                                "value"=> $earn_point ]
+                        ]);
+                    }
+  
+                if($class_room_detail && $class_room_detail->type != 1 && $class_room_detail->user_id != $this->user_login->id){
+                    $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                        "mission_id" => $mission_id,
+                        "classroom_id" => $mission_id,
+                    ],19);
+                }
+
             }
         
         DB::commit();
@@ -315,6 +330,19 @@ class MissionController extends Controller
             }
 
             $save2 = $mission_content->save();
+
+
+            if($request->filled('collaboration_file_path') && $request->filled('collaboration_file_name')){
+                $collaboration_content = new MissionResponeContentModel;
+                $collaboration_content->id = Uuid::uuid4();
+                $collaboration_content->file_path = $request->collaboration_file_path; 
+                $collaboration_content->file_name = $request->collaboration_file_name; 
+                $collaboration_content->file_mime = $request->collaboration_file_mime; 
+                $collaboration_content->text = $request->collaboration_file_description; 
+                $collaboration_content->mission_response_id = $mission_respone_id;
+                $collaboration_content->type = 2; 
+                $collaboration_content->save();
+            }
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
@@ -589,10 +617,11 @@ class MissionController extends Controller
              // Notify to user  
              if($model1 == null){
                 $mission_detail = MissionModel::where('id',$request->mission_id)->first();
-                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
-                [ 
-                    "mission_id"  => $request->mission_id
-                ],3);
+                if($this->user_login->id != $mission_detail->user_id)
+                    $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
+                    [ 
+                        "mission_id"  => $request->mission_id
+                    ],3);
              } 
        }
 
@@ -608,11 +637,12 @@ class MissionController extends Controller
             // Notify to user
            if($model1 == null){
                 $res_mission_detail = MissionResponeModel::where('id',$request->mission_respone_id)->first();
-                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$res_mission_detail->user_id,
-                [ 
-                    "mission_id"  => $res_mission_detail->mission_id,
-                    "respone_id"  => $request->mission_respone_id
-                ],4);
+                if($this->user_login->id != $res_mission_detail->user_id)
+                    $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$res_mission_detail->user_id,
+                    [
+                        "mission_id"  => $res_mission_detail->mission_id,
+                        "respone_id"  => $request->mission_respone_id
+                    ],4);
             }
         }
 
