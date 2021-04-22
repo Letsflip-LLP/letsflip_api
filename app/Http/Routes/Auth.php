@@ -24,6 +24,9 @@ $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
 
     Route::post('register', [AuthController::class, 'register'])->name('PostAuthControllerRegister');
     Route::post('register/verify', [AuthController::class, 'registerVerify'])->name('PostAuthControllerRegisterVerify');
+
+    Route::post('register/resend-email-verify', [AuthController::class, 'resendEmailVerify'])->name('PostAuthControllerResendEmailVerify');
+
     Route::post('login', [AuthController::class, 'login'])->name('PostAuthControllerLogin');
 
     Route::post('login/google', [AuthController::class, 'loginGoogle'])->name('PostAuthControllerLoginGoogle');
