@@ -583,4 +583,38 @@ class AuthController extends Controller
     }
 
 
+    public function resendEmailVerify(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+ 
+            $user = User::where('email',$request->email)->first();
+
+            if($user == null)
+                return (new ResponseTransformer)->toJson(400,__('messages.404'),false);
+  
+
+            if($user->email_verified_at != null)
+                return (new ResponseTransformer)->toJson(400,"Your email has been validated.",false);
+                
+            $data['first_name'] = $user->first_name;
+            $data['last_name'] = $user->last_name;
+            $data['email'] = $user->email;
+            $data['id'] = $user->id;  
+            $data['activate_url'] = env('WEB_PAGE_URL',url('/')).'/account/verification/verify?temporary_token='.Crypt::encryptString($user->email);
+            $data['password'] =  "********";
+
+        DB::commit();
+
+        $send_mail = \Mail::to($user->email)->queue(new verificationUserRegister($data));
+
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        } 
+    }
+
+
 }
