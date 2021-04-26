@@ -967,8 +967,8 @@ class MissionController extends Controller
             if($request->filled('text'))
                 $mission_respone->text = $request->text;
 
-            // if(!$mission_respone->save())
-            //     return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES002");
+            if(!$mission_respone->save())
+                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES002");
  
         DB::commit();
     
