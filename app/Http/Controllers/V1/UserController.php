@@ -58,9 +58,9 @@ class UserController extends Controller
 
     public function getSelfNotification(Request $request){
 
-            DB::beginTransaction();
+        // DB::beginTransaction();
 
-        try {
+        // try {
 
             $user = auth('api')->user(); 
         
@@ -72,10 +72,10 @@ class UserController extends Controller
 
             return (new NotificationTransformer)->list(200,"Success",$notif);
 
-        } catch (\exception $exception){ 
-            DB::rollBack(); 
-            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
-        }  
+        // } catch (\exception $exception){ 
+        //     DB::rollBack(); 
+        //     return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        // }  
 
     }
 

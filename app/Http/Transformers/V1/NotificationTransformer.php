@@ -69,10 +69,10 @@ class NotificationTransformer {
             $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for creating a new mission!" , "point" => $model->Point->value]); 
 
         if($model->type ==  11 &&  $model->Point && $model->Point->type == 3)
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for responding to the mission: " ,"module_title"=> $model->Mission->title, "point" => $model->Point->value]);
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for responding to the mission: " ,"module_title"=> $model->Mission ? $model->Mission->title : "", "point" => $model->Point->value]);
 
         if($model->type ==  11 &&  $model->Point && $model->Point->type == 4)
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for a new response to your mission!" , "point" => $model->Point->value]); 
+            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for a new response to your mission!" , "point" => $model->Point->value]);
              
         if($model->type ==  12 || $model->type ==  13)
             $temp->text  =   __('notification.TEXT.'.$model->type);
