@@ -15,7 +15,7 @@ class AddUsernameInUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->text('username',225)->after('email')->unique()->nullable();
+            $table->text('username',225)->after('email')->nullable();
         });
     }
 
