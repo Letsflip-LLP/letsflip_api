@@ -237,7 +237,8 @@ class FormValidation
           return [
             'description' => 'MIN:5|MAX:360',
             'image_profile' => 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG|max:10000',
-            'image_background' => 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG|max:10000'
+            'image_background' => 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG|max:10000',
+            'username'        => 'string|max:225|regex:/^[A-Za-z0-9._]+(?:[A-Za-z0-9]+)*$/'
           ];
         break;
 

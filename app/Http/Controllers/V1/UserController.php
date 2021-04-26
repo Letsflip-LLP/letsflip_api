@@ -123,6 +123,21 @@ class UserController extends Controller
         try { 
             $user = auth('api')->user(); 
             
+
+            if($request->filled('username')){
+
+                if($user->username != $request->username){ 
+                    $check = new User;
+                    $check = $check->where('username',$request->username);
+                    $check = $check->where('id','!=',$user->id);
+                    $check = $check->first(); 
+ 
+                    if($check != null) return (new ResponseTransformer)->toJson(400,__('validation.unique',['attribute'=>'username']),['username' => [ __('validation.unique',['attribute'=>'username']) ]]);
+                }
+
+                $user->username = $request->username;
+            }
+             
             if($request->description)
                 $user->description = $request->description;
 
@@ -158,6 +173,7 @@ class UserController extends Controller
 
             if($request->last_name)
                 $user->first_name = $request->last_name;
+ 
 
             $user->save();
 
