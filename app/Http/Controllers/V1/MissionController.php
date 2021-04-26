@@ -954,12 +954,12 @@ class MissionController extends Controller
     
             if($request->filled('status')){
                 $mission_respone->status = $request->status;
-
-                $point_event = new PointController;
-
-                if($mission_respone->status == 1)
-                    $point_event->pointOnAddRespone($mission_respone);
-            }
+ 
+                if($mission_respone->status == 1){
+                    $point_event = new PointController;
+                    $point_event->pointOnAddRespone($mission_respone); 
+                }
+             }
 
             if($request->filled('title'))
                 $mission_respone->title = $request->title;
