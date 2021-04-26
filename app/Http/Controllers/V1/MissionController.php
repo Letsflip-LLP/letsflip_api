@@ -346,15 +346,16 @@ class MissionController extends Controller
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
-            // NOTIF FOR OWN OF MISSION 
-            $notif_new_respone = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
-                            [
-                                "respone_id" => $mission_respone_id,
-                                "mission_id"  => $mission_detail->id
-                            ],1);
+            if($mission_respone->status == 1){
+                // NOTIF FOR OWN OF MISSION 
+                $notif_new_respone = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
+                [
+                    "respone_id" => $mission_respone_id,
+                    "mission_id"  => $mission_detail->id
+                ],1);
 
-            // ADD POINT
-            UserPointsModel::insert([
+                // ADD POINT
+                UserPointsModel::insert([
                 [
                     "user_id_to" => $this->user_login->id,
                     "mission_id" => $mission_detail->id,
@@ -375,14 +376,14 @@ class MissionController extends Controller
                     "created_at" => date('Y-m-d H:i:s'),
                     "updated_at" => date('Y-m-d H:i:s')
                 ]
-            ]); 
+                ]); 
 
-            // FOR RESPONDEND
-            $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                // FOR RESPONDEND
+                $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
                 "mission_id" => $mission_detail->id,
                 "respone_id" => $mission_respone_id,
                 "point_id" => $point_id
-            ],11,[
+                ],11,[
                 "type"=> "point",
                 "payload"=> [
                     "type"=> "point",
@@ -390,14 +391,14 @@ class MissionController extends Controller
                     "text" => "You have earned ".$earn_point." PTS for Created Response!",
                     "value" => $earn_point
                 ]
-            ]);
+                ]);
 
-            // FOR MISSION OWNER
-            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
+                // FOR MISSION OWNER
+                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
                 "mission_id" => $mission_detail->id,
                 "respone_id" => $mission_respone_id,
                 "point_id" => $point_id2
-            ],11,[
+                ],11,[
                 "type"=> "point",
                 "payload"=> [
                     "type"=> "point",
@@ -405,7 +406,8 @@ class MissionController extends Controller
                     "text" => "You have earned ".$earn_point2." PTS for Created Response!",
                     "value" => $earn_point2
                 ]
-            ]);
+                ]);
+            }
 
                     
             // ANSWER POINTING
