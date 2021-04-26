@@ -952,8 +952,14 @@ class MissionController extends Controller
             if($mission_respone == null)
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES001");
     
-            if($request->filled('status'))
+            if($request->filled('status')){
                 $mission_respone->status = $request->status;
+
+                $point_event = new PointController;
+
+                if($mission_respone->status == 1)
+                    $point_event->pointOnAddRespone($mission_respone);
+            }
 
             if($request->filled('title'))
                 $mission_respone->title = $request->title;
@@ -961,8 +967,8 @@ class MissionController extends Controller
             if($request->filled('text'))
                 $mission_respone->text = $request->text;
 
-            if(!$mission_respone->save())
-                return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES002");
+            // if(!$mission_respone->save())
+            //     return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES002");
  
         DB::commit();
     
