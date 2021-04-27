@@ -39,11 +39,14 @@ class UserController extends Controller
     public function getPublicList(Request $request)
     { 
         $users = new User;
-
+        
         if($request->filled('search')){
-            $users = $users->where('first_name','LIKE',"%".$request->search."%");
-            $users = $users->orWhere('last_name','LIKE',"%".$request->search."%");
-            $users = $users->orWhere('email','LIKE',"%".$request->search."%"); 
+            $search = str_replace('@', '', $request->search); 
+
+            $users = $users->where('first_name','LIKE',"%".$search."%");
+            $users = $users->orWhere('last_name','LIKE',"%".$search."%");
+            $users = $users->orWhere('email','LIKE',"%".$search."%");
+            $users = $users->orWhere('username','LIKE',"%".$search."%");
         }
         
         if($request->filled('friends_only') && $request->friends_only == true)
