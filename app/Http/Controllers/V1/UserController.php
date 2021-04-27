@@ -172,7 +172,7 @@ class UserController extends Controller
                 $user->first_name = $request->first_name;
 
             if($request->last_name)
-                $user->first_name = $request->last_name;
+                $user->last_name = $request->last_name;
  
 
             $user->save();
