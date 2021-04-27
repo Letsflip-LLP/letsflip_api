@@ -169,9 +169,8 @@ class MissionController extends Controller
 
     
             //NOTIF FOR CREATOR
-            if($mission->status == 1){
+            if(($class_room_detail->type == 1 && $request->status == 1) || ($class_room_detail->user_id == $this->user_login->id && $request->status == 1)){
                 $is_first = UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() ? false : true;
-
                     UserPointsModel::insert([
                         "user_id_to" => $this->user_login->id,
                         "mission_id" => $mission_id,
