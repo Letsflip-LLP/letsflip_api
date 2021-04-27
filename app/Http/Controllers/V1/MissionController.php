@@ -104,11 +104,8 @@ class MissionController extends Controller
             $class_room_detail = null;
             if($request->filled('tag_classroom_ids')){
                     $classroom_id = $request->tag_classroom_ids;
-            //      $insert_class_tags = [];
-            //      foreach($classroom_id as $cl_id){
                     $class_room_detail = ClassRoomModel::where('id',$classroom_id)->first();
                     if($class_room_detail){
-                        // $temp_id[$cl_id] = Uuid::uuid4(); 
                         $classroom_type  = $class_room_detail->type;
 
                         $classroom_tag_status = $class_room_detail->user_id != $this->user_login->id && $class_room_detail->type !=1 ? 2 : 1;
@@ -826,11 +823,7 @@ class MissionController extends Controller
              
             if($mission == null)
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS1");
-
-
-            if($request->filled('status'))
-                $mission->status = $request->status;
-
+             
             if($request->filled('title'))
                 $mission->title = $request->title;
             
@@ -840,6 +833,12 @@ class MissionController extends Controller
             if(!$mission->save())
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS2");
 
+
+            if($request->filled('status') && $request->status == 1){
+                $point_event = new PointController;
+                $add_point = $point_event->pointOnAddMission($mission);
+            }
+            
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'),true);

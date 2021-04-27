@@ -122,4 +122,65 @@ class PointController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     }
+
+    public function pointOnAddMission($mission_detail){
+ 
+        DB::beginTransaction();
+
+        try {  
+            $mission_detail     = $mission_detail;
+            $classroom_detail   = $mission_detail->ClassRoomTag ? $mission_detail->ClassRoomTag[0] : null;
+
+            // INSERT POINT FOR MISSION CREATOR 
+            $check  = UserPointsModel::where( [ "user_id_to" => $mission_detail->user_id,   "mission_id" => $mission_detail->id]);
+            $check  = $check->whereIn('type',[1,2]);
+            $check  = $check->first();
+            
+            $point_status = 2;
+
+            if($check == null){
+                $is_first           = UserPointsModel::where('user_id_to',$mission_detail->user_id)->where('type',1)->first() ? false : true;
+                $insert_point       = UserPointsModel::insert(
+                [
+                    "user_id_to" => $mission_detail->user_id, 
+                    "mission_id" => $mission_detail->id,
+                    "type" => $is_first ? 1 : 2,
+                    "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
+                    "id" => $point_id = Uuid::uuid4(),
+                    "status" => $point_status = $classroom_detail->user_id != $mission_detail->user_id && $classroom_detail->type != 1 ? 2 : 1
+                ]);
+            
+                // IF USER TAG OTHER NON PUBLIC CLASSROOM CREATOR WILL GET NOTIFICATION
+                if($point_status != 1){
+                    $notif_mission = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
+                        "mission_id" => $mission_detail->id,
+                        "classroom_id" => $classroom_detail->id,
+                    ],19);
+                }else{
+                    // SEND NOTIFICATION TO USER CREATOR GET POINT
+                    $notif_mission = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
+                        "mission_id" => $mission_detail->id,
+                        "point_id" => $point_id
+                    ],11,[
+                        "type"=>"point",
+                        "payload"=>[
+                            "title"=>"CONGRATULATIONS!",
+                            "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
+                            "value"=> $earn_point ]
+                    ]);
+                } 
+            }
+               
+        
+        DB::commit();
+
+            return true;
+            
+        } catch (\exception $exception){
+            
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
 }
