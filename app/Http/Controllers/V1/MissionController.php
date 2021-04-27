@@ -834,9 +834,13 @@ class MissionController extends Controller
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS2");
 
 
-            if($request->filled('status') && $request->status == 1){
-                $point_event = new PointController;
-                $add_point = $point_event->pointOnAddMission($mission);
+            if($request->filled('status')){
+                $mission->status = $request->status;
+                
+                if($request->status == 1){
+                    $point_event = new PointController;
+                    $add_point = $point_event->pointOnAddMission($mission);
+                } 
             }
             
         DB::commit();
