@@ -19,5 +19,6 @@ return [
     'token' => 'This password reset token is invalid.',
     'user' => "We can't find a user with that email address.",
     'email_verification' => 'We have emailed the verification. Please to Verify before Login.',
-    'reset_pass_verification_mail' => 'We have emailed the verification. Please to Verify before Reset Password.'
+    'reset_pass_verification_mail' => 'We have emailed the verification. Please to Verify before Reset Password.',
+    'failed' => 'The Password, Username or Email is incorrect.'
 ];

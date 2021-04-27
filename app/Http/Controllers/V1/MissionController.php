@@ -102,13 +102,11 @@ class MissionController extends Controller
             
              
             $class_room_detail = null;
-            if($request->filled('tag_classroom_ids')){
+            if($request->filled('tag_classroom_ids'))
+            {
                     $classroom_id = $request->tag_classroom_ids;
-            //      $insert_class_tags = [];
-            //      foreach($classroom_id as $cl_id){
                     $class_room_detail = ClassRoomModel::where('id',$classroom_id)->first();
                     if($class_room_detail){
-                        // $temp_id[$cl_id] = Uuid::uuid4(); 
                         $classroom_type  = $class_room_detail->type;
 
                         $classroom_tag_status = $class_room_detail->user_id != $this->user_login->id && $class_room_detail->type !=1 ? 2 : 1;
@@ -124,13 +122,12 @@ class MissionController extends Controller
                         );
 
                         //NOTIF FOR OWN OF CLASSROM
-                        if($class_room_detail->user_id != $this->user_login->id)
+                        if($class_room_detail->user_id != $this->user_login->id && $mission->status == 1)
                             $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room_detail->user_id,[
                                 "mission_id" => $mission_id,
                                 "classroom_id" => $class_room_detail->id
                             ],2); 
-                    }
-                // }
+                    } 
             }
 
 
@@ -166,12 +163,10 @@ class MissionController extends Controller
             if($request->filled('learning_journey')){
                 $this->_insertLearningJourney($request->learning_journey,$mission_id);
             }
-
     
             //NOTIF FOR CREATOR
-            if($mission->status == 1){
+            if(($class_room_detail->type == 1 && $request->status == 1) || ($class_room_detail->user_id == $this->user_login->id && $request->status == 1)){
                 $is_first = UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() ? false : true;
-
                     UserPointsModel::insert([
                         "user_id_to" => $this->user_login->id,
                         "mission_id" => $mission_id,
@@ -192,15 +187,15 @@ class MissionController extends Controller
                                 "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
                                 "value"=> $earn_point ]
                         ]);
-                    }
-  
-                if($class_room_detail && $class_room_detail->type != 1 && $class_room_detail->user_id != $this->user_login->id){
-                    $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
-                        "mission_id" => $mission_id,
-                        "classroom_id" => $mission_id,
-                    ],19);
-                }
+                    } 
+            } 
 
+            // IF USER TAG OTHER NON PUBLIC CLASSROOM CREATOR WILL GET NOTIFICATION 
+            if($class_room_detail->type != 1 && $class_room_detail->user_id != $this->user_login->id){
+                $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                    "mission_id" => $mission_id,
+                    "classroom_id" => $mission_id,
+                ],19);
             }
         
         DB::commit();
@@ -346,15 +341,16 @@ class MissionController extends Controller
     
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
-            // NOTIF FOR OWN OF MISSION 
-            $notif_new_respone = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
-                            [
-                                "respone_id" => $mission_respone_id,
-                                "mission_id"  => $mission_detail->id
-                            ],1);
+            if($mission_respone->status == 1){
+                // NOTIF FOR OWN OF MISSION 
+                $notif_new_respone = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,
+                [
+                    "respone_id" => $mission_respone_id,
+                    "mission_id"  => $mission_detail->id
+                ],1);
 
-            // ADD POINT
-            UserPointsModel::insert([
+                // ADD POINT
+                UserPointsModel::insert([
                 [
                     "user_id_to" => $this->user_login->id,
                     "mission_id" => $mission_detail->id,
@@ -375,14 +371,14 @@ class MissionController extends Controller
                     "created_at" => date('Y-m-d H:i:s'),
                     "updated_at" => date('Y-m-d H:i:s')
                 ]
-            ]); 
+                ]); 
 
-            // FOR RESPONDEND
-            $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                // FOR RESPONDEND
+                $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
                 "mission_id" => $mission_detail->id,
                 "respone_id" => $mission_respone_id,
                 "point_id" => $point_id
-            ],11,[
+                ],11,[
                 "type"=> "point",
                 "payload"=> [
                     "type"=> "point",
@@ -390,14 +386,14 @@ class MissionController extends Controller
                     "text" => "You have earned ".$earn_point." PTS for Created Response!",
                     "value" => $earn_point
                 ]
-            ]);
+                ]);
 
-            // FOR MISSION OWNER
-            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
+                // FOR MISSION OWNER
+                $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
                 "mission_id" => $mission_detail->id,
                 "respone_id" => $mission_respone_id,
                 "point_id" => $point_id2
-            ],11,[
+                ],11,[
                 "type"=> "point",
                 "payload"=> [
                     "type"=> "point",
@@ -405,7 +401,8 @@ class MissionController extends Controller
                     "text" => "You have earned ".$earn_point2." PTS for Created Response!",
                     "value" => $earn_point2
                 ]
-            ]);
+                ]);
+            }
 
                     
             // ANSWER POINTING
@@ -825,20 +822,25 @@ class MissionController extends Controller
              
             if($mission == null)
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS1");
-
-
-            if($request->filled('status'))
-                $mission->status = $request->status;
-
+             
             if($request->filled('title'))
                 $mission->title = $request->title;
             
             if($request->filled('text'))
                 $mission->text = $request->text;
             
+            if($request->filled('status'))
+                $mission->status = $request->status;
+                
             if(!$mission->save())
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDMS2");
 
+
+            if($request->filled('status') && $request->status == 1){
+                $point_event = new PointController;
+                $add_point = $point_event->pointOnAddMission($mission);
+            }
+            
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
@@ -950,8 +952,14 @@ class MissionController extends Controller
             if($mission_respone == null)
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES001");
     
-            if($request->filled('status'))
+            if($request->filled('status')){
                 $mission_respone->status = $request->status;
+ 
+                if($mission_respone->status == 1){
+                    $point_event = new PointController;
+                    $point_event->pointOnAddRespone($mission_respone); 
+                }
+             }
 
             if($request->filled('title'))
                 $mission_respone->title = $request->title;

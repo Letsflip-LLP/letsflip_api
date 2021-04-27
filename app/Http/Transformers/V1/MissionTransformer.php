@@ -89,7 +89,7 @@ class MissionTransformer {
         $temp->liked                = false;
         $temp->total_comment        = $model->Comment == null ? 0 : $model->Comment->count();
         $temp->total_like           = $model->Like == null ? 0 : $model->Like->count();
-        $temp->total_respone        = $model->Respone == null ? 0 : $model->Respone->count();
+        $temp->total_respone        = $model->Respone == null ? 0 : $model->Respone->where('status',1)->count();
         $temp->LastRespone          = $model->LastRespone == null ? 0 : $model->LastRespone->count();
 
         $temp->tags = (object) [
