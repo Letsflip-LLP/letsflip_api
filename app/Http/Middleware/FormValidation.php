@@ -49,8 +49,8 @@ class FormValidation
         break; 
         case  'PostAuthControllerLogin':
           return [
-            'email' => 'required',  
-            'password' => 'required',   
+            'email'     => 'required|string|max:225|regex:/^[A-Za-z0-9._@-]+(?:[A-Za-z0-9]+)*$/',
+            'password'  => 'required',
           ];
         break;
         case 'PostAuthControllerResetPassword':

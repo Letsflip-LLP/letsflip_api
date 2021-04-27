@@ -116,17 +116,17 @@ class AuthController extends Controller
     public function login(Request $request)
     { 
         DB::beginTransaction();
-        try {
+        try { 
+ 
+            $email = User::where('email',$request->email)->orWhere('username',$request->email)->first();
+  
+            if($email == null) return (new ResponseTransformer)->toJson(400,__('passwords.failed'),false);
+
             $loginData = [
-                'email' => $request->email,
+                'email' => $email->email,
                 'password' => $request->password
             ];
-
-            $validator = Validator::make($request->all(),[
-                'email' => 'required|email',
-                'password' => 'required|string|min:6',
-            ]);
- 
+             
             if (!$token = auth('api')->attempt($loginData))
                 return (new ResponseTransformer)->toJson(400,__('validation.password'),false);  
             
