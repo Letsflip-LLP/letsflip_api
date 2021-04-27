@@ -49,6 +49,8 @@ class PointController extends Controller
             $user_mission = $mission_detail->User;
             $user_response = $mission_respone->User; 
 
+            if($mission_respone->Point) return true;
+
             // ADD POINT
             UserPointsModel::insert([
                 [
