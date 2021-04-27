@@ -426,7 +426,7 @@ class ClassRoomController extends Controller
             return (new ResponseTransformer)->toJson(400,__('messages.401'), false );
         
         $update = $tag->update([
-            'status' => $request->allow == 'true' ? 1 : 3
+            'status' => $status = $request->allow == 'true' ? 1 : 3
         ]);
         
         if(!$update)
@@ -437,30 +437,34 @@ class ClassRoomController extends Controller
         if(!$mission_detail) 
             return (new ResponseTransformer)->toJson(400,__('messages.401'), false );
  
-
-        $pending_point = UserPointsModel::where('status',2)->whereIn('type',[1,2])->where('mission_id',$mission_detail->id)->first();
-
-        if($pending_point != null){
-
-            if($tag->status == 1)
-                $pending_point->update(['status' => 1]);
-            
-            $notif_mission = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
-                "mission_id" => $mission_detail->id,
-                "point_id"   => $pending_point->id,
-            ],11,[
-                "type"=>"point",
-                "payload"=> [
-                    "title"=>"CONGRATULATIONS!",
-                    "text"=> $pending_point->type == 1 ? "You have earned ".$pending_point->value." PTS for your first Mission!" : "You have earned ".$pending_point->value." PTS for Created Mission!",
-                    "value"=> $pending_point->value ]
-            ]);
-
-            $notif_tag = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
-                "mission_id"   => $mission_detail->id,
-                "classroom_id" => $classroom->id
-            ],$tag->status == 1 ? 20 : 21);
+        if($status == 1){
+            $point_event = new PointController;
+            $add_point = $point_event->pointOnAddMission($mission_detail);
         }
+        
+        // $pending_point = UserPointsModel::where('status',2)->whereIn('type',[1,2])->where('mission_id',$mission_detail->id)->first();
+
+        // if($pending_point != null){
+
+        //     if($tag->status == 1)
+        //         $pending_point->update(['status' => 1]);
+            
+        //     $notif_mission = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
+        //         "mission_id" => $mission_detail->id,
+        //         "point_id"   => $pending_point->id,
+        //     ],11,[
+        //         "type"=>"point",
+        //         "payload"=> [
+        //             "title"=>"CONGRATULATIONS!",
+        //             "text"=> $pending_point->type == 1 ? "You have earned ".$pending_point->value." PTS for your first Mission!" : "You have earned ".$pending_point->value." PTS for Created Mission!",
+        //             "value"=> $pending_point->value ]
+        //     ]);
+
+        //     $notif_tag = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
+        //         "mission_id"   => $mission_detail->id,
+        //         "classroom_id" => $classroom->id
+        //     ],$tag->status == 1 ? 20 : 21);
+        // }
  
         DB::commit();
     

@@ -163,7 +163,6 @@ class MissionController extends Controller
             if($request->filled('learning_journey')){
                 $this->_insertLearningJourney($request->learning_journey,$mission_id);
             }
-
     
             //NOTIF FOR CREATOR
             if(($class_room_detail->type == 1 && $request->status == 1) || ($class_room_detail->user_id == $this->user_login->id && $request->status == 1)){
