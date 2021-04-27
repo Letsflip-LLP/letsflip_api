@@ -147,7 +147,7 @@ class PointController extends Controller
                     "type" => $is_first ? 1 : 2,
                     "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
                     "id" => $point_id = Uuid::uuid4(),
-                    "status" => $point_status = $classroom_detail->user_id != $mission_detail->user_id && $classroom_detail->type != 1 ? 2 : 1
+                    "status" => $point_status = 1//$classroom_detail->user_id != $mission_detail->user_id && $classroom_detail->type != 1 ? 2 : 1
                 ]);
             
                 // IF USER TAG OTHER NON PUBLIC CLASSROOM CREATOR WILL GET NOTIFICATION
@@ -168,7 +168,12 @@ class PointController extends Controller
                             "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
                             "value"=> $earn_point ]
                     ]);
-                } 
+                            
+                    $classroom_owner_notif = NotificationManager::addNewNotification($mission_detail->user_id,$classroom_detail->user_id,[
+                        "mission_id" => $mission_detail->id,
+                        "classroom_id" => $classroom_detail->id
+                    ],2);
+                }
             }
                
         

@@ -102,7 +102,8 @@ class MissionController extends Controller
             
              
             $class_room_detail = null;
-            if($request->filled('tag_classroom_ids')){
+            if($request->filled('tag_classroom_ids'))
+            {
                     $classroom_id = $request->tag_classroom_ids;
                     $class_room_detail = ClassRoomModel::where('id',$classroom_id)->first();
                     if($class_room_detail){
@@ -121,13 +122,12 @@ class MissionController extends Controller
                         );
 
                         //NOTIF FOR OWN OF CLASSROM
-                        if($class_room_detail->user_id != $this->user_login->id)
+                        if($class_room_detail->user_id != $this->user_login->id && $mission->status == 1)
                             $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room_detail->user_id,[
                                 "mission_id" => $mission_id,
                                 "classroom_id" => $class_room_detail->id
                             ],2); 
-                    }
-                // }
+                    } 
             }
 
 
@@ -187,15 +187,15 @@ class MissionController extends Controller
                                 "text"=> $is_first ? "You have earned ".$earn_point." PTS for your first Mission!" : "You have earned ".$earn_point." PTS for Created Mission!",
                                 "value"=> $earn_point ]
                         ]);
-                    }
-  
-                if($class_room_detail && $class_room_detail->type != 1 && $class_room_detail->user_id != $this->user_login->id){
-                    $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
-                        "mission_id" => $mission_id,
-                        "classroom_id" => $mission_id,
-                    ],19);
-                }
+                    } 
+            } 
 
+            // IF USER TAG OTHER NON PUBLIC CLASSROOM CREATOR WILL GET NOTIFICATION 
+            if($class_room_detail->type != 1 && $class_room_detail->user_id != $this->user_login->id){
+                $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
+                    "mission_id" => $mission_id,
+                    "classroom_id" => $mission_id,
+                ],19);
             }
         
         DB::commit();

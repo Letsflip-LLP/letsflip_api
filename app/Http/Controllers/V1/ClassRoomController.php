@@ -441,6 +441,11 @@ class ClassRoomController extends Controller
             $point_event = new PointController;
             $add_point = $point_event->pointOnAddMission($mission_detail);
         }
+
+        $notif_tag = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
+            "mission_id"   => $mission_detail->id,
+            "classroom_id" => $classroom->id
+        ], $status == 1 ? 20 : 21);
         
         // $pending_point = UserPointsModel::where('status',2)->whereIn('type',[1,2])->where('mission_id',$mission_detail->id)->first();
 
@@ -460,10 +465,10 @@ class ClassRoomController extends Controller
         //             "value"=> $pending_point->value ]
         //     ]);
 
-        //     $notif_tag = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
-        //         "mission_id"   => $mission_detail->id,
-        //         "classroom_id" => $classroom->id
-        //     ],$tag->status == 1 ? 20 : 21);
+        // $notif_tag = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
+        //     "mission_id"   => $mission_detail->id,
+        //     "classroom_id" => $classroom->id
+        // ],$tag->status == 1 ? 20 : 21);
         // }
  
         DB::commit();
