@@ -969,7 +969,7 @@ class MissionController extends Controller
 
             if(!$mission_respone->save())
                 return (new ResponseTransformer)->toJson(400,__('message.404'),"ERREDRES002");
- 
+  
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'),true);

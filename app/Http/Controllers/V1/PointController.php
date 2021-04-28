@@ -55,7 +55,9 @@ class PointController extends Controller
             $check  = $check->whereIn('type',[3,4]);
             $check  = $check->first();
 
-            if($check) return true;
+            if($check){
+                DB::commit(); return true;
+            }
 
             // ADD POINT
             UserPointsModel::insert([
