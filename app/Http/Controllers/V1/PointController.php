@@ -49,7 +49,13 @@ class PointController extends Controller
             $user_mission = $mission_detail->User;
             $user_response = $mission_respone->User; 
 
-            if($mission_respone->Point) return true;
+            // CHECK EXIST 
+
+            $check  = UserPointsModel::where( [ "user_id_to" => $user_response->id,   "mission_id" => $mission_detail->id]);
+            $check  = $check->whereIn('type',[3,4]);
+            $check  = $check->first();
+
+            if($check) return true;
 
             // ADD POINT
             UserPointsModel::insert([
