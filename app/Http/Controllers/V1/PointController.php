@@ -51,7 +51,7 @@ class PointController extends Controller
 
             // CHECK EXIST 
 
-            $check  = UserPointsModel::where( [ "user_id_to" => $user_response->id,   "mission_id" => $mission_detail->id]);
+            $check  = UserPointsModel::where( [ "user_id_to" => $user_response->id,   "mission_id" => $mission_detail->id,'respone_id'=>$mission_respone->id]);
             $check  = $check->whereIn('type',[3,4]);
             $check  = $check->first();
 
