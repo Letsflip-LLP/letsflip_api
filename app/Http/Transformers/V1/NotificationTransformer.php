@@ -105,6 +105,8 @@ class NotificationTransformer {
     public function list($code,$message,$models){
         $custome_model = []; 
         foreach($models as $model ){
+            $model->update(['read_at' => date('Y-m-d')]);
+            
             $tmp = $this->item($model);
             if($tmp->text)
                 $custome_model[] = $tmp;
