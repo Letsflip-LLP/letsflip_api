@@ -13,6 +13,9 @@ class MissionModel extends Model
     
     public $incrementing = false; 
     protected $table = 'missions';   
+    protected $fillable = [
+        "id", "user_id", "title", "text", "difficulty_level", "default_content_id", "image_path", "image_file", "status", "type", "created_at", "updated_at", "deleted_at"
+    ];   
 
     use SoftDeletes; 
 

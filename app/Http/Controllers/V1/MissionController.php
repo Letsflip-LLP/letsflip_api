@@ -106,6 +106,9 @@ class MissionController extends Controller
             {
                     $classroom_id = $request->tag_classroom_ids;
                     $class_room_detail = ClassRoomModel::where('id',$classroom_id)->first();
+
+                    if($mission->type != $class_room_detail->type) $mission->update(['type'=>$class_room_detail->type]);
+                    
                     if($class_room_detail){
                         $classroom_type  = $class_room_detail->type;
 
@@ -167,10 +170,11 @@ class MissionController extends Controller
             //NOTIF FOR CREATOR
             if(($class_room_detail->type == 1 && $request->status == 1) || ($class_room_detail->user_id == $this->user_login->id && $request->status == 1)){
                 $is_first = UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() ? false : true;
+                    $earn_point =  $is_first == true ? env('POINT_TYPE_1') : env('POINT_TYPE_2'); 
                     UserPointsModel::insert([
                         "user_id_to" => $this->user_login->id,
                         "mission_id" => $mission_id,
-                        "value" => $earn_point = $is_first ? env('POINT_TYPE_1') : env('POINT_TYPE_2'),
+                        "value" => $earn_point,
                         "type" => $is_first ? 1 : 2,
                         "id" => $point_id = Uuid::uuid4(),
                         "status" => !$class_room_detail || ($class_room_detail && $class_room_detail->type == 1) || $class_room_detail->user_id == $this->user_login->id ? 1 : 2
@@ -581,9 +585,9 @@ class MissionController extends Controller
 
             $mission            = new MissionModel;
             $mission            = $mission->where('id',$request->id)->first();
-            $classroomDetail    = $mission->ClassRoomTag[0];
+            $classroomDetail    = $mission->ClassRoomTag->count() > 0 ? $mission->ClassRoomTag[0] : null;
  
-            if($classroomDetail->type != 1){
+            if($classroomDetail && $classroomDetail->type != 1){
                 if($this->user_login == null)
                     return (new ResponseTransformer)->toJson(400,__('messages.401'),(object) [ 'classroom_id' => $classroomDetail->id  ]);
 
