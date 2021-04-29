@@ -512,14 +512,14 @@ class MissionController extends Controller
                 
             if($request->filled('search'))
                 $mission = $mission->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
-
+  
             if($request->filled('classroom_id')){
                 $mission = $mission->whereHas('ClassRoomTag',function($q) use($request){
                     $q->where('foreign_id',$request->classroom_id); 
                     $q->where('tags.status',1);
                 });
-            }else{
-                $mission = $mission->where('type',1);
+            }else{ 
+                $mission = $mission->where('type',$request->input('type',1));
             }
 
             if($request->filled('order_by')){
@@ -579,11 +579,19 @@ class MissionController extends Controller
 
         try {
 
-            $mission = new MissionModel;
-            $mission = $mission->where('id',$request->id)->first();
+            $mission            = new MissionModel;
+            $mission            = $mission->where('id',$request->id)->first();
+            $classroomDetail    = $mission->ClassRoomTag[0];
  
+            if($classroomDetail->type != 1){ 
+                $check_access = auth('api')->user()->PremiumClassRoomAccess->where('classroom_id',$classroomDetail->id)->where('status',1)->first(); 
+                
+                if($check_access == null)
+                    return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
+            }
+               
             if($mission == null)
-                return (new MissionTransformer)->list(400,__('message.404'),$mission);
+                return (new ResponseTransformer)->toJson(400,__('messages.404'),$mission);
 
         DB::commit();
     
