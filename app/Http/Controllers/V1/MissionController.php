@@ -583,11 +583,16 @@ class MissionController extends Controller
             $mission            = $mission->where('id',$request->id)->first();
             $classroomDetail    = $mission->ClassRoomTag[0];
  
-            if($classroomDetail->type != 1 && $classroomDetail->user_id !=  $this->user_login->id){
-                $check_access = auth('api')->user()->PremiumClassRoomAccess->where('classroom_id',$classroomDetail->id)->where('status',1)->first(); 
-                
-                if($check_access == null)
+            if($classroomDetail->type != 1){
+                if($this->user_login == null)
                     return (new ResponseTransformer)->toJson(400,__('messages.401'),(object) [ 'classroom_id' => $classroomDetail->id  ]);
+
+                if($classroomDetail->user_id !=  $this->user_login->id){
+                    $check_access = auth('api')->user()->PremiumClassRoomAccess->where('classroom_id',$classroomDetail->id)->where('status',1)->first(); 
+                
+                    if($check_access == null)
+                        return (new ResponseTransformer)->toJson(400,__('messages.401'),(object) [ 'classroom_id' => $classroomDetail->id  ]);
+                }
             }
                
             if($mission == null)
