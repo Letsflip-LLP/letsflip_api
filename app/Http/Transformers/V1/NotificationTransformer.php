@@ -98,13 +98,18 @@ class NotificationTransformer {
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
 
         $temp->created_at   = dateFormat($model->created_at);
+        $temp->read_at      = dateFormat(Carbon::parse($model->read_at));
 
         return $temp;
     } 
     
     public function list($code,$message,$models){
         $custome_model = []; 
-        foreach($models as $model ){
+        foreach($models as $model ){ 
+            
+            if($model->read_at == null)
+                $model->update(['read_at' => date('Y-m-d H:i:s')]);
+            
             $tmp = $this->item($model);
             if($tmp->text)
                 $custome_model[] = $tmp;

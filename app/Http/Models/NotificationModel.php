@@ -12,7 +12,10 @@ class NotificationModel extends Model
     use SoftDeletes; 
 
     public $incrementing = false; 
-    protected $table = 'notifications';  
+    protected $table = 'notifications'; 
+    protected $fillable = [
+        "id", "classroom_id", "point_id", "classroom_access_id", "mission_id", "respone_id", "mission_comment_id", "respone_comment_id", "user_id_from", "user_id_to", "type", "read_at", "created_at", "updated_at", "deleted_at"
+    ];
 
     public function UserFrom()
     {

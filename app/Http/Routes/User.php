@@ -30,6 +30,8 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
             Route::get('notification', [UserController::class, 'getSelfNotification'])->name('GetUserControllerSelf');
         
             Route::post('/follow/action', [UserController::class, 'userFollowAction'])->name('GetUserControllerAddUserFollow');
+
+            Route::get('summary-update', [UserController::class, 'getSelfSummaryUpdate'])->name('GetUserControllerGetSelfSummaryUpdate');
         });
     });
 });

@@ -68,8 +68,8 @@ class UserController extends Controller
             $user = auth('api')->user(); 
         
             $notif =  NotificationModel::where('user_id_to',$user->id);
-            $notif = $notif->orderBy('created_at','DESC');
-            $notif = $notif->paginate($request->input('per_page',10));
+            $notif = $notif->orderBy('created_at','DESC');   
+            $notif = $notif->paginate($request->input('per_page',10));  
             
         DB::commit();
 
@@ -347,4 +347,30 @@ class UserController extends Controller
     public function getProductPremiumDetail(Request $request){
         $product_account = config('account.premium_product');  
     }
+
+    public function getSelfSummaryUpdate(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+
+            $user = auth('api')->user(); 
+        
+            $notif =  NotificationModel::where('user_id_to',$user->id)->whereNull('read_at')->count(); 
+            
+            $data = (object) [
+                "unread_notification" => $notif
+            ];
+
+        DB::commit();
+
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$data);
+
+        } catch (\exception $exception){ 
+            DB::rollBack(); 
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+
+    }
+
 }
