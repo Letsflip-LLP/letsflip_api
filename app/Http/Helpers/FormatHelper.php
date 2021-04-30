@@ -23,6 +23,11 @@ function timeFormat($time){
     ];
 }
 
+function dbLocalTime($date){
+    $client_timezone = request()->client_timezone;
+    return \Carbon\Carbon::parse($date)->setTimezone($client_timezone)->format("Y-m-d H:i:s"); 
+}
+
 function diffFormatTableOfTime($date){
     $client_timezone = request()->client_timezone;
 

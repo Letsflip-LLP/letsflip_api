@@ -322,6 +322,18 @@ class FormValidation
             'tag_id'  => 'exists:tags,id'
           ];
         break;
+
+        case 'PostMissionControllerStartTimerMission':
+          return [
+            'mission_id'  => 'required|exists:missions,id' 
+          ];
+        break;
+
+        case 'GetMissionControllerStartTimerMission':
+          return [
+            'mission_id'  => 'required|exists:missions,id' 
+          ];
+        break;
         
         default:
           return [];

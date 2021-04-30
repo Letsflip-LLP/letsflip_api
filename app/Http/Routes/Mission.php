@@ -33,6 +33,10 @@ $router->group(['middleware'=> [],'prefix' => 'mission'], function($router){
         Route::post('delete', [MissionController::class, 'deleteMission'])->name('PostMissionControllerDeleteMission'); 
         Route::post('edit', [MissionController::class, 'editMission'])->name('PostMissionControllerEditMission'); 
 
+        // TIMER
+        Route::post('timer/start', [MissionController::class, 'startTimerMission'])->name('PostMissionControllerStartTimerMission'); 
+        Route::get('timer/start', [MissionController::class, 'getStartTimerMission'])->name('GetMissionControllerStartTimerMission'); 
+
         // COMMENTS
         Route::post('comment/add',      [MissionCommentController::class, 'addComment'])->name('PostMissionCommentControllerAddComment');
         Route::post('comment/delete',   [MissionCommentController::class, 'deleteComment'])->name('PostMissionCommentControllerDeleteComment');
