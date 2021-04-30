@@ -33,6 +33,9 @@ class MissionTransformer {
         $temp->title                = $model->title;
         $temp->text                 = $model->text; 
         $temp->status               = $model->status; 
+
+        $temp->timer                = timeFormat($model->timer);
+        
         $temp->point                = null; 
 
         $temp->my_response           = null;

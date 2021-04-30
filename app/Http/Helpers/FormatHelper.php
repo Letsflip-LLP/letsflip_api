@@ -16,6 +16,13 @@ function dateFormat($date){
     ];
 }
 
+function timeFormat($time){ 
+    return (object) [
+        "time" => date('H:i',$time),
+        "string" => $time
+    ];
+}
+
 function diffFormatTableOfTime($date){
     $client_timezone = request()->client_timezone;
 

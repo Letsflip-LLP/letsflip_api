@@ -25,7 +25,7 @@ use App\Http\Models\MissionQuestionModel;
 use App\Http\Models\MissionAnswerModel;
 use App\Http\Models\ReviewModel;
 use App\Http\Models\GradeOverviewModel;
-
+use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use DB;
 use App\Http\Libraries\Notification\NotificationManager;
@@ -66,6 +66,7 @@ class MissionController extends Controller
             $mission->text      = $request->text; 
             $mission->type      = $request->input('type',1);
             $mission->status    = $request->input('status',1);
+            $mission->timer     = $request->filled('timer') ? strtotime($request->timer) : null;
             $mission->default_content_id    =  $mission_content_id;
 
             if($thumbnail != null){
