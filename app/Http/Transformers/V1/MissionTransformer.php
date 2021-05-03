@@ -35,12 +35,16 @@ class MissionTransformer {
         $temp->status               = $model->status; 
 
         $temp->timer                = $model->timer != null ? timeFormat($model->timer) : null ;
-        
+        $temp->timer_user_active    = null;
+
         $temp->point                = null; 
 
         $temp->my_response           = null;
         
         if(auth('api')->user()){
+            $timer = $model->ActiveTimer->where('user_id',auth('api')->user()->id)->first();
+
+            if($timer) $temp->timer_user_active = $timer;
             
             if($model->Respone){
                 $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first(); 
