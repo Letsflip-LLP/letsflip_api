@@ -28,6 +28,12 @@ function dbLocalTime($date){
     return \Carbon\Carbon::parse($date)->setTimezone($client_timezone)->format("Y-m-d H:i:s"); 
 }
 
+function secondDiff($end_time){
+    $client_timezone = request()->client_timezone;
+    $time = \Carbon\Carbon::parse($end_time)->setTimezone($client_timezone); 
+    return $time->diffInSeconds(null,true);
+}
+
 function diffFormatTableOfTime($date){
     $client_timezone = request()->client_timezone;
 
