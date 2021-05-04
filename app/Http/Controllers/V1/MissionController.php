@@ -1471,13 +1471,13 @@ class MissionController extends Controller
             $mission_detail = $mission_detail->where('id',$request->mission_id)->first();
               
             $second_timer =  $mission_detail->timer - strtotime(date('Y-m-d'));
- 
+  
             $insert_timer = new MissionUserTimerModel;
             $insert_timer->id = $timer_id = Uuid::uuid4();
             $insert_timer->user_id = $this->user_login->id;
             $insert_timer->mission_id = $mission_detail->id; 
-            $insert_timer->time_start = Carbon::now();
-            $insert_timer->time_end = Carbon::now()->addSeconds($second_timer);
+            $insert_timer->time_start = $time_start = date('Y-m-d H:i:s');
+            $insert_timer->time_end = date('Y-m-d H:i:s',strtotime($time_start) + $second_timer);
             $insert_timer->timer = $mission_detail->timer;
 
             if(!$insert_timer->save())
