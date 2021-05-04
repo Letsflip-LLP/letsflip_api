@@ -7,6 +7,7 @@ use App\Http\Transformers\ResponseTransformer;
 use Carbon\Carbon; 
 use Illuminate\Support\Facades\Storage;
 use App\Http\Transformers\V1\QuickScoreTransformer; 
+use App\Http\Transformers\V1\MissionTimerTransformer; 
 
 class MissionTransformer {
 
@@ -45,7 +46,7 @@ class MissionTransformer {
         if(auth('api')->user()){
             $timer = $model->ActiveTimer->where('user_id',auth('api')->user()->id)->first();
 
-            if($timer) $temp->timer_user_active = $timer;
+            if($timer) $temp->timer_user_active = (new MissionTimerTransformer)->item($timer);
             
             if($model->Respone){
                 $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first(); 
