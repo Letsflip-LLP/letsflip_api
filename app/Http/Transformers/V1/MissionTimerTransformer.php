@@ -17,7 +17,7 @@ class MissionTimerTransformer {
         $tmp->timer      = $model->timer; 
         $tmp->time_start    = dbLocalTime($model->time_start);
         $tmp->time_end      = dbLocalTime($model->time_end);
-        $tmp->time_second   = secondDiff($model->time_end);
+        $tmp->time_second   = dbLocalTime($model->time_end) < dbLocalTime(date('Y-m-d H:i:s')) ? 0 : secondDiff($model->time_end);
 
         $tmp->created_at = dateFormat($model->created_at); 
 
