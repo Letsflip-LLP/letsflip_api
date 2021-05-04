@@ -78,7 +78,7 @@ class MissionModel extends Model
 
     public function ActiveTimer()
     {
-        return $this->hasMany('App\Http\Models\MissionUserTimerModel','mission_id','id');
+        return $this->hasMany('App\Http\Models\MissionUserTimerModel','mission_id','id')->whereNull('response_id');
     }
 
 }
