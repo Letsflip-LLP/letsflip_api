@@ -68,7 +68,7 @@ class MissionController extends Controller
             $mission->text      = $request->text; 
             $mission->type      = $request->input('type',1);
             $mission->status    = $request->input('status',1);
-            $mission->timer     = $request->filled('timer') ? strtotime($request->timer) : null;
+            $mission->timer     = $request->filled('timer') ? $request->timer : null;
             $mission->default_content_id    =  $mission_content_id;
 
             if($thumbnail != null){
@@ -80,7 +80,7 @@ class MissionController extends Controller
             }
 
             $save1 = $mission->save();
-    
+     
             // SAVE DEFAULT CONTENT MISSION 
 
             $mission_content                = new MissionContentModel; 
@@ -100,7 +100,7 @@ class MissionController extends Controller
             }
 
             $save2 = $mission_content->save();
-    
+              
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
             
              
@@ -1470,8 +1470,8 @@ class MissionController extends Controller
             $mission_detail = new MissionModel;
             $mission_detail = $mission_detail->where('id',$request->mission_id)->first();
               
-            $second_timer =  $mission_detail->timer - strtotime(date('Y-m-d'));
-  
+            $second_timer =  strtotime($mission_detail->timer) - strtotime(date('Y-m-d'));
+   
             $insert_timer = new MissionUserTimerModel;
             $insert_timer->id = $timer_id = Uuid::uuid4();
             $insert_timer->user_id = $this->user_login->id;

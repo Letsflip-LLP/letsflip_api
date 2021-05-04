@@ -18,8 +18,8 @@ function dateFormat($date){
 
 function timeFormat($time){ 
     return (object) [
-        "time" => date('H:i',$time),
-        "string" => $time
+        "time" => date('H:i',strtotime($time)),
+        "string" => strtotime($time)
     ];
 }
 

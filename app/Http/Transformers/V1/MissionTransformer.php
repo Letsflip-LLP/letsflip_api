@@ -27,6 +27,7 @@ class MissionTransformer {
     }
 
     public function item($model){
+         
         $temp = new \stdClass();
         $temp->id                   = $model->id;
         $temp->difficulty_level     = $model->difficulty_level;
