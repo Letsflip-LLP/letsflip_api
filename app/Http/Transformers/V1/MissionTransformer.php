@@ -46,7 +46,7 @@ class MissionTransformer {
         if(auth('api')->user()){
             $timer = $model->ActiveTimer ? $model->ActiveTimer->where('user_id',auth('api')->user()->id)->first() : null;
 
-            if($timer) $temp->timer_user_active = (new MissionTimerTransformer)->detail($timer);
+            if($timer) $temp->timer_user_active = (new MissionTimerTransformer)->item($timer);
             
             if($model->Respone){
                 $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first(); 
