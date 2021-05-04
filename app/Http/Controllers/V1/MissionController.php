@@ -488,6 +488,14 @@ class MissionController extends Controller
             }
         }
             
+        
+        // CHECK TIMER IF ANY
+        $timer = new MissionUserTimerModel;
+        $timer = $timer->where('mission_id',$request->mission_id);
+        $timer = $timer->where('user_id',$this->user_login->id);
+        $timer = $timer->whereNull('response_id'); 
+        $timer = $timer->update(['response_id' => $mission_respone_id]);
+        
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
@@ -1462,6 +1470,7 @@ class MissionController extends Controller
             $timer = new MissionUserTimerModel;
             $timer = $timer->where('mission_id',$request->mission_id);
             $timer = $timer->where('user_id',$this->user_login->id);
+            $timer = $timer->whereNull('response_id'); 
             $timer = $timer->first();
 
             if($timer) return (new MissionTimerTransformer)->detail(200,__('messages.200'),$timer);
