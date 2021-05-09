@@ -30,9 +30,11 @@ class UserTransformer {
         $temp->type = subsType(1);
         $environment = request()->header('environment','production');
         $temp->environment = $environment;
+
         $sub = $model->Subscribe ? $model->Subscribe->where('environment',$environment)->first() : null;
         if($sub && $sub->type > 1){
             $temp->type = subsType($sub->type);
+            $temp->type->vendor_trx_id = $sub->vendor_trx_id;
         }
 
         $temp->point      = $model->Point->sum('value');
