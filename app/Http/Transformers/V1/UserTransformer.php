@@ -28,7 +28,7 @@ class UserTransformer {
             $temp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
  
         $temp->type = subsType(1);
-        $sub = $model->Subscribe->where('environment',request()->header('environment','production'))->first();
+        $sub = $model->Subscribe ? $model->Subscribe->where('environment',request()->header('environment','production'))->first() : null;
         if($sub && $sub->type > 1){
             $temp->type = subsType($sub->type);
         }
