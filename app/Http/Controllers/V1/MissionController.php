@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
+use App\Http\Transformers\V1\MissionTimerTransformer;  
 use App\Http\Transformers\V1\MissionTransformer; 
 use App\Http\Transformers\V1\QuickScoreTransformer; 
 use App\Http\Transformers\V1\AnswerTransformer; 
@@ -25,7 +26,8 @@ use App\Http\Models\MissionQuestionModel;
 use App\Http\Models\MissionAnswerModel;
 use App\Http\Models\ReviewModel;
 use App\Http\Models\GradeOverviewModel;
-
+use App\Http\Models\MissionUserTimerModel; 
+use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use DB;
 use App\Http\Libraries\Notification\NotificationManager;
@@ -66,6 +68,7 @@ class MissionController extends Controller
             $mission->text      = $request->text; 
             $mission->type      = $request->input('type',1);
             $mission->status    = $request->input('status',1);
+            $mission->timer     = $request->filled('timer') ? $request->timer : null;
             $mission->default_content_id    =  $mission_content_id;
 
             if($thumbnail != null){
@@ -77,7 +80,7 @@ class MissionController extends Controller
             }
 
             $save1 = $mission->save();
-    
+     
             // SAVE DEFAULT CONTENT MISSION 
 
             $mission_content                = new MissionContentModel; 
@@ -97,7 +100,7 @@ class MissionController extends Controller
             }
 
             $save2 = $mission_content->save();
-    
+              
             if(!$save1 || !$save2 ) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
             
              
@@ -485,6 +488,14 @@ class MissionController extends Controller
             }
         }
             
+        
+        // CHECK TIMER IF ANY
+        $timer = new MissionUserTimerModel;
+        $timer = $timer->where('mission_id',$request->mission_id);
+        $timer = $timer->where('user_id',$this->user_login->id);
+        $timer = $timer->whereNull('response_id'); 
+        $timer = $timer->update(['response_id' => $mission_respone_id]);
+        
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'), $mission_respone );
@@ -1447,5 +1458,61 @@ class MissionController extends Controller
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }
+    }
+
+    public function startTimerMission(Request $request){
+
+        DB::beginTransaction();
+
+        try { 
+
+            // CHECK
+            $timer = new MissionUserTimerModel;
+            $timer = $timer->where('mission_id',$request->mission_id);
+            $timer = $timer->where('user_id',$this->user_login->id);
+            $timer = $timer->whereNull('response_id'); 
+            $timer = $timer->first();
+
+            if($timer) return (new MissionTimerTransformer)->detail(200,__('messages.200'),$timer);
+ 
+            // START
+            $mission_detail = new MissionModel;
+            $mission_detail = $mission_detail->where('id',$request->mission_id)->first();
+              
+            $second_timer =  strtotime($mission_detail->timer) - strtotime(date('Y-m-d'));
+   
+            $insert_timer = new MissionUserTimerModel;
+            $insert_timer->id = $timer_id = Uuid::uuid4();
+            $insert_timer->user_id = $this->user_login->id;
+            $insert_timer->mission_id = $mission_detail->id; 
+            $insert_timer->time_start = $time_start = date('Y-m-d H:i:s');
+            $insert_timer->time_end = date('Y-m-d H:i:s',strtotime($time_start) + $second_timer);
+            $insert_timer->timer = $mission_detail->timer;
+
+            if(!$insert_timer->save())
+                return (new ResponseTransformer)->toJson(400,__('messages.400'),false);
+
+            DB::commit();
+        
+                return (new MissionTimerTransformer)->detail(200,__('messages.200'),$insert_timer);
+
+        } catch (\exception $exception){
+         
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+    public function getStartTimerMission(Request $request){
+        $timer = new MissionUserTimerModel;
+        $timer = $timer->where('mission_id',$request->mission_id);
+        $timer = $timer->where('user_id',$this->user_login->id);
+        $timer = $timer->first();
+ 
+        if($timer == null)
+            return (new ResponseTransformer)->toJson(400,__('messages.400'),false); 
+
+        return (new MissionTimerTransformer)->detail(200,__('messages.200'),$timer); 
     }
 }

@@ -15,6 +15,7 @@ use App\Http\Models\UserFollowModel;
 use App\Http\Models\ClassRoomModel;
 use Ramsey\Uuid\Uuid;
 use App\Http\Libraries\StorageCdn\StorageManager;
+use App\Http\Libraries\ApplePay\ApplePayManager;
 use Illuminate\Support\Facades\App;
 use Carbon\Carbon;
 use DB;
@@ -273,11 +274,12 @@ class UserController extends Controller
         $sub_start_date = date("Y-m-d H:i:s", $sub_start_date);
         
         $product_detail = $product_account[$product_id];
+
         $subscribe =  SubscriberModel::firstOrCreate(
             [ 
-                "user_id" => $this->user_login->id,
-                "status" => 1,
-                "vendor_trx_id" => $transaction_id
+                "user_id"   => $this->user_login->id,
+                "status"    => 1,
+                "vendor_trx_id" => $transaction_id,
             ],
             [
                 "id"            => Uuid::uuid4(),
@@ -304,6 +306,10 @@ class UserController extends Controller
 
     private function iosVlidateSubscription($request){
         $data       = $request->data; 
+ 
+        $ios_validate = ApplePayManager::validatePayment($request->data['transactionReceipt']);
+
+       if($ios_validate == false || $ios_validate->status != 0) return (new ResponseTransformer)->toJson(400,__('messages.401'),$ios_validate);
 
         $product_account = config('account.premium_product');
         $product_detail = $product_account[$data['productId']];
@@ -316,7 +322,8 @@ class UserController extends Controller
             [ 
                 "user_id" => $this->user_login->id,
                 "status" => 1,
-                "vendor_trx_id" => $vendor_trx_id
+                "vendor_trx_id" => $vendor_trx_id,
+                "environment" => $ios_validate->environment == 'Sandbox' ? 'staging' :  'production'
             ],
             [
                 "id"            => Uuid::uuid4(),
@@ -329,7 +336,7 @@ class UserController extends Controller
             ]
         );
 
-        return (new ResponseTransformer)->toJson(200,__('messages.200'),true); 
+        return (new ResponseTransformer)->toJson(200,__('messages.200'),$ios_validate);
     }
 
     public function subscribePremiumAccount(Request $request){

@@ -7,6 +7,7 @@ use App\Http\Transformers\ResponseTransformer;
 use Carbon\Carbon; 
 use Illuminate\Support\Facades\Storage;
 use App\Http\Transformers\V1\QuickScoreTransformer; 
+use App\Http\Transformers\V1\MissionTimerTransformer; 
 
 class MissionTransformer {
 
@@ -27,17 +28,25 @@ class MissionTransformer {
     }
 
     public function item($model){
+         
         $temp = new \stdClass();
         $temp->id                   = $model->id;
         $temp->difficulty_level     = $model->difficulty_level;
         $temp->title                = $model->title;
         $temp->text                 = $model->text; 
         $temp->status               = $model->status; 
+
+        $temp->timer                = $model->timer != null ? timeFormat($model->timer) : null ;
+        $temp->timer_user_active    = null;
+
         $temp->point                = null; 
 
         $temp->my_response           = null;
         
         if(auth('api')->user()){
+            $timer = $model->ActiveTimer ? $model->ActiveTimer->where('user_id',auth('api')->user()->id)->first() : null;
+
+            if($timer) $temp->timer_user_active = (new MissionTimerTransformer)->item($timer);
             
             if($model->Respone){
                 $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first(); 

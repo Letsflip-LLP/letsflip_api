@@ -16,6 +16,24 @@ function dateFormat($date){
     ];
 }
 
+function timeFormat($time){ 
+    return (object) [
+        "time" => date('H:i',strtotime($time)),
+        "string" => strtotime($time)
+    ];
+}
+
+function dbLocalTime($date){
+    $client_timezone = request()->client_timezone;
+    return \Carbon\Carbon::parse($date)->setTimezone($client_timezone)->format("Y-m-d H:i:s"); 
+}
+
+function secondDiff($end_time){
+    $client_timezone = request()->client_timezone;
+    $time = \Carbon\Carbon::parse($end_time)->setTimezone($client_timezone); 
+    return $time->diffInSeconds(null,true);
+}
+
 function diffFormatTableOfTime($date){
     $client_timezone = request()->client_timezone;
 

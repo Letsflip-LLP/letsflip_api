@@ -26,11 +26,11 @@ class UserTransformer {
 
         if(auth('api')->user() !=null && $model->Followed)
             $temp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
-
-        $temp->type = subsType(1);
  
-        if($model->Subscribe && $model->Subscribe->type > 1){
-            $temp->type = subsType($model->Subscribe->type);
+        $temp->type = subsType(1);
+        $sub = $model->Subscribe->where('environment',request()->header('environment','production'))->first();
+        if($sub && $sub->type > 1){
+            $temp->type = subsType($sub->type);
         }
 
         $temp->point      = $model->Point->sum('value');
