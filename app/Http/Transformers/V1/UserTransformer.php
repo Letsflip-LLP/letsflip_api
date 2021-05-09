@@ -35,6 +35,7 @@ class UserTransformer {
         if($sub && $sub->type > 1){
             $temp->type = subsType($sub->type);
             $temp->type->vendor_trx_id = $sub->vendor_trx_id;
+            $temp->type->uuid = $sub->id;
         }
 
         $temp->point      = $model->Point->sum('value');
