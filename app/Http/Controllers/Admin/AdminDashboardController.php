@@ -76,8 +76,8 @@ class AdminDashboardController extends Controller
 
     public function inviteSubscriber(Request $request){
         DB::beginTransaction();
-        try { 
-            
+        try {  
+
             // INVITATION CHECK
             $invitation_check = new SubscriberModel;
             $invitation_check = $invitation_check->where('email',$request->email);
@@ -113,9 +113,11 @@ class AdminDashboardController extends Controller
             $subscribers->date_end      = $request->date_end;
             $subscribers->status        = 2;
             $subscribers->vendor_trx_id = $subscribers_id;
+            $subscribers->is_creator    = $request->is_creator == "true" ? true : false;
             $subscribers->product_id    = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
 
-            $subscribers->save();
+            if(!$subscribers->save())
+                return Redirect::back()->withErrors(['Error! Failed to insert data']);
 
             DB::commit(); 
 

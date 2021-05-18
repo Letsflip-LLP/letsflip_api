@@ -28,12 +28,15 @@ class UserTransformer {
             $temp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
  
         $temp->type = subsType(1);
+        $temp->type->is_creator = true;
+
         $environment = request()->header('environment','production');
         $temp->environment = $environment;
 
         $sub = $model->Subscribe ? $model->Subscribe->where('environment',$environment)->where('user_id',$model->id)->first() : null;
         if($sub && $sub->type > 1){
-            $temp->type = subsType($sub->type);
+            $temp->type = subsType($sub->type); 
+            $temp->type->is_creator = $sub->is_creator ? true : false;
         }
 
         $temp->point      = $model->Point->sum('value');
