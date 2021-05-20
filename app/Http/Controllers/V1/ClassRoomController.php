@@ -110,8 +110,12 @@ class ClassRoomController extends Controller
             if($request->filled('search'))
                 $class_room = $class_room->where('title','LIKE','%'.$request->search.'%')->orWhere('text','LIKE','%'.$request->search.'%');
 
-            if($request->filled('type'))
-                $class_room = $class_room->where('type',$request->type); 
+            if($request->filled('type')){
+                $type_param = explode(',',$request->type);
+                $class_room = $class_room->whereIn('type',$type_param);
+            }else{
+                $class_room = $class_room->whereIn('type',[1,2]); 
+            }
 
             if($request->filled('user_id') && $request->module != 'response')
                 $class_room = $class_room->where('user_id',$request->user_id);
