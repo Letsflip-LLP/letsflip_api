@@ -288,7 +288,8 @@ class UserController extends Controller
                 "payload"       => json_encode($request->all()),
                 "type"          => $product_detail['type'],
                 "classroom_id"  => $class_room ? $class_room->id : null,
-                "product_id"    => $product_id
+                "product_id"    => $product_id,
+                "is_creator"    => $product_detail['type'] == 3 ? false : true
             ]
         );
 
@@ -332,7 +333,8 @@ class UserController extends Controller
                 "payload"       => json_encode($request->all()),
                 "type"          => $product_detail['type'],
                 "classroom_id"  => $request->classroom_id ? $request->classroom_id : null,
-                "product_id"    => $product_detail['id']
+                "product_id"    => $product_detail['id'],
+                "is_creator"    => $product_detail['type'] == 3 ? false : true
             ]
         );
 

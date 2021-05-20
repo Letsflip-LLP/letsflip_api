@@ -174,6 +174,12 @@ class MissionTransformer {
                     "name" => "Private"
                 ];
                 break;
+            case 3:
+                return (object) [
+                    "id" => $type,
+                    "name" => "Master"
+                ];
+            break;
             default:
                 return (object) [
                     "id" => $type,

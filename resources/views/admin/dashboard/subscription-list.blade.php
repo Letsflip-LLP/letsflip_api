@@ -29,6 +29,9 @@
                 End Date
               </th>
               <th>
+                Is Creator
+              </th>
+              <th>
                 Action
               </th>
             </tr>
@@ -51,6 +54,9 @@
             </td>
             <td>
               <input required  type="date" placeholder="End Date" name="date_end" class="form-control"/>
+            </td>
+            <td>
+              <input type="checkbox" placeholder="Start Date" checked value="true" name="is_creator" class="form-control"/>
             </td>
             <td>
               <button type="submit" class="btn btn-sm btn-gradient-primary btn-fw"><i class="mdi mdi-account-plus"></i>&nbsp;Invite</button>
@@ -132,6 +138,9 @@
               End Date
             </th>
             <th>
+              Is Creator
+            </th>
+            <th>
               Status
             </th> 
           </tr>
@@ -146,7 +155,7 @@
                 {{$subs->User ? $subs->User->first_name.' '.$subs->User->last_name : 'N/A'}}
               </td>  
               <td>
-                <label class="{{$subs->type == 2 ? 'badge badge-success' : ''}} {{$subs->type == 3 ? 'badge badge-warning' : ''}} {{$subs->type == 1 ? 'badge badge-secondary' : ''}}">{{subsType($subs->type)->name}}</label>
+                <label class="{{$subs->type == 2 ? 'badge badge-success' : ''}} {{$subs->type == 3 ? 'badge badge-warning text-dark' : ''}} {{$subs->type == 1 ? 'badge badge-secondary' : ''}}">{{subsType($subs->type)->name}}</label>
               </td>
               <td>
                  {{$subs->date_start}}
@@ -155,10 +164,15 @@
                   {{$subs->date_end}} 
               </td>
               <td>
-                @if($subs->User )
+                @if($subs->is_creator == true) <label class="badge badge-info">Yes</label> @else <label class="badge badge-warning text-dark">No</label> @endif
+              </td>
+              <td>
+                @if($subs->User && $subs->status == 1)
                   <label class="badge badge-info">Accepted</label> 
-                @else
-                  <label class="badge badge-danger">Waiting Register</label> 
+                @elseif($subs->User && $subs->status == 2)
+                  <label class="badge badge-warning text-dark">Awaiting Approval</label> 
+                @elseif(!$subs->User)
+                  <label class="badge badge-danger text-dark">Waiting Register</label>  
                 @endif
               </td>
             </tr>

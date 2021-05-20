@@ -13,7 +13,7 @@ class SubscriberModel extends Model
 
     public $incrementing = false; 
     protected $table = 'subscribes'; 
-    protected $fillable = ['environment','vendor_trx_id','product_id','type','classroom_id' , 'user_id','id','status','date_start','date_end','payload'];
+    protected $fillable = ['is_creator','environment','vendor_trx_id','product_id','type','classroom_id' , 'user_id','id','status','date_start','date_end','payload'];
  
 
     public function User()
