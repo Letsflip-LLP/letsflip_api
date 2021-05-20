@@ -44,16 +44,23 @@ class UserController extends Controller
         if($request->filled('search')){
             $search = str_replace('@', '', $request->search); 
 
-            $users = $users->where('first_name','LIKE',"%".$search."%");
-            $users = $users->orWhere('last_name','LIKE',"%".$search."%");
-            $users = $users->orWhere('email','LIKE',"%".$search."%");
-            $users = $users->orWhere('username','LIKE',"%".$search."%");
+            $users = $users->where('first_name','LIKE',"%".$search."%")
+                            ->orWhere('last_name','LIKE',"%".$search."%")
+                            ->orWhere('email','LIKE',$search)
+                            ->orWhere('username','LIKE',"%".$search."%");
         }
-        
+ 
         if($request->filled('friends_only') && $request->friends_only == true)
             $users = $users->whereHas('Follower',function($q1){
                 $q1->where('user_id_from',$this->user_login->id);
             });
+
+        if($request->filled('classroom_id')){
+            $users = $users->whereHas('AccessClassrooms',function($q) use($request){
+                $q->where('classroom_accesses.classroom_id',$request->classroom_id);
+            });
+        }
+        
 
         $users = $users->paginate($request->input('per_page',10));
 
