@@ -105,6 +105,10 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
         Route::post('give-access', [ClassRoomController::class, 'giveAccessClassRoom'])->name('PostClassRoomControllerGiveAccessClassRoom');
 
         Route::post('give-tags-access', [ClassRoomController::class, 'giveClassroomTagAccess'])->name('PostGiveAccessTagClassroom');
+
+
+        Route::post('user/remove', [ClassRoomController::class, 'removeUserClassroom'])->name('PostClassRoomControllerRemoveUserClassroom');
+
     });
 
     // Login Not Required

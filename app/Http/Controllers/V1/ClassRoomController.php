@@ -486,4 +486,41 @@ class ClassRoomController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }
     }
+
+
+    public function removeUserClassroom(Request $request){
+        DB::beginTransaction();
+        try {
+    
+        $access = new ClassroomAccessModel;
+        $access = $access->where('classroom_id',$request->classroom_id)->where('user_id',$request->user_id)->first();
+            
+        if(!$access || !$access->ClassRoom || $access->ClassRoom->user_id != $this->user_login->id)
+            return (new ResponseTransformer)->toJson(400,__('messages.401'), true);
+ 
+
+        $update = $access->update([
+            "access_code" => $access->ClassRoom->access_code,
+            "status"      => 3
+        ]);
+
+        if(!$update)
+            return (new ResponseTransformer)->toJson(400,__('messages.400'),$status);
+ 
+        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$access->user_id,[
+            "classroom_id"        => $access->classroom_id,
+            "classroom_access_id" => $access->id
+        ], 16);
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), $request->allow );
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
 }

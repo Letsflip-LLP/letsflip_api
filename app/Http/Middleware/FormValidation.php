@@ -334,6 +334,13 @@ class FormValidation
             'mission_id'  => 'required|exists:missions,id' 
           ];
         break;
+
+        case 'PostClassRoomControllerRemoveUserClassroom':
+          return [
+            'classroom_id'  => 'required|exists:classrooms,id',
+            'user_id' => 'required|exists:users,id',
+          ];
+        break;
         
         default:
           return [];
