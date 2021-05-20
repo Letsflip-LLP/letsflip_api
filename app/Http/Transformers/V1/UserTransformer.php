@@ -88,8 +88,7 @@ class UserTransformer {
         $tmp->first_name    = $model->first_name;
         $tmp->last_name     = $model->last_name;
         $tmp->followed      = false;
-        $tmp->username      = $model->username;
-
+        $tmp->username      = $model->username; 
         $tmp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
         $tmp->total_following  = $model->Followed ? $model->Followed->count() : 0;
 
