@@ -99,8 +99,8 @@ class AdminDashboardController extends Controller
             $account_check = $account_check->where('date_end','>=',date('Y-m-d'));   
             $account_check = $account_check->first();
 
-            if($account_check)
-                return Redirect::back()->withErrors(['Error! The email that is inputted already has an active premium account. Email : '.$request->email]);
+            // if($account_check)
+            //     return Redirect::back()->withErrors(['Error! The email that is inputted already has an active premium account. Email : '.$request->email]);
 
 
             $user = User::where('email',$request->email)->first(); 
