@@ -143,6 +143,9 @@
             <th>
               Status
             </th> 
+            <th>
+              Action
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -174,6 +177,9 @@
                 @elseif(!$subs->User)
                   <label class="badge badge-danger text-dark">Waiting Register</label>  
                 @endif
+              </td>
+              <td>
+                <a href="{{url('/admin/user/subscribers/edit/'.$subs->id)}}" class="badge badge-success text-dark">Edit</a>   
               </td>
             </tr>
           @endforeach

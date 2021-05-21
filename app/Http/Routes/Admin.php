@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route; 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
-
+use App\Http\Controllers\Admin\AdminSubscriberController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,7 +29,10 @@ $router->group(['middleware'=> ['admin_dashboard']], function($router){
     });
 
     $router->group(['prefix' => 'user'], function($router){
-        Route::get('/subscribers', [AdminDashboardController::class,'subscriberList']);  
-        Route::post('/subscribers', [AdminDashboardController::class,'inviteSubscriber']);     
+        Route::get('/subscribers', [AdminSubscriberController::class,'subscriberList']);  
+        Route::post('/subscribers', [AdminSubscriberController::class,'inviteSubscriber']);     
+
+        // EDIT SUB 
+        Route::get('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberEdit']);     
     });
 }); 
