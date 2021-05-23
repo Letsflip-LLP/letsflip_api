@@ -45,15 +45,15 @@
               <select  required placeholder="Type" name="type" class="form-control">
                 <option>-- Account Type --</option>
                 <option value="1">Basic</option>
-                <option value="2">Private</option>
+                <option selected value="2">Private</option>
                 <option value="3">Master</option>
               </select>
             </td>
             <td>
-              <input required  type="date" placeholder="Start Date" name="date_start" class="form-control"/>
+              <input value={{$default['start_date']}} required  type="date" placeholder="Start Date" name="date_start" class="form-control"/>
             </td>
             <td>
-              <input required  type="date" placeholder="End Date" name="date_end" class="form-control"/>
+              <input value={{$default['end_date']}} required  type="date" placeholder="End Date" name="date_end" class="form-control"/>
             </td>
             <td>
               <input type="checkbox" placeholder="Start Date" checked value="true" name="is_creator" class="form-control"/>
@@ -143,6 +143,9 @@
             <th>
               Status
             </th> 
+            <th>
+              Action
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -174,6 +177,9 @@
                 @elseif(!$subs->User)
                   <label class="badge badge-danger text-dark">Waiting Register</label>  
                 @endif
+              </td>
+              <td>
+                <a href="{{url('/admin/user/subscribers/edit/'.$subs->id)}}" class="badge badge-success text-dark">Edit</a>   
               </td>
             </tr>
           @endforeach
