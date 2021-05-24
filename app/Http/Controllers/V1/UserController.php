@@ -34,6 +34,9 @@ class UserController extends Controller
     public function self(Request $request)
     { 
         $user = auth('api')->user(); 
+        
+        SubscriberModel::where('email',$user->user)->update(['user_id' => $user->id]);
+
         return (new UserTransformer)->detail(200,"Success",$user); 
     }
 
