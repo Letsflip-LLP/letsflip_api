@@ -111,7 +111,7 @@ class AdminSubscriberController extends Controller
             $subscribers->type          = $request->type;
             $subscribers->date_start    = $request->date_start;
             $subscribers->date_end      = $request->date_end;
-            $subscribers->status        = 2;
+            $subscribers->status        = 1;
             $subscribers->vendor_trx_id = $subscribers_id;
             $subscribers->is_creator    = $request->is_creator == "true" ? true : false;
             $subscribers->product_id    = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
