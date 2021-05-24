@@ -37,7 +37,7 @@ class UserController extends Controller
         
         SubscriberModel::where('email',$user->user)->update(['user_id' => $user->id]);
         
-        $this->updateSub();
+        // $this->updateSub();
 
         return (new UserTransformer)->detail(200,"Success",$user); 
     }
