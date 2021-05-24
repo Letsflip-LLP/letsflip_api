@@ -34,8 +34,6 @@ class UserTransformer {
         $environment = request()->header('environment','production');
         $temp->environment = $environment;
 
-        SubscriberModel::where('email',$model->email)->update(['user_id' => $model->id]); 
-
         $sub = $model->Subscribe ? $model->Subscribe->where('environment',$environment)->where('user_id',$model->id)->orderBy('type','DESC')->first() : null;
         
         if($sub && $sub->type > 1){
