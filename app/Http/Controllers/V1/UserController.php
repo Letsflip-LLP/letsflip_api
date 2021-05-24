@@ -48,7 +48,8 @@ class UserController extends Controller
           
         foreach($list as $use){
             $user = User::where('email',$use->email)->first();
-            $use->update(['user_id' => $user->id]);
+
+            if($user) $use->update(['user_id' => $user->id]);
         }
     }
 
