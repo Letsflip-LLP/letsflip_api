@@ -101,6 +101,8 @@ class AuthController extends Controller
             // $sub =  $sub->first();
             // if( $sub != null)  $sub->update(['user_id' => $user_id]);
 
+            // SubscriberModel::where('email',$user->email)->update(['user_id' => $user->id]);
+
         DB::commit();
 
         $send_mail = \Mail::to($validatedData['email'])->queue(new verificationUserRegister($validatedData));

@@ -29,7 +29,10 @@ class subscribeInvitationHasAccount extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.subscribe-invitation-has-acount',$this->data)
+        // return $this->view('emails.subscribe-invitation-has-acount',$this->data)
+        //        ->subject("Let's Fli!p | Account Upgraded");
+
+        return $this->view('emails.subscribe-invitation-upgrade',$this->data)
                ->subject("Let's Fli!p | Account Upgraded");
     }
 }
