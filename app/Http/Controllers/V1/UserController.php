@@ -36,8 +36,20 @@ class UserController extends Controller
         $user = auth('api')->user(); 
         
         SubscriberModel::where('email',$user->user)->update(['user_id' => $user->id]);
+        
+        $this->updateSub();
 
         return (new UserTransformer)->detail(200,"Success",$user); 
+    }
+
+    private function updateSub(){
+        $list = new SubscriberModel;
+        $list = $list->whereNull('user_id')->get();
+          
+        foreach($list as $use){
+            $user = User::where('email',$use->email)->first();
+            $use->update(['user_id' => $user->id]);
+        }
     }
 
     public function getPublicList(Request $request)
