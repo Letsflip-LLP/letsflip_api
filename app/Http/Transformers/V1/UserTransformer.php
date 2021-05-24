@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Transformers\ResponseTransformer; 
 use Carbon\Carbon; 
 use Illuminate\Support\Facades\Storage;
+use App\Http\Models\SubscriberModel; 
 
 class UserTransformer {  
 
