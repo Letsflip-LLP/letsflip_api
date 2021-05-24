@@ -33,7 +33,7 @@ class UserTransformer {
         $environment = request()->header('environment','production');
         $temp->environment = $environment;
 
-        $sub = $model->Subscribe ? $model->Subscribe->where('environment',$environment)->where('user_id',$model->id)->orderBy('type','DESC')->first() : null;
+        $sub = $model->Subscribe ? $model->Subscribe->where('environment',$environment)->where('user_id',$model->id)->orWhere('email',$model->email)->orderBy('type','DESC')->first() : null;
         
         if($sub && $sub->type > 1){
             $temp->type = subsType($sub->type); 
