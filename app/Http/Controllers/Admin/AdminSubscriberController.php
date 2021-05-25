@@ -134,7 +134,7 @@ class AdminSubscriberController extends Controller
                 return Redirect::back()->withErrors(['Error! Failed to insert data']);
 
             if($user && $request->filled('company_id') && $request->company_id != "NULL"){
-                $user->update(['company_id' => $request->company_id])
+                $user->update(['company_id' => $request->company_id]);
             }
 
             DB::commit(); 
@@ -191,10 +191,10 @@ class AdminSubscriberController extends Controller
         $subscribers->is_creator    = $request->is_creator == "on" ? true : false;
         $subscribers->product_id    = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
  
-        if($subscribers->User && $request->filled('company_id') && request->company_id != "NULL"){
+        if($subscribers->User && $request->filled('company_id') && $request->company_id != "NULL"){
             User::where('id',$subscribers->user_id)->update(['company_id'=> $request->company_id]); 
 
-            $subscribers->company_id = $request->company_id
+            $subscribers->company_id = $request->company_id;
         }
 
         $subscribers->save(); 
