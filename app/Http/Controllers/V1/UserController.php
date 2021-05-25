@@ -70,6 +70,7 @@ class UserController extends Controller
         if($request->filled('classroom_id')){
             $users = $users->whereHas('AccessClassrooms',function($q) use($request){
                 $q->where('classroom_accesses.classroom_id',$request->classroom_id);
+                $q->where('classroom_accesses.status',1);
             });
         }
 
