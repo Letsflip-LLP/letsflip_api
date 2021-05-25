@@ -20,6 +20,9 @@ use \Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite; 
 use Session;
 use App\Http\Models\User; 
+
+use App\Http\Models\CompanyModel; 
+
 use App\Mail\subscribeInvitationToRegister;
 use App\Mail\subscribeInvitationHasAccount;
 use Carbon\Carbon;
@@ -36,6 +39,9 @@ class AdminSubscriberController extends Controller
     }
  
     public function subscriberList(Request $request){
+        $company    = new CompanyModel;
+        $company    = $company->get(); 
+
         $subscribers = new SubscriberModel;
  
         if($request->filled('email'))
@@ -51,6 +57,12 @@ class AdminSubscriberController extends Controller
             if($request->status == 2)
                 $subscribers = $subscribers->doesntHave('User'); 
         }
+
+
+        if($request->filled('company_id') && $request->company_id != "NULL"){ 
+            $subscribers = $subscribers->where('company_id',$request->company_id);
+        }
+
  
         $subscribers = $subscribers->orderBy('created_at','desc'); 
         $subscribers = $subscribers->paginate($request->input('per_page',5));
@@ -66,7 +78,8 @@ class AdminSubscriberController extends Controller
                 "start_date" =>  Carbon::now()->format('Y-m-d'),
                 "end_date"   =>  Carbon::now()->add('years',1)->format('Y-m-d'),
             ],
-            "subscribers" => $subscribers
+            "subscribers" => $subscribers,
+            "companies" =>  $company
         ]; 
 
         // return view('emails.subscribe-invitation-has-acount',['account_type'=> 'Private Account', 'email' => 'email@email.com']);
@@ -112,12 +125,17 @@ class AdminSubscriberController extends Controller
             $subscribers->date_start    = $request->date_start;
             $subscribers->date_end      = $request->date_end;
             $subscribers->status        = 1;
+            $subscribers->company_id    = $request->company_id == "NULL" ? NULL : $request->company_id;
             $subscribers->vendor_trx_id = $subscribers_id;
             $subscribers->is_creator    = $request->is_creator == "true" ? true : false;
             $subscribers->product_id    = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
 
             if(!$subscribers->save())
                 return Redirect::back()->withErrors(['Error! Failed to insert data']);
+
+            if($user && $request->filled('company_id') && $request->company_id != "NULL"){
+                $user->update(['company_id' => $request->company_id]);
+            }
 
             DB::commit(); 
 
@@ -136,7 +154,11 @@ class AdminSubscriberController extends Controller
     }
 
     public function subscriberEdit(Request $request){
-        $subscriber = new SubscriberModel;
+        
+        $company    = new CompanyModel;
+        $company    = $company->get();
+
+        $subscriber = new SubscriberModel; 
         $subscriber = $subscriber->where('id',$request->id)->first();
 
         if($subscriber == null) 
@@ -149,9 +171,34 @@ class AdminSubscriberController extends Controller
                 [ "name" => "User" , "url" => url('/admin/user/subscribers') ],
                 [ "name" => "Subscribers" , "url" => url('/admin/user/subscribers') ]
             ],
-            "subscriber" => $subscriber
+            "subscriber" => $subscriber,
+            "company" => $company
         ];
  
         return view('admin.dashboard.subscription-edit',$data);
+    }
+
+    public function subscriberSubmitEdit(Request $request){
+         
+        $subscribers                = new SubscriberModel;
+        $subscribers                = $subscribers->where('id',$request->id)->first();   
+
+        if($subscribers == null) return redirect('admin/dashboard');
+ 
+        $subscribers->type          = $request->type;
+        $subscribers->date_start    = $request->date_start;
+        $subscribers->date_end      = $request->date_end;  
+        $subscribers->is_creator    = $request->is_creator == "on" ? true : false;
+        $subscribers->product_id    = $request->type == 2 ? "private_account" : ($request->type == 3 ? "master_account" : "basic_account");
+ 
+        if($subscribers->User && $request->filled('company_id') && $request->company_id != "NULL"){
+            User::where('id',$subscribers->user_id)->update(['company_id'=> $request->company_id]); 
+
+            $subscribers->company_id = $request->company_id;
+        }
+
+        $subscribers->save(); 
+
+        return redirect()->back();
     }
 }

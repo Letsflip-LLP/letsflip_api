@@ -32,7 +32,8 @@ class User extends Authenticatable implements JWTSubject
         'image_profile_path',
         'image_profile_file',
         'image_background_path',
-        'image_background_file'
+        'image_background_file',
+        'company_id'
     ];
 
     /**

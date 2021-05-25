@@ -35,7 +35,12 @@ class UserController extends Controller
     { 
         $user = auth('api')->user(); 
         
-        SubscriberModel::where('email',$user->user)->update(['user_id' => $user->id]);
+        $sub = SubscriberModel::where('email',$user->email)->whereNull('user_id')->first();
+
+        if($sub != null){
+            $sub->update(['user_id' => $user->id]);
+            $user->update(['company_id' => $sub->company_id]);
+        }
         
         // $this->updateSub();
 
@@ -56,16 +61,7 @@ class UserController extends Controller
     public function getPublicList(Request $request)
     { 
         $users = new User;
-        
-        if($request->filled('search')){
-            $search = str_replace('@', '', $request->search); 
-
-            $users = $users->where('first_name','LIKE',"%".$search."%")
-                            ->orWhere('last_name','LIKE',"%".$search."%")
-                            ->orWhere('email','LIKE',$search)
-                            ->orWhere('username','LIKE',"%".$search."%");
-        }
- 
+         
         if($request->filled('friends_only') && $request->friends_only == true)
             $users = $users->whereHas('Follower',function($q1){
                 $q1->where('user_id_from',$this->user_login->id);
@@ -75,6 +71,16 @@ class UserController extends Controller
             $users = $users->whereHas('AccessClassrooms',function($q) use($request){
                 $q->where('classroom_accesses.classroom_id',$request->classroom_id);
             });
+        }
+
+        if($request->filled('search')){
+            $search = str_replace('@', '', $request->search); 
+ 
+            $users = $users->where(function($q) use ($search) {
+                                $q->where('last_name','LIKE',"%".$search."%");
+                                $q->orWhere('first_name','LIKE',"%".$search."%");
+                                $q->orWhere('username','LIKE',"%".$search."%");
+                            });
         }
         
 

@@ -20,6 +20,9 @@
                 Email
               </th>   
               <th>
+                Company
+              </th>  
+              <th>
                 Type
               </th>
               <th>
@@ -42,7 +45,15 @@
               <input type="email" required placeholder="Email" name="email" class="form-control"/>
             </td> 
             <td>
-              <select  required placeholder="Type" name="type" class="form-control">
+              <select  required placeholder="Type" name="company_id" class="form-control">
+                <option value="NULL">-- Company --</option>
+                @foreach ($companies as $com)
+                  <option value={{$com->id}}>{{$com->title}}</option>
+                @endforeach
+              </select>
+            </td>
+            <td>
+              <select required placeholder="Type" name="type" class="form-control">
                 <option>-- Account Type --</option>
                 <option value="1">Basic</option>
                 <option selected value="2">Private</option>
@@ -82,6 +93,14 @@
             <td>
               <input value="{{request()->input('email')}}" placeholder="Email" name="email" class="form-control"/>
             </td> 
+            <th> 
+              <select  required placeholder="Type" name="company_id" class="form-control">
+                <option selected value="NULL">-- All Company --</option>
+                @foreach ($companies as $com)
+                  <option {{request()->input('company_id') == $com->id ? 'selected' : ''}} value={{$com->id}}>{{$com->title}}</option>
+                @endforeach
+              </select> 
+            </th>
             <td>
               <select placeholder="Type" name="type" class="form-control">
                 <option value="all">-- All Type --</option>
@@ -109,6 +128,8 @@
                 <option value="10" {{request()->input('per_page') == 10 ? 'selected' : ''}}>Per Page 10</option>
                 <option value="20" {{request()->input('per_page') == 20 ? 'selected' : ''}}>Per Page 20</option> 
                 <option value="30" {{request()->input('per_page') == 30 ? 'selected' : ''}}>Per Page 30</option> 
+                <option value="50" {{request()->input('per_page') == 50 ? 'selected' : ''}}>Per Page 50</option> 
+                <option value="100" {{request()->input('per_page') == 11 ? 'selected' : ''}}>Per Page 100</option> 
               </select>
             </td>
             <td>
