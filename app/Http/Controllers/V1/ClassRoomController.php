@@ -514,7 +514,7 @@ class ClassRoomController extends Controller
 
         DB::commit();
     
-            return (new ResponseTransformer)->toJson(200,__('messages.200'), $request->allow );
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true );
 
         } catch (\exception $exception){ 
 
