@@ -86,29 +86,35 @@ function getPublicFile($path,$file){
 }
 
 function subsType($type){
+
+    $env = request()->header('environment','production');
+    $add = "";
+
+    if( $env == "staging") $add = " (Staging)";
+
     switch ($type) {
         case 1:
             return (object) [
                 "id" => $type,
-                "name" => "Basic"
+                "name" => "Basic".$add
             ];
             break;
         case 2:
             return (object) [
                 "id" => $type,
-                "name" => "Private Classroom"
+                "name" => "Private Classroom".$add
             ];
             break;
         case 3:
             return (object) [
                 "id" => $type,
-                "name" => "Master Classroom"
+                "name" => "Master Classroom".$add
             ];
             break;
         default:
             return (object) [
                 "id" => $type,
-                "name" => "Undifined"
+                "name" => "Undifined".$add
             ];
             break;
     }
