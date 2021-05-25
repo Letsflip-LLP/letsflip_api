@@ -51,7 +51,9 @@ class ClassRoomTransformer {
   
             if($model->type > 1 && auth('api')->user()->PremiumClassRoomAccess){ 
                 $check_access = auth('api')->user()->PremiumClassRoomAccess
-                                ->where('classroom_id',$model->id)->first();
+                                ->where('classroom_id',$model->id)
+                                ->where('status',1)
+                                ->first();
                     
                 if($check_access)
                     $temp->has_subscribe = true;
