@@ -35,7 +35,12 @@ class UserController extends Controller
     { 
         $user = auth('api')->user(); 
         
-        SubscriberModel::where('email',$user->user)->update(['user_id' => $user->id]);
+        $sub = SubscriberModel::where('email',$user->email)->whereNull('user_id')->first();
+
+        if($sub != null){
+            $sub->update(['user_id' => $user->id]);
+            $user->update(['company_id' => $sub->company_id]);
+        }
         
         // $this->updateSub();
 

@@ -34,5 +34,6 @@ $router->group(['middleware'=> ['admin_dashboard']], function($router){
 
         // EDIT SUB 
         Route::get('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberEdit']);     
+        Route::post('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberSubmitEdit']);     
     });
 }); 
