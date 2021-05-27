@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminSubscriberController;
+use App\Http\Controllers\Admin\AdminCompanyController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,5 +37,12 @@ $router->group(['middleware'=> ['admin_dashboard']], function($router){
         // EDIT SUB 
         Route::get('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberEdit']);     
         Route::post('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberSubmitEdit']);     
+    });
+
+    $router->group(['prefix' => 'company'], function($router){
+        Route::get('/list', [AdminCompanyController::class,'companyList']);
+        Route::post('/add', [AdminCompanyController::class,'companyAdd']);
+        Route::get('/edit/{id}', [AdminCompanyController::class,'companyEdit']);
+        Route::post('/submit-edit', [AdminCompanyController::class,'companySubmitEdit']);
     });
 }); 

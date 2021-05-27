@@ -14,5 +14,10 @@ class CompanyModel extends Model
     
     public $incrementing = false;
     protected $table = 'companies';
- 
+    protected $fillable = [ "title" , "text" , "address" ];
+    public function Users()
+    {
+        return $this->hasMany('App\Http\Models\User','company_id','id');
+    }
+
 }
