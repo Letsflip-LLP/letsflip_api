@@ -42,7 +42,7 @@ class UserController extends Controller
             $user->update(['company_id' => $sub->company_id]);
         }
         
-        $this->updateSub();
+        // $this->updateSub();
 
         return (new UserTransformer)->detail(200,"Success",$user); 
     }
