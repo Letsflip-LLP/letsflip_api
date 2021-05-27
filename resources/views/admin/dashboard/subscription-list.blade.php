@@ -129,7 +129,7 @@
                 <option value="20" {{request()->input('per_page') == 20 ? 'selected' : ''}}>Per Page 20</option> 
                 <option value="30" {{request()->input('per_page') == 30 ? 'selected' : ''}}>Per Page 30</option> 
                 <option value="50" {{request()->input('per_page') == 50 ? 'selected' : ''}}>Per Page 50</option> 
-                <option value="100" {{request()->input('per_page') == 11 ? 'selected' : ''}}>Per Page 100</option> 
+                <option value="100" {{request()->input('per_page') == 100 ? 'selected' : ''}}>Per Page 100</option> 
               </select>
             </td>
             <td>
@@ -143,6 +143,9 @@
       <table class="table table-striped"> 
         <thead>
           <tr> 
+            <th>
+              #
+            </th>
             <th>
               Email
             </th>   
@@ -170,8 +173,14 @@
           </tr>
         </thead>
         <tbody>
+          @php
+              $j = 1;
+          @endphp
           @foreach ($subscribers as $subs)
             <tr> 
+              <td>
+                {{$j++}}
+              </td>
               <td>
                 {{$subs->User ? $subs->User->email : $subs->email}}
               </td> 

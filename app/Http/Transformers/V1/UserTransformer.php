@@ -18,12 +18,19 @@ class UserTransformer {
         $temp->email      = $model->email;
         $temp->username      = $model->username; 
         $temp->description  = $model->description;
-
+        $temp->company      = null;
         $temp->followed      = false;
 
         $temp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
         $temp->total_following  = $model->Followed ? $model->Followed->count() : 0;
         $temp->total_classroom   = $model->ClassRoom ? $model->ClassRoom->count() : 0;
+
+        if($model->Company && $model->Company->id && $model->Company->title){
+            $temp->company  = [
+                "id"    =>  $model->Company->id,
+                "title" =>  $model->Company->title
+            ];
+        }
 
         if(auth('api')->user() !=null && $model->Followed)
             $temp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
