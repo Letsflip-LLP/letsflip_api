@@ -15,4 +15,9 @@ class CompanyModel extends Model
     public $incrementing = false;
     protected $table = 'companies';
  
+    public function Users()
+    {
+        return $this->hasMany('App\Http\Models\User','company_id','id');
+    }
+
 }

@@ -200,6 +200,18 @@
             </ul>
           </div>
         </li> 
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="collapse" href="#company-menu-company-menu" aria-expanded="false" aria-controls="company-menu-company-menu">
+            <span class="menu-title">Companies</span>
+            <i class="menu-arrow"></i>
+            <i class="mdi mdi-desktop-tower menu-icon"></i>
+          </a>
+          <div class="collapse" id="company-menu-company-menu">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{{url('admin/company/list')}}">List</a></li> 
+            </ul>
+          </div>
+        </li> 
       </ul>
     </nav>
     <!-- partial -->
