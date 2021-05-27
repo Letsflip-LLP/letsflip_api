@@ -339,7 +339,7 @@ class ClassRoomController extends Controller
                 "access_code" => __('validation.exists',[ "atribute" => "Access code" ])
             ]);
             
-        $last_req = ClassroomAccessModel::where('classroom_id',$class_room->id)->where("user_id",$this->user_login->id)->where('status','!=',1)->first();
+        $last_req = ClassroomAccessModel::where('classroom_id',$class_room->id)->where("user_id",$this->user_login->id)->where('status',2)->first();
 
         if($last_req)
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
@@ -357,6 +357,9 @@ class ClassRoomController extends Controller
          
         if(!$access)
             return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
+
+        if($access->status == 3) $access->update(['status' => 2]);
+            
 
         if(!$request->filled('access_code')){
             //NOTIF FOR OWN OF CLASSROM
