@@ -31,13 +31,13 @@
             <tbody>
             <tr>
                 <td>
-                    <input type="text" required placeholder="Company name" name="title" class="form-control"/>
+                    <input required type="text" required placeholder="Company name" name="title" class="form-control"/>
                 </td>  
                 <td>
-                    <input type="text" required placeholder="Company description" name="text" class="form-control"/>
+                    <input required type="text" required placeholder="Company description" name="text" class="form-control"/>
                 </td> 
                 <td>
-                    <input type="text" required placeholder="Company address" name="address" class="form-control"/>
+                    <input required type="text" required placeholder="Company address" name="address" class="form-control"/>
                 </td> 
                 <td>
                 <button type="submit" class="btn btn-sm btn-gradient-primary btn-fw"><i class="mdi mdi-account-plus"></i>&nbsp;ADD</button>
@@ -87,7 +87,7 @@
                         {{$com->created_at}}
                     </td>
                     <td>
-                        <a href="{{url('/admin/user/company/edit/'.$com->id)}}" class="badge badge-success text-dark">Edit</a>   
+                        <a href="{{url('/admin/company/edit/'.$com->id)}}" class="badge badge-success text-dark">Edit</a>   
                     </td>
                 </tr>
             @endforeach

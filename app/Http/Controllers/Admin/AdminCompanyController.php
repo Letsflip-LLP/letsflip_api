@@ -44,8 +44,8 @@ class AdminCompanyController extends Controller
             "page" => "Company - List",
             "breadcrumbs" => [
                 [ "name" => "Dashboard" , "url" => url('/admin/dashboard') ],
-                [ "name" => "Company" , "url" => url('/admin/user/company') ],
-                [ "name" => "List" , "url" =>url('/admin/user/list') ],
+                [ "name" => "Company" , "url" => url('/admin/company') ],
+                [ "name" => "List" , "url" =>url('/admin/company/list') ],
             ], 
             "company" => $company
         ];
@@ -61,6 +61,43 @@ class AdminCompanyController extends Controller
         $company->text  = $request->text;
         $company->address  = $request->address;
         $company->save();
+
+        return redirect()->back();
+    }
+
+    public function companyEdit(Request $request)
+    { 
+        $company    = new CompanyModel;
+        $company    = $company->where('id',$request->id)->first(); 
+
+        if($company == null) 
+            return redirect('admin/dashboard');
+          
+        $data  = [
+            "page" => "Company - Edit",
+            "breadcrumbs" => [
+                [ "name" => "Dashboard" , "url" => url('/admin/dashboard') ],
+                [ "name" => "Company" , "url" => url('/admin/company') ],
+                [ "name" => "Edit" , "url" =>url('/admin/company/Edit') ],
+            ], 
+            "company" => $company
+        ];
+        
+        return view('admin.dashboard.company-edit',$data); 
+    }
+
+    public function companySubmitEdit(Request $request)
+    {   
+        $company    = new CompanyModel;
+        $company    = $company->where('id',$request->id)->first(); 
+   
+        if($company == null)  return redirect('admin/dashboard');
+ 
+        $company->update([
+            "title" => $request->title,
+            "text" => $request->text,
+            "address" => $request->address,
+        ]);
 
         return redirect()->back();
     }

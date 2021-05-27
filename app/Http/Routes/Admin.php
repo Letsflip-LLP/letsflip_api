@@ -42,5 +42,7 @@ $router->group(['middleware'=> ['admin_dashboard']], function($router){
     $router->group(['prefix' => 'company'], function($router){
         Route::get('/list', [AdminCompanyController::class,'companyList']);
         Route::post('/add', [AdminCompanyController::class,'companyAdd']);
+        Route::get('/edit/{id}', [AdminCompanyController::class,'companyEdit']);
+        Route::post('/submit-edit', [AdminCompanyController::class,'companySubmitEdit']);
     });
 }); 
