@@ -354,7 +354,7 @@ class UserController extends Controller
                 "user_id" => $this->user_login->id,
                 "status" => 1,
                 "vendor_trx_id" => $vendor_trx_id,
-                "environment" => $ios_validate->environment == 'Sandbox' ? 'staging' :  'production'
+                "environment" => request()->header('environment','production')//$ios_validate->environment == 'Sandbox' ? 'staging' :  'production'
             ],
             [
                 "id"            => Uuid::uuid4(),
