@@ -171,7 +171,7 @@ class MissionController extends Controller
             }
     
             //NOTIF FOR CREATOR
-            if(($class_room_detail->type == 1 && $request->status == 1) || ($class_room_detail->user_id == $this->user_login->id && $request->status == 1)){
+            if(($class_room_detail && $class_room_detail->type == 1 && $request->status == 1) || ($class_room_detail && $class_room_detail->user_id == $this->user_login->id && $request->status == 1)){
                 $is_first = UserPointsModel::where('user_id_to',$this->user_login->id)->where('type',1)->first() ? false : true;
                     $earn_point =  $is_first == true ? env('POINT_TYPE_1') : env('POINT_TYPE_2'); 
                     UserPointsModel::insert([
@@ -1374,7 +1374,8 @@ class MissionController extends Controller
                     "type" => 5
                 ],
                 [
-                    "user_id_to" => $this->user_login->id,
+                    "user_id_to" => $respone_detail->user_id,
+                    "user_id_from" => $this->user_login->id,
                     "mission_id" => $respone_detail->mission_id, 
                     "value" => $data->total_point, 
                     "id" => Uuid::uuid4(),
@@ -1438,13 +1439,18 @@ class MissionController extends Controller
                     });
                 });
             }
-
+            $point = $point->groupBy('user_id_to'); 
             $point = $point->orderBy('value','DESC');
+            $point = $point->selectRaw('*, sum(value) as sum');
             $point = $point->paginate($request->input('per_page',5));
-            
+
+            // return (new ResponseTransformer)->toJson(200,'',$point);
+
             $return = [];
 
             foreach($point as $pt){
+                $temp = $pt->Respone;
+                $temp->total_point = $pt->sum;
                 $return[] = $pt->Respone;
             }
   

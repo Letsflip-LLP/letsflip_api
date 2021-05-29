@@ -36,6 +36,8 @@ class MissionTransformer {
         $temp->text                 = $model->text; 
         $temp->status               = $model->status; 
 
+        $temp->creator_total_point = $model->total_point ? $model->total_point : null; 
+
         $temp->timer                = $model->timer != null ? timeFormat($model->timer) : null ;
         $temp->timer_user_active    = null;
 
