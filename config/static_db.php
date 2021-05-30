@@ -48,7 +48,7 @@ return [
             [
                 "code"   => "frustrated",
                 "title" => "Frustrated",
-                "image" => 'https://storage.googleapis.com/staging_lets_flip/assets/images/emots/confused.png'
+                "image" => 'https://storage.googleapis.com/staging_lets_flip/assets/images/emots/frustrated.png'
             ]
         ]
     ]
