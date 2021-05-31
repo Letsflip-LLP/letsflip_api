@@ -24,22 +24,38 @@ class QuickScoreTransformer {
         return (new ResponseTransformer)->toJson($code,$message,$models,$datas);
     }
 
+    function sort_array_of_array($array, $subfield)
+    {
+        $sortarray = array();
+        foreach ($array as $key => $row)
+        {
+            $sortarray[$key] = $row;
+        }
+        array_multisort($sortarray, SORT_ASC, $array);
+        return  $sortarray;
+    }
+
     public function item($model){
         $tmp            = new \stdClass();
         $tmp->id        = $model->id;
         $tmp->title     = $model->title;
         $tmp->my_answer = null;
         $my_answer      = $model->Answer->where('user_id',auth('api')->user()->id)->whereNull('mission_response_id');
-
+ 
         if($my_answer != null){
-            $tmp->my_answer= [];
+            $tmp_my_answer= [];
             foreach($my_answer as $ans){
-                $tmp->my_answer[] = (object) [
+                $tmp_my_answer[] = [
+                    "index" => $ans->index,
                     "id" => $ans->id,
-                    "answer" => $ans->answer
+                    "answer" => $ans->answer,
                 ];
             }
-        }
+
+            $tmp_my_answer = $this->sort_array_of_array($tmp_my_answer,'index');
+            $tmp->my_answer = $tmp_my_answer;
+        } 
+ 
 
         $tmp->type  = (object) [
             "id" => $model->type,

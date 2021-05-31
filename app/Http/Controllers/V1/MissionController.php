@@ -1013,9 +1013,11 @@ class MissionController extends Controller
     public function getQuestionList(Request $request){
         $model = new MissionQuestionModel;
         $model = $model->where('mission_id',$request->mission_id);
-        $model = $model->with('Answer',function($q1){
-            $q1->orderBy('index');
-        });
+
+        // $model = $model->with('Answer',function($q1){
+        //     $q1->orderBy('index');
+        // });
+
         if($request->filled('type'))
             $model = $model->where('type',$request->type);
 
