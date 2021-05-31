@@ -144,3 +144,15 @@ function statusRequestName($id){
 
     return $name;
 }
+
+
+function sort_array_of_array($array, $subfield)
+{
+    $sortarray = array();
+    foreach ($array as $key => $row)
+    {
+        $sortarray[$key] = $row;
+    }
+    array_multisort($sortarray, SORT_ASC, $array);
+    return  $sortarray;
+}

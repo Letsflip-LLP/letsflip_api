@@ -23,6 +23,7 @@ class QuickScoreTransformer {
 
         return (new ResponseTransformer)->toJson($code,$message,$models,$datas);
     }
+ 
 
     public function item($model){
         $tmp            = new \stdClass();
@@ -30,16 +31,21 @@ class QuickScoreTransformer {
         $tmp->title     = $model->title;
         $tmp->my_answer = null;
         $my_answer      = $model->Answer->where('user_id',auth('api')->user()->id)->whereNull('mission_response_id');
-
+ 
         if($my_answer != null){
-            $tmp->my_answer= [];
+            $tmp_my_answer= [];
             foreach($my_answer as $ans){
-                $tmp->my_answer[] = (object) [
+                $tmp_my_answer[] = [
+                    "index" => $ans->index,
                     "id" => $ans->id,
-                    "answer" => $ans->answer
+                    "answer" => $ans->answer,
                 ];
             }
-        }
+
+            $tmp_my_answer =  sort_array_of_array($tmp_my_answer,'index');
+            $tmp->my_answer = $tmp_my_answer;
+        } 
+ 
 
         $tmp->type  = (object) [
             "id" => $model->type,
