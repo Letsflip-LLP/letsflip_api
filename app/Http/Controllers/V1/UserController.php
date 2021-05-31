@@ -286,13 +286,7 @@ class UserController extends Controller
 
             if(!isset($vendor_payload['productId']) || !isset($vendor_payload['transactionId']))
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
-
-
-        $check_sub = SubscriberModel::where('vendor_trx_id',$transaction_id)->first();
-
-        if($check_sub)
-            return (new ResponseTransformer)->toJson(400,__('messages.401'),"Duplicated");
-
+ 
         //START
         $sub_end_date = isset($validate_token_purchase['expiryTimeMillis']) ? $validate_token_purchase['expiryTimeMillis'] : 0;
         $sub_end_date = $sub_end_date / 1000;
@@ -302,9 +296,21 @@ class UserController extends Controller
         $sub_start_date = isset($validate_token_purchase['startTimeMillis']) ? $validate_token_purchase['startTimeMillis'] : 0;
         $sub_start_date = $sub_start_date / 1000;
         $sub_start_date = date("Y-m-d H:i:s", $sub_start_date);
-        
-        $product_detail = $product_account[$product_id];
+         
+        if((integer) $validate_token_purchase['startTimeMillis'] < strtotime(date('Y-m-d H:i:s'))) return (new ResponseTransformer)->toJson(400,__('messages.401'), "Expired");
 
+        $product_detail = $product_account[$product_id]; 
+        // CHECK EXISTING
+        $check_sub = SubscriberModel::where('vendor_trx_id',$transaction_id)->first(); 
+        if($check_sub){   
+            $check_sub->update([
+                "user_id" =>$this->user_login->id
+            ]);  
+
+            DB::commit(); 
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);   
+        }
+ 
         $subscribe =  SubscriberModel::firstOrCreate(
             [ 
                 "user_id"   => $this->user_login->id,
@@ -336,8 +342,12 @@ class UserController extends Controller
     }
 
     private function iosVlidateSubscription($request){
-        $data       = $request->data; 
- 
+
+    DB::beginTransaction();
+    
+    try {
+
+        $data       = $request->data;  
         $ios_validate = ApplePayManager::validatePayment($request->data['transactionReceipt']);
 
        if($ios_validate == false || $ios_validate->status != 0) return (new ResponseTransformer)->toJson(400,__('messages.401'),$ios_validate);
@@ -348,7 +358,16 @@ class UserController extends Controller
         $vendor_trx_id = $data['transactionId'];
         $sub_start_date = date('Y-m-d H:i:s',$data['transactionDate']/1000);
         $sub_end_date = Carbon::parse($sub_start_date)->add('months',$product_detail['duration'])->format('Y-m-d H:i:s');
-  
+   
+        $check_sub = SubscriberModel::where('vendor_trx_id',$vendor_trx_id)->first();
+
+        if($check_sub){   
+            $check_sub->update([
+                "user_id" =>$this->user_login->id
+            ]); 
+            return (new ResponseTransformer)->toJson(200,__('messages.200'), true);   
+        }
+
         $subscribe =  SubscriberModel::firstOrCreate(
             [ 
                 "user_id" => $this->user_login->id,
@@ -368,7 +387,17 @@ class UserController extends Controller
             ]
         );
 
+        DB::commit();
+    
         return (new ResponseTransformer)->toJson(200,__('messages.200'),$ios_validate);
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        } 
+        
     }
 
     public function subscribePremiumAccount(Request $request){
