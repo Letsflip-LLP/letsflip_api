@@ -1260,9 +1260,9 @@ class MissionController extends Controller
             
             $quest = new MissionQuestionModel;
 
-            $quest =  $quest->with(['Answer'=> function($q) use ($respone_detail) {
-                $q->where('user_id',$respone_detail->user_id);
-            }]);
+            // $quest =  $quest->with(['Answer'=> function($q) use ($respone_detail) {
+            //     $q->where('user_id',$respone_detail->user_id);
+            // }]);
 
             if($request->filled('type') && in_array($request->type,[1,2]))
                 $quest =  $quest->where('mission_questions.type',$request->type);
@@ -1274,9 +1274,17 @@ class MissionController extends Controller
              
             $quest = $quest->get();
 
+            $data = [];
+
+            foreach($quest as $q){
+                $tmp = $q;
+                $tmp->Answer = $q->Answer->where('user_id',$respone_detail->user_id);
+                $data[] = $tmp;
+            }
+
             DB::commit();
         
-            return (new AnswerTransformer)->list(200,__('messages.200'),$quest);
+            return (new AnswerTransformer)->list(200,__('messages.200'),$data);
 
         } catch (\exception $exception){
         
