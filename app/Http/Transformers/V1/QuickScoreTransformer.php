@@ -23,17 +23,7 @@ class QuickScoreTransformer {
 
         return (new ResponseTransformer)->toJson($code,$message,$models,$datas);
     }
-
-    function sort_array_of_array($array, $subfield)
-    {
-        $sortarray = array();
-        foreach ($array as $key => $row)
-        {
-            $sortarray[$key] = $row;
-        }
-        array_multisort($sortarray, SORT_ASC, $array);
-        return  $sortarray;
-    }
+ 
 
     public function item($model){
         $tmp            = new \stdClass();
@@ -52,7 +42,7 @@ class QuickScoreTransformer {
                 ];
             }
 
-            $tmp_my_answer = $this->sort_array_of_array($tmp_my_answer,'index');
+            $tmp_my_answer =  sort_array_of_array($tmp_my_answer,'index');
             $tmp->my_answer = $tmp_my_answer;
         } 
  

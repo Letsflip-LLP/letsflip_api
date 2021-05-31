@@ -49,12 +49,14 @@ class AnswerTransformer {
          $data = [];
         foreach($answers as $ans){
             $data[] = [
+                "index"         => $ans->index,
                 "my_answer"     => $ans->Question['type'] == 1 ? $ans->Question[$ans->answer] : $ans->answer,
                 "true_answer"   => $ans->Question['type'] == 1 ? $ans->Question[$ans->Question["correct_option"]] : null,//$model->Question[$model->Question['correct_option']];
-                "title"         => $ans->Question['type'] == 1 ? $ans->Question[$ans->answer] : $ans->answer,
+                "title"         => $ans->Question['type'] == 1 ? $ans->Question[$ans->answer] : $ans->answer, 
             ];
         }
 
+        $data = sort_array_of_array($data,'index');
         return $data;
     }
 }
