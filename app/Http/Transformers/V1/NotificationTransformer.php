@@ -14,6 +14,8 @@ class NotificationTransformer {
     public static function item($model){  
         $temp           = new \stdClass();
         $temp->id       = $model->id;
+        $temp->mission_id   = $model->mission_id;
+        $temp->classroom_id = $model->classroom_id;
         $temp->module_detail  = null;
 
         $temp->type       = (object) [
