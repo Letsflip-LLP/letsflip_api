@@ -56,7 +56,12 @@ class MissionTransformer {
                     $temp->my_response  = (object) [
                         "id" => $my_response->id,
                         "title" => $my_response->title,
-                        "status" => $my_response->status
+                        "status" => $my_response->status,
+                        "thumbnail" => [
+                            "image_path" => $image_path_response =  $my_response->image_path ? $my_response->image_path : "mission/tumbnail/image",
+                            "image_file" => $image_file_response =  $my_response->image_path ? $my_response->image_file : "d4eb8193-f6f4-4f5e-a3ae-4a83b5ea4cbc.jpeg",
+                            "image_full_path" => getPublicFile($image_path_response,$image_file_response)
+                        ]
                     ];
             }
 
