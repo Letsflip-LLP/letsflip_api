@@ -61,7 +61,8 @@ class MissionTransformer {
                             "image_path" => $image_path_response =  $my_response->image_path ? $my_response->image_path : "mission/tumbnail/image",
                             "image_file" => $image_file_response =  $my_response->image_path ? $my_response->image_file : "d4eb8193-f6f4-4f5e-a3ae-4a83b5ea4cbc.jpeg",
                             "image_full_path" => getPublicFile($image_path_response,$image_file_response)
-                        ]
+                        ],
+                        "default_content" => $this->_defaultContent($my_response->MissionContentDefault)
                     ];
             }
 
