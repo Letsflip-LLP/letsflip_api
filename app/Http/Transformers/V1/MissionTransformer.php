@@ -56,6 +56,7 @@ class MissionTransformer {
                     $temp->my_response  = (object) [
                         "id" => $my_response->id,
                         "title" => $my_response->title,
+                        "text" => $my_response->text,
                         "status" => $my_response->status,
                         "thumbnail" => [
                             "image_path" => $image_path_response =  $my_response->image_path ? $my_response->image_path : "mission/tumbnail/image",
