@@ -45,13 +45,17 @@ class MissionTransformer {
 
         $temp->my_response           = null;
         
-        if(auth('api')->user()){
-            $timer = $model->ActiveTimer ? $model->ActiveTimer->where('user_id',auth('api')->user()->id)->first() : null;
+        if(auth('api')->user() || request()->input('user_id')){
+            $timer = null;
+            $user_id = request()->input('user_id') ? request()->input('user_id') : auth('api')->user()->id;
+
+            if(auth('api')->user())
+                $timer = $model->ActiveTimer ? $model->ActiveTimer->where('user_id',auth('api')->user()->id)->first() : null;
 
             if($timer) $temp->timer_user_active = (new MissionTimerTransformer)->item($timer);
             
             if($model->Respone){
-                $my_response  = $model->Respone->where('user_id',auth('api')->user()->id)->first(); 
+                $my_response  = $model->Respone->where('user_id',$user_id)->first(); 
                 if($my_response)
                     $temp->my_response  = (object) [
                         "id" => $my_response->id,
