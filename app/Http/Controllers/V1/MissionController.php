@@ -533,9 +533,10 @@ class MissionController extends Controller
                     $q->where('foreign_id',$request->classroom_id); 
                     $q->where('tags.status',1);
                 });
-            }else{ 
+            } 
+
+            if(!$request->filled('user_id') && !$request->filled('classroom_id'))
                 $mission = $mission->where('type',$request->input('type',1));
-            }
 
             if($request->filled('order_by')){
                 $order_by = explode('-',$request->order_by); 
