@@ -105,6 +105,7 @@ class MissionController extends Controller
             
              
             $class_room_detail = null;
+            $classroom_tag_status = 1;
             if($request->filled('tag_classroom_ids'))
             {
                     $classroom_id = $request->tag_classroom_ids;
@@ -146,16 +147,17 @@ class MissionController extends Controller
                     $tag_model = new TagModel; 
                     $tag_model->firstOrCreate(
                         [
-                            "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $u_id , "type" => 2
+                            "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $u_id , "type" => 2 , "status" => $classroom_tag_status
                         ],
                         [
                             "id" => Uuid::uuid4()
                         ]
                     );
 
-                    $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$u_id,[
-                        "mission_id" => $mission_id,
-                    ],17); 
+                    if($classroom_tag_status == 1)
+                        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$u_id,[
+                            "mission_id" => $mission_id,
+                        ],17); 
                 }
             }
 
@@ -201,7 +203,7 @@ class MissionController extends Controller
             if($class_room_detail->type != 1 && $class_room_detail->user_id != $this->user_login->id){
                 $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
                     "mission_id" => $mission_id,
-                    "classroom_id" => $mission_id,
+                    "classroom_id" => $class_room_detail->id,
                 ],19);
             }
         
@@ -250,6 +252,7 @@ class MissionController extends Controller
             $datas[] = [
                 "id"         => $quest_id,
                 "mission_id" => $mission_id,
+                "index"      => $q['index'],
                 "title"      => $q['title'],
                 "text"       => $q['title'],
                 "option1"    => $q['options'] && isset($q['options'][0]) ? $q['options'][0]["name"] : null,
@@ -614,6 +617,14 @@ class MissionController extends Controller
             if($mission == null)
                 return (new ResponseTransformer)->toJson(400,__('messages.404'),$mission);
 
+        
+        if($mission->ClassRoomTag && isset($mission->ClassRoomTag[0])){
+            $class_tag = $mission->ClassRoomTag[0];
+
+            if($class_tag->pivot->status != 1 && $class_tag->user_id != $this->user_login->id && $mission->user_id != $this->user_login->id )
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
+        }
+            
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'),$mission);
@@ -1014,10 +1025,7 @@ class MissionController extends Controller
     public function getQuestionList(Request $request){
         $model = new MissionQuestionModel;
         $model = $model->where('mission_id',$request->mission_id);
-
-        // $model = $model->with('Answer',function($q1){
-        //     $q1->orderBy('index');
-        // });
+        $model = $model->orderBy('index','ASC');
 
         if($request->filled('type'))
             $model = $model->where('type',$request->type);
@@ -1273,6 +1281,8 @@ class MissionController extends Controller
                 $q->where('mission_response_id',$respone_detail->id);
             });  
              
+            $quest = $quest->orderBy('index','ASC'); 
+
             $quest = $quest->get();
 
             $data = [];
@@ -1389,11 +1399,18 @@ class MissionController extends Controller
                     "user_id_from" => $this->user_login->id,
                     "mission_id" => $respone_detail->mission_id, 
                     "value" => $data->total_point, 
-                    "id" => Uuid::uuid4(),
+                    "id" => $point_id = Uuid::uuid4(),
                     "created_at" => date('Y-m-d H:i:s'),
                     "updated_at" => date('Y-m-d H:i:s')
                 ]
               );
+
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$respone_detail->user_id,[
+                "point_id" => $point_id,
+                "mission_id" => $respone_detail->Mission->id,
+                "respone_id" => $respone_detail->id,
+                "classroom_id" => $respone_detail->Mission->ClassRoomTag && $respone_detail->Mission->ClassRoomTag[0] ? $respone_detail->Mission->ClassRoomTag[0]->id : null,
+            ],22);
 
             DB::commit();
         

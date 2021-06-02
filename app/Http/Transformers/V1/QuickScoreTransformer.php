@@ -28,6 +28,7 @@ class QuickScoreTransformer {
     public function item($model){
         $tmp            = new \stdClass();
         $tmp->id        = $model->id;
+        $tmp->index     = $model->index;
         $tmp->title     = $model->title;
         $tmp->my_answer = null;
         $my_answer      = $model->Answer->where('user_id',auth('api')->user()->id)->whereNull('mission_response_id');

@@ -132,7 +132,8 @@ class MissionTransformer {
         foreach($tags as $tag){
             $return[] = (object) [
                 "id"    => $tag->id,
-                "title" => $tag->title  
+                "title" => $tag->title,
+                "tag_status" => $tag->pivot->status
             ];
         }
 
