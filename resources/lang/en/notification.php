@@ -18,7 +18,8 @@ return [
         18 => ":user_name_from is Tagging you in Response, Mission: :module_title",
         19 => "Mission successfully created, waiting for approval to be enrolled in the classroom.",
         20 => "Your mission :mission_title is Approved to be listed in the Classroom: :classroom_title",
-        21 => "Your mission :mission_title is Rejected to be listed in the Classroom: :classroom_title"
+        21 => "Your mission :mission_title is Rejected to be listed in the Classroom: :classroom_title",
+        22 => "Your response has been Graded. that’s :point PTS for your response!", 
     ],
     "TYPE" => [
         1 => "New Response from My Mission",
@@ -42,6 +43,7 @@ return [
         19 => "Classroom tag waiting approval",
         19 => "Waiting for Approval from Classroom Creator",
         20 => "Classroom Tagging Approved",
-        21 => "Classroom Tagging Rejected"
+        21 => "Classroom Tagging Rejected",
+        22 => "Your response has been Graded!", 
     ]
 ];

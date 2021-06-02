@@ -1389,11 +1389,18 @@ class MissionController extends Controller
                     "user_id_from" => $this->user_login->id,
                     "mission_id" => $respone_detail->mission_id, 
                     "value" => $data->total_point, 
-                    "id" => Uuid::uuid4(),
+                    "id" => $point_id = Uuid::uuid4(),
                     "created_at" => date('Y-m-d H:i:s'),
                     "updated_at" => date('Y-m-d H:i:s')
                 ]
               );
+
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$respone_detail->user_id,[
+                "point_id" => $point_id,
+                "mission_id" => $respone_detail->Mission->id,
+                "respone_id" => $respone_detail->id,
+                "classroom_id" => $respone_detail->Mission->ClassRoomTag && $respone_detail->Mission->ClassRoomTag[0] ? $respone_detail->Mission->ClassRoomTag[0]->id : null,
+            ],22);
 
             DB::commit();
         

@@ -95,13 +95,19 @@ class NotificationTransformer {
 
         if($model->type == 20 || $model->type == 21)
             $temp->text  =   __('notification.TEXT.'.$model->type,['classroom_title' => $model->ClassRoom ? $model->ClassRoom->title : '','mission_title' => $model->Mission ? $model->Mission->title : '']);
- 
+  
+        if($model->type == 22) 
+            $temp->text  =  __('notification.TEXT.'.$model->type,['point' => $model->Point->value]);
+
         $temp->title        =   __('notification.TYPE.'.$model->type);
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
 
         $temp->created_at   = dateFormat($model->created_at);
         $temp->read_at      = dateFormat(Carbon::parse($model->read_at));
 
+
+        // if($model->type == 22) dd($temp);
+        
         return $temp;
     } 
     
