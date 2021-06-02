@@ -203,7 +203,7 @@ class MissionController extends Controller
             if($class_room_detail->type != 1 && $class_room_detail->user_id != $this->user_login->id){
                 $notif_mission = NotificationManager::addNewNotification(null,$this->user_login->id,[
                     "mission_id" => $mission_id,
-                    "classroom_id" => $mission_id,
+                    "classroom_id" => $class_room_detail->id,
                 ],19);
             }
         

@@ -70,16 +70,16 @@ class NotificationTransformer {
         }
 
         if($model->type ==  11 &&  $model->Point && $model->Point->type == 1)
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for your first Mission!" , "point" => $model->Point->value, "module_title"=> $model->Mission ? $model->Mission->title : ""]); 
+            $temp->text    = __('notification.TEXT.11A',[ 'from' => "mission" , "point" => $model->Point->value, "module_title"=> $model->Mission ? $model->Mission->title : ""]); 
 
         if($model->type ==  11 &&  $model->Point && $model->Point->type == 2)
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for creating a new mission!" , "point" => $model->Point->value , "module_title"=> $model->Mission ? $model->Mission->title : ""]); 
+            $temp->text    = __('notification.TEXT.11A',[ 'from' => "mission" , "point" => $model->Point->value , "module_title"=> $model->Mission ? $model->Mission->title : ""]); 
 
         if($model->type ==  11 &&  $model->Point && $model->Point->type == 3)
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for responding to the mission: " , "point" => $model->Point->value, "module_title"=> $model->Mission ? $model->Mission->title : ""]);
+            $temp->text    = __('notification.TEXT.11B',[ 'from' => "for your response" , "point" => $model->Point->value, "module_title"=> $model->Mission ? $model->Mission->title : ""]);
 
         if($model->type ==  11 &&  $model->Point && $model->Point->type == 4)
-            $temp->text    = __('notification.TEXT.'.$model->type,[ 'from' => "for a new response to your mission!" , "point" => $model->Point->value, "module_title"=> $model->Mission ? $model->Mission->title : ""]);
+            $temp->text    = __('notification.TEXT.11B',[ 'from' => "from user response" , "point" => $model->Point->value, "module_title"=> $model->Mission ? $model->Mission->title : ""]);
              
         if($model->type ==  12 || $model->type ==  13)
             $temp->text  =   __('notification.TEXT.'.$model->type);
@@ -90,8 +90,8 @@ class NotificationTransformer {
         if($model->type == 17 || $model->type == 18) 
             $temp->text  =   __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $model->Mission ? $model->Mission->title : 'Deleted mission']);
 
-        if($model->type == 19)
-            $temp->text  =   __('notification.TEXT.'.$model->type,['module_title' => $model->ClassRoom ? $model->ClassRoom->title : '']);
+        if($model->type == 19 && $model->ClassRoom) 
+            $temp->text  =   __('notification.TEXT.'.$model->type,[ 'type'=> $model->ClassRoom && $model->ClassRoom->type == 1 ? "Public Class Room" : subsType($model->ClassRoom->type)->name , 'user_name' => $model->ClassRoom && $model->ClassRoom->User ? $model->ClassRoom->User->first_name.' '.$model->ClassRoom->User->last_name."'s" : 'unname', 'module_title' => $model->ClassRoom ? $model->ClassRoom->title : '']);
 
         if($model->type == 20 || $model->type == 21)
             $temp->text  =   __('notification.TEXT.'.$model->type,['classroom_title' => $model->ClassRoom ? $model->ClassRoom->title : '','mission_title' => $model->Mission ? $model->Mission->title : '']);
