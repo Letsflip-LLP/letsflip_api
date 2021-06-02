@@ -252,6 +252,7 @@ class MissionController extends Controller
             $datas[] = [
                 "id"         => $quest_id,
                 "mission_id" => $mission_id,
+                "index"      => $q['index'],
                 "title"      => $q['title'],
                 "text"       => $q['title'],
                 "option1"    => $q['options'] && isset($q['options'][0]) ? $q['options'][0]["name"] : null,
@@ -1024,10 +1025,7 @@ class MissionController extends Controller
     public function getQuestionList(Request $request){
         $model = new MissionQuestionModel;
         $model = $model->where('mission_id',$request->mission_id);
-
-        // $model = $model->with('Answer',function($q1){
-        //     $q1->orderBy('index');
-        // });
+        $model = $model->orderBy('index','ASC');
 
         if($request->filled('type'))
             $model = $model->where('type',$request->type);
