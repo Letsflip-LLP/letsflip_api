@@ -616,6 +616,14 @@ class MissionController extends Controller
             if($mission == null)
                 return (new ResponseTransformer)->toJson(400,__('messages.404'),$mission);
 
+        
+        if($mission->ClassRoomTag && isset($mission->ClassRoomTag[0])){
+            $class_tag = $mission->ClassRoomTag[0];
+
+            if($class_tag->pivot->status != 1 && $class_tag->user_id != $this->user_login->id && $mission->user_id != $this->user_login->id )
+                return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
+        }
+            
         DB::commit();
     
             return (new MissionTransformer)->detail(200,__('messages.200'),$mission);
