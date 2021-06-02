@@ -1281,6 +1281,8 @@ class MissionController extends Controller
                 $q->where('mission_response_id',$respone_detail->id);
             });  
              
+            $quest = $quest->orderBy('index','ASC'); 
+
             $quest = $quest->get();
 
             $data = [];
