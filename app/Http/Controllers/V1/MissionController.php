@@ -105,6 +105,7 @@ class MissionController extends Controller
             
              
             $class_room_detail = null;
+            $classroom_tag_status = 1;
             if($request->filled('tag_classroom_ids'))
             {
                     $classroom_id = $request->tag_classroom_ids;
@@ -146,16 +147,17 @@ class MissionController extends Controller
                     $tag_model = new TagModel; 
                     $tag_model->firstOrCreate(
                         [
-                            "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $u_id , "type" => 2
+                            "module" => "mission", "module_id" => $mission_id , "foreign_id" =>  $u_id , "type" => 2 , "status" => $classroom_tag_status
                         ],
                         [
                             "id" => Uuid::uuid4()
                         ]
                     );
 
-                    $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$u_id,[
-                        "mission_id" => $mission_id,
-                    ],17); 
+                    if($classroom_tag_status == 1)
+                        $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$u_id,[
+                            "mission_id" => $mission_id,
+                        ],17); 
                 }
             }
 
