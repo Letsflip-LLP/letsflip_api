@@ -453,32 +453,20 @@ class ClassRoomController extends Controller
             "mission_id"   => $mission_detail->id,
             "classroom_id" => $classroom->id
         ], $status == 1 ? 20 : 21);
+         
+
+        $pending_tag_user = TagModel::where('type',2)->where('status',2)->where('module_id',$tag->module_id)->get();
+
+        if($pending_tag_user){
+            foreach($pending_tag_user as $pnd){
+                $notif_mission = NotificationManager::addNewNotification($mission_detail->user_id,$pnd->foreign_id,[
+                    "mission_id"   => $mission_detail->id,
+                    "classroom_id" => $classroom->id
+                ],17); 
+            }
+        }
         
-        // $pending_point = UserPointsModel::where('status',2)->whereIn('type',[1,2])->where('mission_id',$mission_detail->id)->first();
-
-        // if($pending_point != null){
-
-        //     if($tag->status == 1)
-        //         $pending_point->update(['status' => 1]);
-            
-        //     $notif_mission = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
-        //         "mission_id" => $mission_detail->id,
-        //         "point_id"   => $pending_point->id,
-        //     ],11,[
-        //         "type"=>"point",
-        //         "payload"=> [
-        //             "title"=>"CONGRATULATIONS!",
-        //             "text"=> $pending_point->type == 1 ? "You have earned ".$pending_point->value." PTS for your first Mission!" : "You have earned ".$pending_point->value." PTS for Created Mission!",
-        //             "value"=> $pending_point->value ]
-        //     ]);
-
-        // $notif_tag = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
-        //     "mission_id"   => $mission_detail->id,
-        //     "classroom_id" => $classroom->id
-        // ],$tag->status == 1 ? 20 : 21);
-        // }
- 
-        DB::commit();
+        // DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'), $request->allow );
 
