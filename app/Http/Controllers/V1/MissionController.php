@@ -514,8 +514,7 @@ class MissionController extends Controller
         }  
     }
 
-    public function getMission(Request $request){ 
-
+    public function getMission(Request $request){  
         DB::beginTransaction();
 
         try {
@@ -572,7 +571,16 @@ class MissionController extends Controller
                 }
 
             }
-
+ 
+            if($this->user_login){
+                $user_login_id = $this->user_login->id;  
+                $mission = $mission->whereHas('User',function($q) use ($user_login_id ) {
+                    $q->whereDoesntHave('BlockedFrom',function($q2) use ($user_login_id) {  
+                        $q2->where('user_id_from',$user_login_id);
+                    });
+                });
+            }
+ 
             $perPage = $request->input('per_page',10);
             // if($perPage < 10) 
             //     $perPage = 20;
@@ -593,7 +601,7 @@ class MissionController extends Controller
     }
 
     public function getMissionDetail(Request $request){
-
+ 
         DB::beginTransaction();
 
         try {
