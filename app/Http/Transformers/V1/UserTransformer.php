@@ -21,6 +21,8 @@ class UserTransformer {
         $temp->company      = null;
         $temp->followed      = false;
 
+        $temp->blocked_user = $model->BlockedFrom->count();
+
         $temp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
         $temp->total_following  = $model->Followed ? $model->Followed->count() : 0;
         $temp->total_classroom   = $model->ClassRoom ? $model->ClassRoom->count() : 0;
