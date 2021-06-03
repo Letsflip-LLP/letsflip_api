@@ -91,14 +91,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\Http\Models\UserFollowModel','user_id_from','id');
     }
 
-    public function BlockedFrom()
+    public function BlockedTo()
     {
         return $this->hasMany('App\Http\Models\UserBlockModel','user_id_to','id');
     }
 
-    public function BlockedTo()
+    public function BlockedFrom()
     {
-        return $this->hasMany('App\Http\Models\UserBlockedModel','user_id_from','id');
+        return $this->hasMany('App\Http\Models\UserBlockModel','user_id_from','id');
     }
 
     public function Follower()

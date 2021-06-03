@@ -70,8 +70,14 @@ class UserController extends Controller
 
 
 
-        if($this->user_login->id){
-            $users = $users->whereDoesntHave('BlockedFrom',function($q){
+        if($this->user_login->id && !$request->filled('blocked')){
+            $users = $users->whereDoesntHave('BlockedTo',function($q){
+                $q->where('user_id_from',$this->user_login->id);
+            });
+        }
+
+        if($this->user_login->id && $request->filled('blocked')){
+            $users = $users->whereHas('BlockedTo',function($q){
                 $q->where('user_id_from',$this->user_login->id);
             });
         }
