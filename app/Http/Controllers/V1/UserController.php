@@ -12,6 +12,7 @@ use App\Http\Transformers\V1\UserTransformer;
 use App\Http\Transformers\V1\NotificationTransformer; 
 use App\Http\Models\NotificationModel;
 use App\Http\Models\UserFollowModel;
+use App\Http\Models\UserBlockModel;
 use App\Http\Models\ClassRoomModel;
 use Ramsey\Uuid\Uuid;
 use App\Http\Libraries\StorageCdn\StorageManager;
@@ -66,6 +67,11 @@ class UserController extends Controller
             $users = $users->whereHas('Follower',function($q1){
                 $q1->where('user_id_from',$this->user_login->id);
             });
+
+
+        $users = $users->whereDoesntHave('BlockedFrom',function($q){
+            $q->where('user_id_from',$this->user_login->id);
+        });
 
         if($request->filled('classroom_id')){
             $users = $users->whereHas('AccessClassrooms',function($q) use($request){
@@ -441,6 +447,43 @@ class UserController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
 
+    }
+
+    public function userBlockedAction(Request $request)
+    {        
+        DB::beginTransaction();
+        try { 
+            $user = auth('api')->user(); 
+
+            $action = 'add';
+
+            $check = UserBlockModel::where([
+                "user_id_from" => $user->id,
+                "user_id_to"   => $request->user_id
+            ])->first();
+
+            if($check != null){
+                $action = 'delete';
+                $check->destroy($check->id);
+            }else{
+                $follow = UserBlockModel::insert([
+                    "id" => Uuid::uuid4(),
+                    "user_id_from" => $user->id,
+                    "user_id_to"   => $request->user_id,
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ]);
+            };
+
+            DB::commit(); 
+ 
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),$action);
+
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 
 }
