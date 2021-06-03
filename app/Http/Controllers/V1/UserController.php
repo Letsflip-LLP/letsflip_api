@@ -69,10 +69,13 @@ class UserController extends Controller
             });
 
 
-        $users = $users->whereDoesntHave('BlockedFrom',function($q){
-            $q->where('user_id_from',$this->user_login->id);
-        });
 
+        if($this->user_login->id){
+            $users = $users->whereDoesntHave('BlockedFrom',function($q){
+                $q->where('user_id_from',$this->user_login->id);
+            });
+        }
+ 
         if($request->filled('classroom_id')){
             $users = $users->whereHas('AccessClassrooms',function($q) use($request){
                 $q->where('classroom_accesses.classroom_id',$request->classroom_id);
