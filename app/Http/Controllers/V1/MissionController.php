@@ -575,8 +575,8 @@ class MissionController extends Controller
             if($this->user_login){
                 $user_login_id = $this->user_login->id;  
                 $mission = $mission->whereHas('User',function($q) use ($user_login_id ) {
-                    $q->whereDoesntHave('BlockedFrom',function($q2) use ($user_login_id) {  
-                        $q2->where('user_id_from',$user_login_id);
+                    $q->whereDoesntHave('BlockedTo',function($q2) use ($user_login_id) {  
+                        $q2->where('user_id_to',$user_login_id);
                     });
                 });
             }
