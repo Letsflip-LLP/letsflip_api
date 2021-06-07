@@ -54,17 +54,20 @@ class ClassRoomController extends Controller
             $class_room->text          = $request->text;
             $class_room->file_path     = $storage->file_path;
             $class_room->file_name     = $storage->file_name;
-            $class_room->file_mime     = $storage->file_mime;  
+            $class_room->file_mime     = $storage->file_mime;
+            $class_room->price_template_id = $request->input('price_template_id',null);   
             $class_room->type          = $request->input('type',1);
 
             if(!$class_room->save()) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
-        DB::commit();
-
-            if($class_room->type == 3){
-                $this->_generatePlaystoreSku($class_room->title,$class_room->text,$classroom_id,'test');
+            if($class_room->type == 3 && $class_room->price_template_id){
+                $generate_sku = $this->_generatePlaystoreSku($class_room->title,$class_room->text,$classroom_id,$class_room->price_template_id);
+                
+                if($generate_sku != true ) dd($generate_sku);
             };
 
+        DB::commit();
+  
             return (new ClassRoomTransformer)->detail(200,__('message.200'),$class_room);
 
         } catch (\exception $exception){
@@ -80,7 +83,9 @@ class ClassRoomController extends Controller
 
     private function _generatePlaystoreSku($title,$text,$uuid,$price_id){
         try{
- 
+            
+            $price_detail = PriceTemplateModel::where('id',$price_id)->first();
+
             $client = new \Google_Client();
             $client->useApplicationDefaultCredentials();
             $client->addScope('https://www.googleapis.com/auth/androidpublisher');
@@ -93,20 +98,20 @@ class ClassRoomController extends Controller
             $serviceInApp->status = 'active';
             $serviceInApp->purchaseType = 'managedUser';
             $serviceInApp->defaultPrice =  new \stdClass();
-            $serviceInApp->defaultPrice->priceMicros = "9260000";
-            $serviceInApp->defaultPrice->currency = 'SGD';
+            $serviceInApp->defaultPrice->priceMicros = env('IN_APP_DEFAULT_CURRENCY','SGD') == 'SGD' ? $price_detail->sgd : $price_detail->usd;
+            $serviceInApp->defaultPrice->currency = env('IN_APP_DEFAULT_CURRENCY','SGD');
  
             $serviceInApp->listings  = [];
             $serviceInApp->listings['en-US'] = (object) [
-                    "title" => $title,
-                    "description" => $text 
+                    "title" => substr($title,0,50),
+                    "description" => substr($text,0,180)
             ];
 
             $insert = $service->inappproducts->insert('com.lets_flip',$serviceInApp,['autoConvertMissingPrices' => true]);
              
+            return true;
 
-        } catch (\exception $exception){
-
+        } catch (\exception $exception){  
             return false;
         }  
     }
@@ -368,7 +373,7 @@ class ClassRoomController extends Controller
 
         $class_room = $class_room->first();
    
-        if($class_room->type == 1)
+        if($class_room->type == 1 || $class_room->type == 3)
             return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
 
 
