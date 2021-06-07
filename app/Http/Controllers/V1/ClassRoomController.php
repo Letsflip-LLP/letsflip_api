@@ -119,10 +119,7 @@ class ClassRoomController extends Controller
 
             if($request->filled('user_id') && $request->module != 'response')
                 $class_room = $class_room->where('user_id',$request->user_id);
-
-            // if($request->filled('module'))
-            //     dd($request->module);
-
+ 
             if($request->filled('module')){
                 if($request->module == 'all'){
                     $class_room = $class_room->orWhereHas('Mission',function($q) use ($request){
@@ -147,8 +144,10 @@ class ClassRoomController extends Controller
                 if($order_by[0] == 'created_at')
                     $class_room = $class_room->orderBy($order_by[0],$order_by[1]);
                     
-                if($order_by[0] == 'trending')
-                    $class_room = $class_room->withCount('Like')->orderBy('like_count','desc');
+                if($order_by[0] == 'trending'){
+                    // $class_room = $class_room->withCount('Like')->orderBy('like_count','desc');
+                    $class_room = $class_room->withCount('LastMission')->orderBy('last_mission_count','desc')->orderBy('created_at','desc');
+                }
 
             }else{
                 $class_room = $class_room->orderBy('created_at','DESC'); 

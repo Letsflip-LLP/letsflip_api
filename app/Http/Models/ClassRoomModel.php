@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Models\MissionResponeModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class ClassRoomModel extends Model
 {
@@ -38,5 +39,13 @@ class ClassRoomModel extends Model
     public function PremiumUserAccess()
     {
         return $this->hasMany('App\Http\Models\ClassroomAccessModel','classroom_id','id');
+    }
+
+
+    public function LastMission()
+    {
+        return $this->belongsToMany('App\Http\Models\MissionModel','tags','foreign_id','module_id')->where('tags.type',1)->where('tags.status',1)
+        ->where('missions.created_at','<=',Carbon::now()->format('Y-m-d'))
+        ->where('missions.created_at','>=',Carbon::now()->subDays(5)->format('Y-m-d'));
     }
 }
