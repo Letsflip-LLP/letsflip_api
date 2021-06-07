@@ -577,7 +577,7 @@ class AuthController extends Controller
                 "version_code" => (integer) env('IOS_VERSION_CODE'),
                 "version_name" => env('IOS_VERSION_NAME'),
                 "version_mandatory" => env('IOS_VERSION_MANDATORY'),
-                "download_url" =>  env('IOS_APP_STORE_URL')
+                "download_url" =>  'https://apps.apple.com/us/app/lets-fl-p/id1538266714'//env('IOS_APP_STORE_URL')
             ]
         ];
 
