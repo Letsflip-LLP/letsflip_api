@@ -13,6 +13,7 @@ use App\Http\Models\ClassRoomModel;
 use App\Http\Models\TagModel; 
 use App\Http\Models\SubscriberModel; 
 use App\Http\Models\ClassroomAccessModel; 
+use App\Http\Models\PriceTemplateModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 use Jenssegers\Agent\Agent; 
@@ -59,7 +60,11 @@ class ClassRoomController extends Controller
             if(!$class_room->save()) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
         DB::commit();
-    
+
+            if($class_room->type == 3){
+                $this->_generatePlaystoreSku($class_room->title,$class_room->text,$classroom_id,'test');
+            };
+
             return (new ClassRoomTransformer)->detail(200,__('message.200'),$class_room);
 
         } catch (\exception $exception){
@@ -70,6 +75,39 @@ class ClassRoomController extends Controller
             DB::rollBack();
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    private function _generatePlaystoreSku($title,$text,$uuid,$price_id){
+        try{
+ 
+            $client = new \Google_Client();
+            $client->useApplicationDefaultCredentials();
+            $client->addScope('https://www.googleapis.com/auth/androidpublisher');
+            $service      = new \Google_Service_AndroidPublisher($client);
+ 
+            $serviceInApp = new \Google_Service_AndroidPublisher_InAppProduct($client);
+            
+            $serviceInApp->sku = str_replace('-','_',$uuid);
+            $serviceInApp->packageName = 'com.lets_flip'; 
+            $serviceInApp->status = 'active';
+            $serviceInApp->purchaseType = 'managedUser';
+            $serviceInApp->defaultPrice =  new \stdClass();
+            $serviceInApp->defaultPrice->priceMicros = "9260000";
+            $serviceInApp->defaultPrice->currency = 'SGD';
+ 
+            $serviceInApp->listings  = [];
+            $serviceInApp->listings['en-US'] = (object) [
+                    "title" => $title,
+                    "description" => $text 
+            ];
+
+            $insert = $service->inappproducts->insert('com.lets_flip',$serviceInApp,['autoConvertMissingPrices' => true]);
+             
+
+        } catch (\exception $exception){
+
+            return false;
         }  
     }
 
