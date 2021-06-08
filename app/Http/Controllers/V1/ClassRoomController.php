@@ -338,7 +338,7 @@ class ClassRoomController extends Controller
                 "access_code" => __('validation.exists',[ "atribute" => "Access code" ])
             ]);
             
-        $last_req = ClassroomAccessModel::where('classroom_id',$class_room->id)->where("user_id",$this->user_login->id)->where('status',2)->first();
+        $last_req = ClassroomAccessModel::where('classroom_id',$class_room->id)->where("user_id",$this->user_login->id)->whereIn('status',[1,2])->first();
 
         if($last_req)
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
@@ -366,8 +366,13 @@ class ClassRoomController extends Controller
                 "classroom_id" => $class_room->id,
                 "classroom_access_id"    => $access_id
             ],14); 
+        }else{
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room->user_id,[
+                "classroom_id" => $class_room->id,
+                "classroom_access_id"    => $access_id
+            ],23);  
         }
-        
+         
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
