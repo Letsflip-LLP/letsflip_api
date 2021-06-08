@@ -36,7 +36,8 @@ $router->group(['middleware'=> ['admin_dashboard']], function($router){
 
         // EDIT SUB 
         Route::get('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberEdit']);     
-        Route::post('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberSubmitEdit']);     
+        Route::post('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberSubmitEdit']);    
+        Route::get('/subscribers/resend-invitation/{id}', [AdminSubscriberController::class,'resendInviteSubscriber']);     
     });
 
     $router->group(['prefix' => 'company'], function($router){
