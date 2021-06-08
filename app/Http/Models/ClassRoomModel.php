@@ -46,6 +46,6 @@ class ClassRoomModel extends Model
     {
         return $this->belongsToMany('App\Http\Models\MissionModel','tags','foreign_id','module_id')->where('tags.type',1)->where('tags.status',1)
         ->where('missions.created_at','<=',Carbon::now()->format('Y-m-d'))
-        ->where('missions.created_at','>=',Carbon::now()->subDays(5)->format('Y-m-d'));
+        ->where('missions.created_at','>=',Carbon::now()->subDays(15)->format('Y-m-d'));
     }
 }
