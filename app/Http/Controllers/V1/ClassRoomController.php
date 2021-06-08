@@ -366,8 +366,13 @@ class ClassRoomController extends Controller
                 "classroom_id" => $class_room->id,
                 "classroom_access_id"    => $access_id
             ],14); 
+        }else{
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room->user_id,[
+                "classroom_id" => $class_room->id,
+                "classroom_access_id"    => $access_id
+            ],23);  
         }
-        
+         
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true);

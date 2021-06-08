@@ -27,6 +27,7 @@ return [
         20 => "All set! Your mission has been approved and will be listed in :classroom_title. Earn points as users respond to your mission. Share it now!",
         21 => "Oh no! Your mission :mission_title has been rejected in :classroom_title",
         22 => "Your response has been Graded. that’s :point PTS for your response!", 
+        23 => "You have a new guest! See who dropped into your Private Classroom"
     ],
     "TYPE" => [
         1 => "New Response in My Mission",
@@ -50,6 +51,7 @@ return [
         19 => "Waiting for Approval from Classroom Creator",
         20 => "Classroom Tagging Approved",
         21 => "Classroom Tagging Rejected",
-        22 => "Your response has been Graded!", 
+        22 => "Your response has been Graded!",  
+        23 => "New guest into your Private Classroom!"
     ]
 ];
