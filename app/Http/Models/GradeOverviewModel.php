@@ -15,7 +15,7 @@ class GradeOverviewModel extends Model
     public $incrementing = false;
     protected $table = 'grade_overviews'; 
     protected $fillable = [
-        "id", "mission_response_id", "text", "quality", "creativity", "language", "point", "created_at", "updated_at", "deleted_at"
+       "presentation","content", "id", "mission_response_id", "text", "quality", "creativity", "language", "point", "created_at", "updated_at", "deleted_at"
     ];
 
 }
