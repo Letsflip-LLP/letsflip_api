@@ -1351,7 +1351,7 @@ class MissionController extends Controller
         $return->preview     = $grade;
         $return->total_point = $point;
         $return->scale       = (object) [
-            "point_per_star" => $grade_review->point_per_star
+            "point_per_star" => $grade_review && $grade_review->point_per_star ? $grade_review->point_per_star : env('GRADE_PREVIEW_STAR',0)
         ]; 
 
         return $return;
