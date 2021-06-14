@@ -1244,6 +1244,7 @@ class MissionController extends Controller
                     "language"      => $language     = $request->input('language',0),
                     "presentation"  => $presentation = $request->input('presentation',0),
                     "content"       => $content      = $request->input('content',0),
+                    "point_per_star" =>  env('GRADE_PREVIEW_STAR'),
                     "text"        => $request->text,
                     "point"       => ($quality + $creativity + $language) * env('GRADE_PREVIEW_STAR',0)
                 ]
@@ -1350,7 +1351,7 @@ class MissionController extends Controller
         $return->preview     = $grade;
         $return->total_point = $point;
         $return->scale       = (object) [
-            "point_per_star" => env('GRADE_PREVIEW_STAR',0)
+            "point_per_star" => $grade_review->point_per_star
         ]; 
 
         return $return;
