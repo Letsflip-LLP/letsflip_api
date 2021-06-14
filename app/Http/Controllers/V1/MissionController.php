@@ -1327,7 +1327,7 @@ class MissionController extends Controller
         $grade = null;
         
         if($grade_review){
-            $bobot = env('GRADE_PREVIEW_STAR');
+            $bobot = $grade_review && $grade_review->point_per_star ? $grade_review->point_per_star : env('GRADE_PREVIEW_STAR',0);
 
             $grade = new \stdClass();
             $grade->quality      = $quality = $grade_review->quality;
