@@ -1239,9 +1239,11 @@ class MissionController extends Controller
                 [
                     "id"         => $grade_id = Uuid::uuid4(),
                     "mission_response_id" =>  $request->response_id,
-                    "quality"     => $quality = $request->quality,
-                    "creativity"  => $creativity = $request->creativity,
-                    "language"    => $language = $request->language,
+                    "quality"       => $quality      = $request->input('quality',0),
+                    "creativity"    => $creativity   = $request->input('creativity',0),
+                    "language"      => $language     = $request->input('language',0),
+                    "presentation"  => $presentation = $request->input('presentation',0),
+                    "content"       => $content      = $request->input('content',0),
                     "text"        => $request->text,
                     "point"       => ($quality + $creativity + $language) * env('GRADE_PREVIEW_STAR',0)
                 ]
@@ -1327,12 +1329,15 @@ class MissionController extends Controller
             $bobot = env('GRADE_PREVIEW_STAR');
 
             $grade = new \stdClass();
-            $grade->quality    = $quality = $grade_review->quality;
-            $grade->creativity = $creativity = $grade_review->creativity;
-            $grade->language   = $language = $grade_review->language;
+            $grade->quality      = $quality = $grade_review->quality;
+            $grade->creativity   = $creativity = $grade_review->creativity;
+            $grade->language     = $language = $grade_review->language;
+            $grade->presentation = $presentation = $grade_review->presentation;
+            $grade->content      = $content = $grade_review->content;
+
             $grade->text       = $grade_review->text;
 
-            $point = $point + ($quality*$bobot)  + ($creativity*$bobot) + ($language*$bobot);
+            $point = $point + ($quality*$bobot)  + ($creativity*$bobot) + ($language*$bobot) + ($presentation*$bobot) + ($content*$bobot);
         }
 
         $answer = new MissionAnswerModel;
