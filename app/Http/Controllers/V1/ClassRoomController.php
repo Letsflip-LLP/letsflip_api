@@ -63,7 +63,7 @@ class ClassRoomController extends Controller
             if($class_room->type == 3 && $class_room->price_template_id){
                 $generate_sku = $this->_generatePlaystoreSku($class_room->title,$class_room->text,$classroom_id,$class_room->price_template_id);
                 
-                if($generate_sku != true ) dd($generate_sku);
+                if($generate_sku != true ) return (new ResponseTransformer)->toJson(400,__('message.400'),$generate_sku);
             };
 
         DB::commit();
@@ -112,6 +112,9 @@ class ClassRoomController extends Controller
             return true;
 
         } catch (\exception $exception){  
+            
+            if($exception && $exception->message) return $exception->message;
+
             return false;
         }  
     }
