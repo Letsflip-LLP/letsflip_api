@@ -210,6 +210,9 @@
               </td>
               <td>
                 <a href="{{url('/admin/user/subscribers/edit/'.$subs->id)}}" class="badge badge-success text-dark">Edit</a>   
+                @if ($subs->email)
+                  <a href="{{url('/admin/user/subscribers/resend-invitation/'.$subs->id)}}" class="badge badge-warning text-dark">Resend Invitation</a>   
+                @endif 
               </td>
             </tr>
           @endforeach

@@ -201,4 +201,23 @@ class AdminSubscriberController extends Controller
 
         return redirect()->back();
     }
+
+    public function resendInviteSubscriber(Request $request){
+        DB::beginTransaction();
+        try {   
+            $account_check = new SubscriberModel;
+            $account_check = $account_check->where('id',$request->id);
+            $account_check = $account_check->first(); 
+        
+            $send_mail = \Mail::to($account_check->email)->queue(new subscribeInvitationToRegister(['email'=> $account_check->email ,'account_type' => subsType($account_check->type)->name ]));
+
+            DB::commit();     
+
+            return redirect()->back();
+
+        } catch (\exception $exception){ 
+            DB::rollBack();
+            return redirect()->back();
+        }  
+    }
 }

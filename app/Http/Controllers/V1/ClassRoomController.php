@@ -162,10 +162,7 @@ class ClassRoomController extends Controller
 
             if($request->filled('user_id') && $request->module != 'response')
                 $class_room = $class_room->where('user_id',$request->user_id);
-
-            // if($request->filled('module'))
-            //     dd($request->module);
-
+ 
             if($request->filled('module')){
                 if($request->module == 'all'){
                     $class_room = $class_room->orWhereHas('Mission',function($q) use ($request){
@@ -190,8 +187,10 @@ class ClassRoomController extends Controller
                 if($order_by[0] == 'created_at')
                     $class_room = $class_room->orderBy($order_by[0],$order_by[1]);
                     
-                if($order_by[0] == 'trending')
-                    $class_room = $class_room->withCount('Like')->orderBy('like_count','desc');
+                if($order_by[0] == 'trending'){
+                    // $class_room = $class_room->withCount('Like')->orderBy('like_count','desc');
+                    $class_room = $class_room->withCount('LastMission')->orderBy('last_mission_count','desc')->orderBy('created_at','desc');
+                }
 
             }else{
                 $class_room = $class_room->orderBy('created_at','DESC'); 
@@ -382,7 +381,7 @@ class ClassRoomController extends Controller
                 "access_code" => __('validation.exists',[ "atribute" => "Access code" ])
             ]);
             
-        $last_req = ClassroomAccessModel::where('classroom_id',$class_room->id)->where("user_id",$this->user_login->id)->where('status',2)->first();
+        $last_req = ClassroomAccessModel::where('classroom_id',$class_room->id)->where("user_id",$this->user_login->id)->whereIn('status',[1,2])->first();
 
         if($last_req)
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true);
@@ -410,8 +409,13 @@ class ClassRoomController extends Controller
                 "classroom_id" => $class_room->id,
                 "classroom_access_id"    => $access_id
             ],14); 
+        }else{
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$class_room->user_id,[
+                "classroom_id" => $class_room->id,
+                "classroom_access_id"    => $access_id
+            ],23);  
         }
-        
+         
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true);

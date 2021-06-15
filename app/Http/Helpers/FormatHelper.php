@@ -156,3 +156,14 @@ function sort_array_of_array($array, $subfield)
     array_multisort($sortarray, SORT_ASC, $array);
     return  $sortarray;
 }
+
+function emoth_point($point){
+    $val = $point;
+    switch($point){
+        case 100:
+            $val = "💯";
+        break;
+    }
+
+    return $val;
+}
