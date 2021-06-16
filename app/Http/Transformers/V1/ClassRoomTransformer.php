@@ -36,12 +36,27 @@ class ClassRoomTransformer {
         $temp->file_name    = $model->file_name;
         $temp->file_mime      = $model->file_mime;
         $temp->total_mission  = $model->Mission ? $model->Mission->where('status',1)->count() : 0;
-        $temp->total_respone  = 0;  
+        $temp->total_respone   = 0; 
+        $temp->price_template  = null;  
+          
         $temp->total_like     = $model->Like ? $model->Like->count() : 0;
         
         $temp->liked            = false;
         $temp->has_subscribe    = false;
         $temp->access_code      = false;
+
+        $temp->vendor_sku      = "basic_account";   
+        if($model->type == 2) $temp->vendor_sku = "private_account";
+        if($model->type == 3) $temp->vendor_sku = "master_account";
+
+        if($model->type == 3 && $model->PriceTemplate){
+            $temp->price_template = (object) [
+                "id" => $model->PriceTemplate->id,
+                "price_group_vendor" => $model->PriceTemplate->price_group_vendor
+            ];
+
+            $temp->vendor_sku = $model->PriceTemplate->price_group_vendor;
+        }
 
         if($model->type == 1)
             $temp->has_subscribe = true;

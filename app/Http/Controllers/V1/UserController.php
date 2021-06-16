@@ -366,15 +366,15 @@ class UserController extends Controller
 
         $data       = $request->data;  
         $ios_validate = ApplePayManager::validatePayment($request->data['transactionReceipt']);
-
+ 
        if($ios_validate == false || $ios_validate->status != 0) return (new ResponseTransformer)->toJson(400,__('messages.401'),$ios_validate);
 
         $product_account = config('account.premium_product');
-        $product_detail = $product_account[$data['productId']];
-        
+        $product_detail = isset($product_account[$data['productId']]) ? $product_account[$data['productId']] : null;
+         
         $vendor_trx_id = $data['transactionId'];
         $sub_start_date = date('Y-m-d H:i:s',$data['transactionDate']/1000);
-        $sub_end_date = Carbon::parse($sub_start_date)->add('months',$product_detail['duration'])->format('Y-m-d H:i:s');
+        $sub_end_date = Carbon::parse($sub_start_date)->add('months',12)->format('Y-m-d H:i:s');
    
         $check_sub = SubscriberModel::where('vendor_trx_id',$vendor_trx_id)->first();
 
@@ -397,10 +397,10 @@ class UserController extends Controller
                 "date_start"    => $sub_start_date, 
                 "date_end"      => $sub_end_date, 
                 "payload"       => json_encode($request->all()),
-                "type"          => $product_detail['type'],
+                "type"          => $product_detail ? $product_detail['type'] : 3,
                 "classroom_id"  => $request->classroom_id ? $request->classroom_id : null,
-                "product_id"    => $product_detail['id'],
-                "is_creator"    => $product_detail['type'] == 3 ? false : true
+                "product_id"    => $data['productId'],
+                "is_creator"    => $product_detail && $product_detail['type'] != 3 ? true : false
             ]
         );
 
