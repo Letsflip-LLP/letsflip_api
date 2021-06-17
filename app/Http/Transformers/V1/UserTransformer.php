@@ -45,7 +45,7 @@ class UserTransformer {
 
         $sub = $model->Subscribe ? $model->Subscribe->where('environment',$environment)->where('user_id',$model->id)->orderBy('type','DESC')->first() : null;
         
-        if($sub && $sub->type > 1){
+        if($sub && $sub->type > 1 && $sub->is_creator){
             $temp->type = subsType($sub->type); 
             $temp->type->is_creator = $sub->is_creator ? true : false;
         }
