@@ -981,7 +981,7 @@ class MissionController extends Controller
             [
                 'redirect_url' => $redirect_url,
                 'deeplink_url' => $deepLinkUrl,
-                'title'=> $data->title,
+                'title'=> $data->title != 'untitled' ? $data->title : 'Let`s FL!P | getletsflip.com',
                 'description'=>$data->text,
                 'og_image'=>Storage::disk('gcs')->url($data->image_path.'/'.$data->image_file)
             ]); 
