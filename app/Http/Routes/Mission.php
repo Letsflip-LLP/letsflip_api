@@ -110,6 +110,9 @@ $router->group(['middleware'=> [],'prefix' => 'classroom'], function($router){
 
         Route::post('user/remove', [ClassRoomController::class, 'removeUserClassroom'])->name('PostClassRoomControllerRemoveUserClassroom');
 
+
+        Route::get('price-template-availlable', [ClassRoomController::class, 'getPriceAvailableClassrroom'])->name('GetClassRoomControllerGetPriceAvailableClassrroom');
+
     });
 
     // Login Not Required

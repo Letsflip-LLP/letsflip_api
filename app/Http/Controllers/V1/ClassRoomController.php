@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
+use App\Http\Transformers\V1\PriceTransformer; 
 use App\Http\Transformers\V1\ClassRoomTransformer; 
 use App\Http\Models\ClassRoomModel; 
 use App\Http\Models\TagModel; 
@@ -556,6 +557,23 @@ class ClassRoomController extends Controller
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true );
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+    public function getPriceAvailableClassrroom(Request $request){
+        DB::beginTransaction();
+        try {
+
+            $prices = PriceTemplateModel::get(); 
+            DB::commit();
+    
+            return (new PriceTransformer)->list(200,__('messages.200'), $prices );
 
         } catch (\exception $exception){ 
 
