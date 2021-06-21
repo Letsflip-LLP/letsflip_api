@@ -268,7 +268,7 @@ class UserController extends Controller
             $purchase = $service->purchases_subscriptions->get($package,$sku,$token);
            
             return $purchase;
-        } catch (\exception $exception){ 
+        } catch (\exception $exception){  
             return false;
         }  
     }
@@ -292,7 +292,7 @@ class UserController extends Controller
                 if($class_room == null)
                     return (new ResponseTransformer)->toJson(400,__('messages.404'),["classroom_id" => ["Not found"]]);
             }
-            
+ 
             $vendor_payload = $request->data;  
             
             $product_id = $vendor_payload['productId'];
@@ -300,7 +300,7 @@ class UserController extends Controller
             $purchase_token = $vendor_payload['purchaseToken']; 
 
             $validate_token_purchase = $this->_purchaseDetail('com.lets_flip',$product_id,$purchase_token);
-
+   
             if($validate_token_purchase == false)
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
 
@@ -320,9 +320,11 @@ class UserController extends Controller
         if((integer) $validate_token_purchase['startTimeMillis'] < strtotime(date('Y-m-d H:i:s'))) return (new ResponseTransformer)->toJson(400,__('messages.401'), "Expired");
 
         $product_detail = $product_account[$product_id]; 
+        $account_type   = $product_detail ? $product_detail['type'] : 3;
+         
         // CHECK EXISTING
         $check_sub = SubscriberModel::where('vendor_trx_id',$transaction_id)->first(); 
-        if($check_sub){   
+        if($check_sub){
             $check_sub->update([
                 "user_id" =>$this->user_login->id
             ]);  
@@ -342,12 +344,28 @@ class UserController extends Controller
                 "date_start"    => $sub_start_date,//date('Y-m-d H:i:s'),
                 "date_end"      => $sub_end_date,//Carbon::now()->add('months',$product_detail['duration'])->format('Y-m-d H:i:s'),
                 "payload"       => json_encode($request->all()),
-                "type"          => $product_detail['type'],
+                "type"          => $account_type,
                 "classroom_id"  => $class_room ? $class_room->id : null,
                 "product_id"    => $product_id,
-                "is_creator"    => $product_detail['type'] == 3 ? false : true
+                "is_creator"    => $account_type == 3 ? false : true
             ]
-        );
+        ); 
+        
+        if($class_room != null && $class_room->type == 3){
+            $classroom_detail = $class_room;
+            $access               = new ClassroomAccessModel;
+            $access               = $access->insert([
+                "classroom_id" => $request->classroom_id ,
+                "user_id"      =>  $this->user_login->id, 
+                "id"           =>  $access_id = Uuid::uuid4(),
+                "access_code"  =>  null,
+                "status"       => 1
+            ]);
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$classroom_detail->user_id,[
+                "classroom_id" => $request->classroom_id ,
+                "classroom_access_id"    => $access_id
+            ],23);
+        }
 
         DB::commit();
     
