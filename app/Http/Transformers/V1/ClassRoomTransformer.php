@@ -50,12 +50,14 @@ class ClassRoomTransformer {
         if($model->type == 3) $temp->vendor_sku = "master_account";
 
         if($model->type == 3 && $model->PriceTemplate){
+            $temp->vendor_sku = $model->PriceTemplate->price_group_vendor;
+
             $temp->price_template = (object) [
                 "id" => $model->PriceTemplate->id,
-                "price_group_vendor" => $model->PriceTemplate->price_group_vendor
+                "price_group_vendor" => $model->PriceTemplate->price_group_vendor,
+                "vendor_sku_ios" =>  $temp->vendor_sku,
+                "vendor_sku_android" => str_replace('-','_',$model->id)
             ];
-
-            $temp->vendor_sku = $model->PriceTemplate->price_group_vendor;
         }
 
         if($model->type == 1)

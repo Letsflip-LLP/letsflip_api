@@ -432,7 +432,7 @@ class UserController extends Controller
             $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$classroom_detail->user_id,[
                 "classroom_id" => $request->classroom_id ,
                 "classroom_access_id"    => $access_id
-            ],14);
+            ],23);
         }
 
         DB::commit();
