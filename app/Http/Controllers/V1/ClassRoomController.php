@@ -552,7 +552,7 @@ class ClassRoomController extends Controller
         $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$access->user_id,[
             "classroom_id"        => $access->classroom_id,
             "classroom_access_id" => $access->id
-        ], 16);
+        ],24);
 
         DB::commit();
     

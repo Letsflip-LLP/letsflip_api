@@ -102,6 +102,10 @@ class NotificationTransformer {
         if($model->type == 23) 
             $temp->text  =  __('notification.TEXT.'.$model->type);
 
+
+        if($model->type == 24) 
+            $temp->text  =  __('notification.TEXT.'.$model->type,['user_name_from' => $model->ClassRoom->User ? $model->ClassRoom->User->first_name.' '.$model->ClassRoom->User->last_name : ""]);
+
         $temp->title        =   __('notification.TYPE.'.$model->type);
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
 
