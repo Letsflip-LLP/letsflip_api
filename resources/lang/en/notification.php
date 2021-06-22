@@ -26,7 +26,7 @@ return [
         // 20 => "Your mission :mission_title is Approved to be listed in the Classroom: :classroom_title",
         20 => "All set! Your mission has been approved and will be listed in :classroom_title. Earn points as users respond to your mission. Share it now!",
         21 => "Oh no! Your mission :mission_title has been rejected in :classroom_title",
-        22 => "Your response has been Graded. that’s :point PTS for your response!", 
+        22 => "Your mission has been graded! Tap to find out how you fared!", 
         23 => "You have a new guest! See who dropped into your Private Classroom"
     ],
     "TYPE" => [
