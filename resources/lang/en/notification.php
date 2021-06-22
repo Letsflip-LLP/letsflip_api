@@ -16,7 +16,7 @@ return [
         13 => "Sorry, not sorry! Your points got deducted cos you deleted your respone 😔",
         14 => ":user_name_from request to join your Private Classroom: :module_title",
         // 15 => ":user_name_from has accepted your request to join Private Classroom: :module_title",
-        15 => "Classroom access request accepted! Lets get flippin!",
+        15 => "Classroom access request accepted! Upload your first flip now!",
         16 => ":user_name_from Rejected you to join Private Classroom: :module_title",
         // 17 => ":user_name_from is Tagging you in Mission: :module_title",
         17 => "Whoa, you’ve been tagged! Check out :module_title by :user_name_from!",
@@ -45,7 +45,7 @@ return [
         12 => "Point deducted, Deleted Mission",
         13 => "Point deducted, Deleted Response",
         14 => "Request To Access Classroom",
-        15 => "Accepted Classroom Access",
+        15 => "Classroom access request accepted!",//"Accepted Classroom Access",
         16 => "Rejected Classroom Access",
         17 => "Tag in Mission",
         18 => "Tagged you in a Response", 
@@ -53,7 +53,7 @@ return [
         20 => "All Set!",//"Classroom Tagging Approved",
         21 => "Classroom Tagging Rejected",
         22 => "Your response has been Graded!",  
-        23 => "New guest into your Private Classroom!",
+        23 => "You have a new guest!",//"New guest into your Private Classroom!",
         24 => "Oooh, Someone kicked you out of their classroom!!"
     ]
 ];
