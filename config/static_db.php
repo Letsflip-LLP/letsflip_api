@@ -5,7 +5,7 @@ return [
         "learning_journey" => [
                 [
                     "id" => "d52ee232-df02-4481-aa4a-fc2d2cd9b098",
-                    "title" => "Why and what is your thought process"
+                    "title" => "What is your thought process and what led you to it?"
                 ],
                 [
                     "id" => "7a47fce3-b923-48b6-ab4e-771251fa4114",

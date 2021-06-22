@@ -44,7 +44,7 @@ class NotificationTransformer {
                 $temp->text    = __('notification.TEXT.'.$model->type,['user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_]);    
         
 
-            if($model->type == 2)
+            if($model->type == 2 && $model->ClassRoom)
                 $temp->text = __('notification.TEXT.2',['type'=> $model->ClassRoom->type == 1 ? "Public Class Room" : subsType($model->ClassRoom->type)->name, 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $model->ClassRoom->title]);    
 
             if($model->type == 2 && $model->Mission && $model->Mission->ClassRoomTag){ 
@@ -101,6 +101,10 @@ class NotificationTransformer {
 
         if($model->type == 23) 
             $temp->text  =  __('notification.TEXT.'.$model->type);
+
+
+        if($model->type == 24) 
+            $temp->text  =  __('notification.TEXT.'.$model->type,['user_name_from' => $model->ClassRoom->User ? $model->ClassRoom->User->first_name.' '.$model->ClassRoom->User->last_name : ""]);
 
         $temp->title        =   __('notification.TYPE.'.$model->type);
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);

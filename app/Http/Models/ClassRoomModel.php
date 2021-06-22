@@ -48,4 +48,9 @@ class ClassRoomModel extends Model
         ->where('missions.created_at','<=',Carbon::now()->format('Y-m-d'))
         ->where('missions.created_at','>=',Carbon::now()->subDays(15)->format('Y-m-d'));
     }
+
+    public function PriceTemplate()
+    {
+        return $this->hasOne('App\Http\Models\PriceTemplateModel','id','price_template_id');
+    }
 }

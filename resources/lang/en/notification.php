@@ -16,7 +16,7 @@ return [
         13 => "Sorry, not sorry! Your points got deducted cos you deleted your respone 😔",
         14 => ":user_name_from request to join your Private Classroom: :module_title",
         // 15 => ":user_name_from has accepted your request to join Private Classroom: :module_title",
-        15 => "Classroom access request accepted! Lets get flippin!",
+        15 => "Classroom access request accepted! Upload your first flip now!",
         16 => ":user_name_from Rejected you to join Private Classroom: :module_title",
         // 17 => ":user_name_from is Tagging you in Mission: :module_title",
         17 => "Whoa, you’ve been tagged! Check out :module_title by :user_name_from!",
@@ -26,14 +26,15 @@ return [
         // 20 => "Your mission :mission_title is Approved to be listed in the Classroom: :classroom_title",
         20 => "All set! Your mission has been approved and will be listed in :classroom_title. Earn points as users respond to your mission. Share it now!",
         21 => "Oh no! Your mission :mission_title has been rejected in :classroom_title",
-        22 => "Your response has been Graded. that’s :point PTS for your response!", 
-        23 => "You have a new guest! See who dropped into your Private Classroom"
+        22 => "Your mission has been graded! Tap to find out how you fared!", 
+        23 => "You have a new guest! See who dropped into your Private Classroom",
+        24 => "Oooh, :user_name_from just kicked you out of their classroom!! Click here to request access again"
     ],
     "TYPE" => [
         1 => "New Response in My Mission",
         2 => "New Mission in My Classroom",
         3 => "Like From My Mission",
-        4 => "Like From My Response",
+        4 => "Well done",// "Like From My Response",
         5 => "Like comment in mission",
         6 => "Like comment in Response",
         7 => "New Comment in Mission",
@@ -44,14 +45,15 @@ return [
         12 => "Point deducted, Deleted Mission",
         13 => "Point deducted, Deleted Response",
         14 => "Request To Access Classroom",
-        15 => "Accepted Classroom Access",
+        15 => "Classroom access request accepted!",//"Accepted Classroom Access",
         16 => "Rejected Classroom Access",
         17 => "Tag in Mission",
-        18 => "Tag in Respone", 
-        19 => "Waiting for Approval from Classroom Creator",
-        20 => "Classroom Tagging Approved",
+        18 => "Tagged you in a Response", 
+        19 => "One More Thing…",//"Waiting for Approval from Classroom Creator",
+        20 => "All Set!",//"Classroom Tagging Approved",
         21 => "Classroom Tagging Rejected",
         22 => "Your response has been Graded!",  
-        23 => "New guest into your Private Classroom!"
+        23 => "You have a new guest!",//"New guest into your Private Classroom!",
+        24 => "Oooh, Someone kicked you out of their classroom!!"
     ]
 ];

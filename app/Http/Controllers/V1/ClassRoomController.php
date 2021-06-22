@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Transformers\ResponseTransformer; 
+use App\Http\Transformers\V1\PriceTransformer; 
 use App\Http\Transformers\V1\ClassRoomTransformer; 
 use App\Http\Models\ClassRoomModel; 
 use App\Http\Models\TagModel; 
 use App\Http\Models\SubscriberModel; 
 use App\Http\Models\ClassroomAccessModel; 
+use App\Http\Models\PriceTemplateModel;
 use Ramsey\Uuid\Uuid;
 use DB;
 use Jenssegers\Agent\Agent; 
@@ -53,13 +55,20 @@ class ClassRoomController extends Controller
             $class_room->text          = $request->text;
             $class_room->file_path     = $storage->file_path;
             $class_room->file_name     = $storage->file_name;
-            $class_room->file_mime     = $storage->file_mime;  
+            $class_room->file_mime     = $storage->file_mime;
+            $class_room->price_template_id = $request->input('price_template_id',null);   
             $class_room->type          = $request->input('type',1);
 
             if(!$class_room->save()) return (new ResponseTransformer)->toJson(400,__('message.400'),false);
 
+            if($class_room->type == 3 && $class_room->price_template_id){
+                $generate_sku = $this->_generatePlaystoreSku($class_room->title,$class_room->text,$classroom_id,$class_room->price_template_id);
+                
+                if($generate_sku != true ) return (new ResponseTransformer)->toJson(400,__('message.400'),$generate_sku);
+            };
+
         DB::commit();
-    
+  
             return (new ClassRoomTransformer)->detail(200,__('message.200'),$class_room);
 
         } catch (\exception $exception){
@@ -70,6 +79,44 @@ class ClassRoomController extends Controller
             DB::rollBack();
 
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    private function _generatePlaystoreSku($title,$text,$uuid,$price_id){
+        try{
+            
+            $price_detail = PriceTemplateModel::where('id',$price_id)->first();
+
+            $client = new \Google_Client();
+            $client->useApplicationDefaultCredentials();
+            $client->addScope('https://www.googleapis.com/auth/androidpublisher');
+            $service      = new \Google_Service_AndroidPublisher($client);
+ 
+            $serviceInApp = new \Google_Service_AndroidPublisher_InAppProduct($client);
+            
+            $serviceInApp->sku = str_replace('-','_',$uuid);
+            $serviceInApp->packageName = 'com.lets_flip'; 
+            $serviceInApp->status = 'active';
+            $serviceInApp->purchaseType = 'managedUser';
+            $serviceInApp->defaultPrice =  new \stdClass();
+            $serviceInApp->defaultPrice->priceMicros = env('IN_APP_DEFAULT_CURRENCY','SGD') == 'SGD' ? $price_detail->sgd : $price_detail->usd;
+            $serviceInApp->defaultPrice->currency = env('IN_APP_DEFAULT_CURRENCY','SGD');
+ 
+            $serviceInApp->listings  = [];
+            $serviceInApp->listings['en-US'] = (object) [
+                    "title" => substr($title,0,50),
+                    "description" => substr($text,0,180)
+            ];
+
+            $insert = $service->inappproducts->insert('com.lets_flip',$serviceInApp,['autoConvertMissingPrices' => true]);
+             
+            return true;
+
+        } catch (\exception $exception){  
+            
+            if($exception && $exception->message) return $exception->message;
+
+            return false;
         }  
     }
 
@@ -329,7 +376,7 @@ class ClassRoomController extends Controller
 
         $class_room = $class_room->first();
    
-        if($class_room->type == 1)
+        if($class_room->type == 1 || $class_room->type == 3)
             return (new ResponseTransformer)->toJson(400,__('messages.400'), true);
 
 
@@ -505,11 +552,28 @@ class ClassRoomController extends Controller
         $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$access->user_id,[
             "classroom_id"        => $access->classroom_id,
             "classroom_access_id" => $access->id
-        ], 16);
+        ],24);
 
         DB::commit();
     
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true );
+
+        } catch (\exception $exception){ 
+
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }
+    }
+
+    public function getPriceAvailableClassrroom(Request $request){
+        DB::beginTransaction();
+        try {
+
+            $prices = PriceTemplateModel::get(); 
+            DB::commit();
+    
+            return (new PriceTransformer)->list(200,__('messages.200'), $prices );
 
         } catch (\exception $exception){ 
 

@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\App;
 use Carbon\Carbon;
 use DB;
 use App\Http\Models\SubscriberModel; 
+use App\Http\Models\ClassroomAccessModel; 
+use App\Http\Libraries\Notification\NotificationManager;
+
 
 class UserController extends Controller
 { 
@@ -265,7 +268,7 @@ class UserController extends Controller
             $purchase = $service->purchases_subscriptions->get($package,$sku,$token);
            
             return $purchase;
-        } catch (\exception $exception){ 
+        } catch (\exception $exception){  
             return false;
         }  
     }
@@ -289,7 +292,7 @@ class UserController extends Controller
                 if($class_room == null)
                     return (new ResponseTransformer)->toJson(400,__('messages.404'),["classroom_id" => ["Not found"]]);
             }
-            
+ 
             $vendor_payload = $request->data;  
             
             $product_id = $vendor_payload['productId'];
@@ -297,7 +300,7 @@ class UserController extends Controller
             $purchase_token = $vendor_payload['purchaseToken']; 
 
             $validate_token_purchase = $this->_purchaseDetail('com.lets_flip',$product_id,$purchase_token);
-
+   
             if($validate_token_purchase == false)
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
 
@@ -317,9 +320,11 @@ class UserController extends Controller
         if((integer) $validate_token_purchase['startTimeMillis'] < strtotime(date('Y-m-d H:i:s'))) return (new ResponseTransformer)->toJson(400,__('messages.401'), "Expired");
 
         $product_detail = $product_account[$product_id]; 
+        $account_type   = $product_detail ? $product_detail['type'] : 3;
+         
         // CHECK EXISTING
         $check_sub = SubscriberModel::where('vendor_trx_id',$transaction_id)->first(); 
-        if($check_sub){   
+        if($check_sub){
             $check_sub->update([
                 "user_id" =>$this->user_login->id
             ]);  
@@ -339,12 +344,28 @@ class UserController extends Controller
                 "date_start"    => $sub_start_date,//date('Y-m-d H:i:s'),
                 "date_end"      => $sub_end_date,//Carbon::now()->add('months',$product_detail['duration'])->format('Y-m-d H:i:s'),
                 "payload"       => json_encode($request->all()),
-                "type"          => $product_detail['type'],
+                "type"          => $account_type,
                 "classroom_id"  => $class_room ? $class_room->id : null,
                 "product_id"    => $product_id,
-                "is_creator"    => $product_detail['type'] == 3 ? false : true
+                "is_creator"    => $account_type == 3 ? false : true
             ]
-        );
+        ); 
+        
+        if($class_room != null && $class_room->type == 3){
+            $classroom_detail = $class_room;
+            $access               = new ClassroomAccessModel;
+            $access               = $access->insert([
+                "classroom_id" => $request->classroom_id ,
+                "user_id"      =>  $this->user_login->id, 
+                "id"           =>  $access_id = Uuid::uuid4(),
+                "access_code"  =>  null,
+                "status"       => 1
+            ]);
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$classroom_detail->user_id,[
+                "classroom_id" => $request->classroom_id ,
+                "classroom_access_id"    => $access_id
+            ],23);
+        }
 
         DB::commit();
     
@@ -366,17 +387,24 @@ class UserController extends Controller
 
         $data       = $request->data;  
         $ios_validate = ApplePayManager::validatePayment($request->data['transactionReceipt']);
-
+ 
        if($ios_validate == false || $ios_validate->status != 0) return (new ResponseTransformer)->toJson(400,__('messages.401'),$ios_validate);
 
         $product_account = config('account.premium_product');
-        $product_detail = $product_account[$data['productId']];
-        
+        $product_detail = isset($product_account[$data['productId']]) ? $product_account[$data['productId']] : null;
+         
+        $account_type = $product_detail ? $product_detail['type'] : 3;
+
         $vendor_trx_id = $data['transactionId'];
         $sub_start_date = date('Y-m-d H:i:s',$data['transactionDate']/1000);
-        $sub_end_date = Carbon::parse($sub_start_date)->add('months',$product_detail['duration'])->format('Y-m-d H:i:s');
+        $sub_end_date = Carbon::parse($sub_start_date)->add('months',12)->format('Y-m-d H:i:s');
    
-        $check_sub = SubscriberModel::where('vendor_trx_id',$vendor_trx_id)->first();
+        $check_sub = SubscriberModel::where('vendor_trx_id',$vendor_trx_id);
+
+        if($account_type == 3 && $request->classroom_id)
+            $check_sub = $check_sub->where('classroom_id',$request->classroom_id);
+
+        $check_sub = $check_sub->first();
 
         if($check_sub){   
             $check_sub->update([
@@ -384,25 +412,46 @@ class UserController extends Controller
             ]); 
             return (new ResponseTransformer)->toJson(200,__('messages.200'), true);   
         }
+ 
+        $if = [ 
+            "user_id" => $this->user_login->id,
+            "status" => 1,
+            "vendor_trx_id" => $vendor_trx_id,
+            "environment" => request()->header('environment','production')//$ios_validate->environment == 'Sandbox' ? 'staging' :  'production'
+        ];
+
+        if($account_type == 3 && $request->classroom_id) $if['classroom_id'] = $request->classroom_id;
 
         $subscribe =  SubscriberModel::firstOrCreate(
-            [ 
-                "user_id" => $this->user_login->id,
-                "status" => 1,
-                "vendor_trx_id" => $vendor_trx_id,
-                "environment" => request()->header('environment','production')//$ios_validate->environment == 'Sandbox' ? 'staging' :  'production'
-            ],
+            $if,
             [
                 "id"            => Uuid::uuid4(),
                 "date_start"    => $sub_start_date, 
                 "date_end"      => $sub_end_date, 
                 "payload"       => json_encode($request->all()),
-                "type"          => $product_detail['type'],
+                "type"          => $account_type,
                 "classroom_id"  => $request->classroom_id ? $request->classroom_id : null,
-                "product_id"    => $product_detail['id'],
-                "is_creator"    => $product_detail['type'] == 3 ? false : true
+                "product_id"    => $data['productId'],
+                "is_creator"    => $product_detail && $product_detail['type'] != 3 ? true : false
             ]
         );
+
+
+        if($account_type == 3 && $request->classroom_id){
+            $classroom_detail = ClassroomModel::where('id',$request->classroom_id)->first();
+            $access               = new ClassroomAccessModel;
+            $access               = $access->insert([
+                "classroom_id" => $request->classroom_id ,
+                "user_id"      =>  $this->user_login->id, 
+                "id"           =>  $access_id = Uuid::uuid4(),
+                "access_code"  =>  null,
+                "status"       => 1
+            ]);
+            $notif_mission = NotificationManager::addNewNotification($this->user_login->id,$classroom_detail->user_id,[
+                "classroom_id" => $request->classroom_id ,
+                "classroom_access_id"    => $access_id
+            ],23);
+        }
 
         DB::commit();
     
