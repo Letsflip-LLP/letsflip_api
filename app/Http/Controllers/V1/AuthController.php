@@ -566,6 +566,14 @@ class AuthController extends Controller
 
 
     public function checkAppUpdate(){
+        $term_use_link = [];
+
+        $term_use_link[] = (object)[ "title" => "About Let's Flip", "url" => "https://getletsflip.com" ];
+        $term_use_link[] = (object)[ "title" => "Term of use", "url" => "https://getletsflip.com/term-and-conditions​" ];
+        $term_use_link[] = (object)[ "title" => "Help", "url" => "https://getletsflip.com/contact-us" ];
+        $term_use_link[] = (object)[ "title" => "Privacy and policy", "url" => "https://getletsflip.com/privacy-policy-getletsflip" ]; 
+        
+
         $data = [
             "android" => [
                 "version_code" => (integer) env('ANDROID_VERSION_CODE',0),
@@ -578,7 +586,8 @@ class AuthController extends Controller
                 "version_name" => env('IOS_VERSION_NAME'),
                 "version_mandatory" => env('IOS_VERSION_MANDATORY'),
                 "download_url" =>  'https://apps.apple.com/us/app/lets-fl-p/id1538266714'//env('IOS_APP_STORE_URL')
-            ]
+            ],
+            "term_use_link" => $term_use_link
         ];
 
         return (new ResponseTransformer)->toJson(200,"Ok",$data); 
