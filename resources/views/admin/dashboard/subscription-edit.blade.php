@@ -15,15 +15,15 @@
 
           <div class="form-group">
             <label for="exampleInputUsername1">Email</label>
-            <input disabled value="{{$subscriber->User ? $subscriber->User->email : $subscriber->email}}" type="email" required placeholder="Email" name="email" class="form-control"/> 
+            <input disabled value="{{$subscriber->User ? $subscriber->User->email : $subscriber->email}}" type="email" required placeholder="Email" name="email" class="form-control"/>
           </div>
-          
+
           <div class="form-group">
             <label for="exampleInputEmail1">Company</label>
-            <select name="company_id" required placeholder="Type" name="type" class="form-control">
+            <select name="company_id" placeholder="Company" name="company" class="form-control">
               <option value="NULL">-- Company --</option>
               @foreach ($company as $com)
-                <option {{$subscriber->User && $subscriber->User->company_id == $com->id ? 'selected' : ''}} value={{$com->id}}>{{$com->title}}</option>
+                <option {{ ($subscriber->User && $subscriber->User->company_id == $com->id) || $subscriber->company_id == $com->id ? 'selected' : ''}} value={{$com->id}}>{{$com->title}}</option>
               @endforeach
             </select>
           </div>
@@ -39,9 +39,17 @@
             </select>
           </div>
           <div class="form-group">
+            <label for="exampleInputEmail1">Environment </label>
+            <select  required placeholder="Environment" name="environment" class="form-control">
+              <option>-- Environment --</option>
+              <option value="staging" {{$subscriber->environment == 'staging' ? "selected"  : ""}}>Staging</option>
+              <option value="production" {{$subscriber->environment == 'production' ? "selected"  : ""}}>Production</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label for="exampleInputPassword1">Validity Start Date</label>
-            <input value={{$subscriber->date_start}} required  type="date" placeholder="Start Date" name="date_start" class="form-control"/> 
-            <input value={{$subscriber->id}} required  type="hidden" placeholder="Start Date" name="id" class="form-control"/> 
+            <input value={{$subscriber->date_start}} required  type="date" placeholder="Start Date" name="date_start" class="form-control"/>
+            <input value={{$subscriber->id}} required  type="hidden" placeholder="Start Date" name="id" class="form-control"/>
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Validity End Date</label>
@@ -57,7 +65,7 @@
          </form>
       </div>
     </div>
-  </div> 
+  </div>
 </div>
- 
+
 @endsection
