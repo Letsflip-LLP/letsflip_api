@@ -28,7 +28,7 @@
          *{
          font-family: Arial !important;
        }
-      </style> 
+      </style>
       <!--<![endif]-->
       <!--[if mso]>
       <xml>
@@ -63,13 +63,13 @@
          td.full-width-mobile { width: auto !important; }
          }
       </style>
-      <style type="text/css">.hide_on_mobile { display: none !important;} 
+      <style type="text/css">.hide_on_mobile { display: none !important;}
          @media only screen and (min-width: 480px) { .hide_on_mobile { display: block !important;} }
-         .hide_section_on_mobile { display: none !important;} 
+         .hide_section_on_mobile { display: none !important;}
          @media only screen and (min-width: 480px) { .hide_section_on_mobile { display: table !important;} }
-         .hide_on_desktop { display: block !important;} 
+         .hide_on_desktop { display: block !important;}
          @media only screen and (min-width: 480px) { .hide_on_desktop { display: none !important;} }
-         .hide_section_on_desktop { display: table !important;} 
+         .hide_section_on_desktop { display: table !important;}
          @media only screen and (min-width: 480px) { .hide_section_on_desktop { display: none !important;} }
          [owa] .mj-column-per-100 {
          width: 100%!important;
@@ -185,25 +185,25 @@
                                                                               <table align="" border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px; width:100%">
                                                                                  <tbody>
                                                                                     <tr>
-                                                                                       <td style="with:20%"></td>
-                                                                                       <td style="width:123px;">
+                                                                                       <td style="with:25%"></td>
+                                                                                       <td style="width:25%">
                                                                                           <a href="https://apps.apple.com/us/app/lets-fl-p/id1538266714">
-                                                                                             <img height="auto" src="{{url('/web/images/app-store.png')}}" style="margin-right:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="123">
-                                                                                          </a>  
-                                                                                       </td>
-                                                                                       <td style="width:135px;">
-                                                                                          <a href="{{env('ANDROID_PLAYSTORE_URL')}}">
-                                                                                             <img height="auto" src="{{url('/web/images/play-store.png')}}" style="margin-left:10px; border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="135">
+                                                                                             <img height="auto" src="{{url('/web/images/app-store.png')}}" style="margin-right:2vw; border:0;display:block;outline:none;text-decoration:none;height:auto;width:125px;max-width:30vw;float:right">
                                                                                           </a>
                                                                                        </td>
-                                                                                       <td style="with:20%"></td>
-                                                                                    </tr> 
+                                                                                       <td style="width:25%">
+                                                                                          <a href="{{env('ANDROID_PLAYSTORE_URL')}}">
+                                                                                             <img height="auto" src="{{url('/web/images/play-store.png')}}" style="margin-left:2vw; border:0;display:block;outline:none;text-decoration:none;height:auto;width:125px;max-width:30vw;">
+                                                                                          </a>
+                                                                                       </td>
+                                                                                       <td style="with:25%"></td>
+                                                                                    </tr>
                                                                                  </tbody>
                                                                               </table>
                                                                            </td>
                                                                         </tr>
                                                                      </table>
-                                                                  </div>  
+                                                                  </div>
                                                                   <!--[if mso | IE]>
                                                                </td>
                                                             </tr>
@@ -217,9 +217,9 @@
                                                                                  <p style="text-align: center;"><span style="color: #333333;">Copyright &copy; 2020 Let&rsquo;s Fl!p. All Rights Reserved.</span></p>
                                                                               </div>
                                                                            </td>
-                                                                        </tr>   
+                                                                        </tr>
                                              </table>
-                                          </div> 
+                                          </div>
                                           <!--[if mso | IE]>
                                        </td>
                                     </tr>
@@ -281,5 +281,6 @@
             </tr>
          </table>
          <![endif]-->
-      </div> 
+      </div>
 </html>
+
