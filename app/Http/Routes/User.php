@@ -34,6 +34,8 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
             Route::post('/blocked/action', [UserController::class, 'userBlockedAction'])->name('GetUserControllerAddUserFollow');
 
             Route::get('summary-update', [UserController::class, 'getSelfSummaryUpdate'])->name('GetUserControllerGetSelfSummaryUpdate');
+
+            Route::post('/logout', [UserController::class, 'logout'])->name('GetUserControllerLogout');
         });
     });
 });
