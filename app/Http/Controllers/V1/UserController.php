@@ -68,7 +68,7 @@ class UserController extends Controller
   
         DB::commit();
 
-        return (new ResponseTransformer)->toJson(200,"Success", true);  
+        return (new ResponseTransformer)->toJson(200,"Success",[$request->notif_player_id]);  
 
         } catch (\exception $exception){ 
             DB::rollBack(); 
