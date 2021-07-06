@@ -14,6 +14,7 @@ use App\Http\Models\NotificationModel;
 use App\Http\Models\UserFollowModel;
 use App\Http\Models\UserBlockModel;
 use App\Http\Models\ClassRoomModel;
+use App\Http\Models\UserDevices;
 use Ramsey\Uuid\Uuid;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Libraries\ApplePay\ApplePayManager;
@@ -23,6 +24,7 @@ use DB;
 use App\Http\Models\SubscriberModel; 
 use App\Http\Models\ClassroomAccessModel; 
 use App\Http\Libraries\Notification\NotificationManager;
+use Illuminate\Support\Facades\Auth;
 
 
 class UserController extends Controller
@@ -49,6 +51,29 @@ class UserController extends Controller
         // $this->updateSub();
 
         return (new UserTransformer)->detail(200,"Success",$user); 
+    }
+
+    public function logout(Request $request){
+
+        DB::beginTransaction();
+
+        try {
+
+        $user = auth('api')->user();
+ 
+        if($request->filled('notif_player_id')){
+            $device = $user->Device->where('player_id',$request->notif_player_id)->first();
+            if($device) $device->delete();
+        }
+  
+        DB::commit();
+
+        return (new ResponseTransformer)->toJson(200,"Success",[$request->notif_player_id]);  
+
+        } catch (\exception $exception){ 
+            DB::rollBack(); 
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 
     private function updateSub(){
