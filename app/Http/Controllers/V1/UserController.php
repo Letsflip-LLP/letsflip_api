@@ -298,6 +298,20 @@ class UserController extends Controller
         }  
     }
 
+    private function _purchaseConsumableDetail($package,$sku,$token){ 
+        try{
+            $client = new \Google_Client();
+            $client->useApplicationDefaultCredentials();
+            $client->addScope('https://www.googleapis.com/auth/androidpublisher');
+            $service = new \Google_Service_AndroidPublisher($client);
+            $purchase = $service->purchases_products->get($package,$sku,$token);
+           
+            return $purchase;
+        } catch (\exception $exception){  
+            return false;
+        }  
+    }
+
     private function androidVlidateSubscription($request){
         DB::beginTransaction();
         try {
@@ -324,7 +338,11 @@ class UserController extends Controller
             $transaction_id = $vendor_payload['transactionId'];
             $purchase_token = $vendor_payload['purchaseToken']; 
 
-            $validate_token_purchase = $this->_purchaseDetail('com.lets_flip',$product_id,$purchase_token);
+            if($product_id == 'private_account')
+                $validate_token_purchase = $this->_purchaseDetail('com.lets_flip',$product_id,$purchase_token);
+
+            if($product_id != 'private_account')
+                $validate_token_purchase = $this->_purchaseConsumableDetail('com.lets_flip',$product_id,$purchase_token);
    
             if($validate_token_purchase == false)
                 return (new ResponseTransformer)->toJson(400,__('messages.401'),false);
@@ -342,11 +360,8 @@ class UserController extends Controller
         $sub_start_date = $sub_start_date / 1000;
         $sub_start_date = date("Y-m-d H:i:s", $sub_start_date);
          
-        if((integer) $validate_token_purchase['startTimeMillis'] < strtotime(date('Y-m-d H:i:s'))) return (new ResponseTransformer)->toJson(400,__('messages.401'), "Expired");
-
-        $product_detail = $product_account[$product_id]; 
-        $account_type   = $product_detail ? $product_detail['type'] : 3;
-         
+        if((integer) $validate_token_purchase['startTimeMillis'] < strtotime(date('Y-m-d H:i:s')) && $product_id == 'private_account') return (new ResponseTransformer)->toJson(400,__('messages.401'), "Expired");
+  
         // CHECK EXISTING
         $check_sub = SubscriberModel::where('vendor_trx_id',$transaction_id)->first(); 
         if($check_sub){
@@ -369,7 +384,7 @@ class UserController extends Controller
                 "date_start"    => $sub_start_date,//date('Y-m-d H:i:s'),
                 "date_end"      => $sub_end_date,//Carbon::now()->add('months',$product_detail['duration'])->format('Y-m-d H:i:s'),
                 "payload"       => json_encode($request->all()),
-                "type"          => $account_type,
+                "type"          => $account_type = $class_room && $class_room->type ? $class_room->type : 2,
                 "classroom_id"  => $class_room ? $class_room->id : null,
                 "product_id"    => $product_id,
                 "is_creator"    => $account_type == 3 ? false : true
