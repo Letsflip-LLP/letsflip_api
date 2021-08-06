@@ -49,7 +49,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware('form')
                 ->namespace($this->namespace)
                 ->group(base_path('app/Http/Routes/User.php'));
-            
+
             Route::middleware('web')
                 ->middleware('form')
                 ->namespace($this->namespace)
@@ -66,6 +66,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('app/Http/Routes/Admin.php'));
+
+            Route::prefix('api')
+                ->middleware('api')
+                // ->middleware('form')
+                ->namespace($this->namespace)
+                ->group(base_path('app/Http/Routes/SC.php'));
         });
     }
 

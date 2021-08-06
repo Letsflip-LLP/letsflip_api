@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Auth\AuthenticationException;
+use App\Http\Transformers\ResponseTransformer;
 
 class Handler extends ExceptionHandler
 {
@@ -50,14 +51,22 @@ class Handler extends ExceptionHandler
      * @throws \Throwable
      */
     public function render($request, Throwable $exception)
-    { 
+    {
+        $route = explode('/', $request->route()->uri);
+        if ($route[0] === 'api') {
+            if ($exception instanceof \Illuminate\Validation\ValidationException) {
+                return (new ResponseTransformer)->toJson(400, 'Error Input', $exception->errors());
+            } else {
+                return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);
+            }
+        }
         return parent::render($request, $exception);
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         return $request->expectsJson()
-        ? response()->json(['message' => $exception->getMessage()], 401)
-        : redirect()->guest($exception->redirectTo() ?? "auth/login");
+            ? response()->json(['message' => $exception->getMessage()], 401)
+            : redirect()->guest($exception->redirectTo() ?? "auth/login");
     }
 }
