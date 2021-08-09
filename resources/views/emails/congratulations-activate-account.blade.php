@@ -2,7 +2,8 @@
 @section('content')
 <!DOCTYPE html>
 
-<table width="600px" align="center" style="font-family: arial ; padding-right: 10px">
+<h2>Congratulation page</h2>
+{{-- <table width="600px" align="center" style="font-family: arial ; padding-right: 10px">
     <tbody>
         <tr>
             <td>
@@ -540,6 +541,6 @@
             </td>
         </tr>
     </tbody>
-</table>
+</table> --}}
 
 @stop

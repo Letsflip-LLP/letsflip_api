@@ -120,7 +120,7 @@
                                                          <tbody>
                                                             <tr>
                                                                <td style="width:252px;">
-                                                                  <img height="auto" src="https://s3-eu-west-1.amazonaws.com/topolio/uploads/5ff711237b674/1610027480.jpg" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="252">
+                                                                  <img height="auto" src="https://via.placeholder.com/720x280" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="252">
                                                                </td>
                                                             </tr>
                                                          </tbody>
@@ -160,56 +160,8 @@
                                                 @section('content')
 
                                                 @show
-                                                </tr>
-                                                <tr style="background-color:#DDDDDD">
-                                                   <td align="left" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
-                                                      <div style="font-family:Arial, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
-                                                         <p style="text-align: center;"><span style="color: #333333;"><strong><span style="font-size: 30px;">Walls down, borders<br>bridged, rules torn, <br>learning unleashed!</span></strong></span></p>
-                                                      </div>
-                                                   </td>
-                                                </tr>
 
-                                                <tr style="background-color:#DDDDDD">
-                                                      <td style="direction:ltr;font-size:0px;padding:9px 0px 9px 0px;text-align:center;vertical-align:top;">
-                                                         <!--[if mso | IE]>
-                                                         <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                                                            <tr>
-                                                               <td
-                                                                  class="" style="vertical-align:top;width:300px;"
-                                                                  >
-                                                                  <![endif]-->
-                                                                  <div class="mj-column-per-50 outlook-group-fix" style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                                                                     <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                                                                        <tr>
-                                                                           <td style="font-size:0px;padding:0px 0px 0px 0px;word-break:break-word;">
-                                                                              <table align="" border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px; width:100%">
-                                                                                 <tbody>
-                                                                                    <tr>
-                                                                                       <td style="with:25%"></td>
-                                                                                       <td style="width:25%">
-                                                                                          <a href="https://apps.apple.com/us/app/lets-fl-p/id1538266714">
-                                                                                             <img height="auto" src="{{url('/web/images/app-store.png')}}" style="margin-right:2vw; border:0;display:block;outline:none;text-decoration:none;height:auto;width:125px;max-width:30vw;float:right">
-                                                                                          </a>
-                                                                                       </td>
-                                                                                       <td style="width:25%">
-                                                                                          <a href="{{env('ANDROID_PLAYSTORE_URL')}}">
-                                                                                             <img height="auto" src="{{url('/web/images/play-store.png')}}" style="margin-left:2vw; border:0;display:block;outline:none;text-decoration:none;height:auto;width:125px;max-width:30vw;">
-                                                                                          </a>
-                                                                                       </td>
-                                                                                       <td style="with:25%"></td>
-                                                                                    </tr>
-                                                                                 </tbody>
-                                                                              </table>
-                                                                           </td>
-                                                                        </tr>
-                                                                     </table>
-                                                                  </div>
-                                                                  <!--[if mso | IE]>
-                                                               </td>
-                                                            </tr>
-                                                         </table>
-                                                         <![endif]-->
-                                                      </td>
+
                                                    </tr>
                                                    <tr style="background-color:#DDDDDD">
                                                                            <td align="center" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">

@@ -25,7 +25,7 @@
                padding-top: 25px;
                padding-bottom: 25px;
                margin-bottom: 20px;
-               border-radius: 13px;   
+               border-radius: 13px;
                background: rgb(223,71,135);
                margin-top : 30px;
                background: -moz-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
