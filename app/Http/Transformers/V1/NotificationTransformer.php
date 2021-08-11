@@ -11,7 +11,7 @@ use App\Http\Transformers\V1\MissionTransformer;
 
 class NotificationTransformer {
  
-    public static function item($model){  
+    public static function item($model){   
         $temp           = new \stdClass();
         $temp->id       = $model->id;
         $temp->mission_id   = $model->mission_id;
@@ -106,6 +106,9 @@ class NotificationTransformer {
         if($model->type == 24) 
             $temp->text  =  __('notification.TEXT.'.$model->type,['user_name_from' => $model->ClassRoom->User ? $model->ClassRoom->User->first_name.' '.$model->ClassRoom->User->last_name : ""]);
 
+        if($model->type == 25) 
+            $temp->text  =  __('notification.TEXT.'.$model->type,[]);
+
         $temp->title        =   __('notification.TYPE.'.$model->type);
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom):UserTransformer::item($model->UserTo);
 
@@ -121,14 +124,16 @@ class NotificationTransformer {
     public function list($code,$message,$models){
         $custome_model = []; 
         foreach($models as $model ){ 
-            
+
             if($model->read_at == null)
                 $model->update(['read_at' => date('Y-m-d H:i:s')]);
             
             $tmp = $this->item($model);
+  
             if($tmp->text)
                 $custome_model[] = $tmp;
         } 
+  
         return (new ResponseTransformer)->toJson($code,$message,$models,$custome_model);
     }
 
