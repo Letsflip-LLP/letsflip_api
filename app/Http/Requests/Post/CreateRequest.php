@@ -24,8 +24,14 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'text' => 'required'
+            'text' => 'required',
+            'files' => 'array'
         ];
+        foreach ($this->input('files', []) as $index => $file) {
+            $rules['files.' . $index . '.file_path'] = 'required';
+            $rules['files.' . $index . '.file_name'] = 'required';
+            $rules['files.' . $index . '.file_mime'] = 'required';
+        }
         return $rules;
     }
 }

@@ -45,6 +45,15 @@ class PostController extends Controller
                     'text' => $request->text
                 ]);
             }
+            if ($request->filled('files')) {
+                foreach ($request->files as $file) {
+                    $data->content()->create([
+                        'file_path' => $file['file_path'],
+                        'file_name' => $file['file_name'],
+                        'file_mime' => $file['file_mime'],
+                    ]);
+                }
+            }
             DB::commit();
             return (new PostTransformer)->detail(200, __('message.200'), $data);
         } catch (\Exception $e) {

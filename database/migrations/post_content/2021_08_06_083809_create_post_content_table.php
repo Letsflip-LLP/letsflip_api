@@ -15,8 +15,7 @@ class CreatePostContentTable extends Migration
     {
         Schema::create('post_content', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('relation_id');
-            $table->integer('type')->comment('1 => post, 2 => comment');
+            $table->uuid('post_id');
             $table->text('file_path')->nullable();
             $table->text('file_name')->nullable();
             $table->text('file_mime')->nullable();
