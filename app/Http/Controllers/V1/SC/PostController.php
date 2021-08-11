@@ -53,12 +53,15 @@ class PostController extends Controller
         }
     }
 
-    public function updatePost(CreateRequest $request, $post_id)
+    public function updatePost(CreateRequest $request)
     {
+        $request->validate([
+            'id' => 'required'
+        ]);
         DB::beginTransaction();
         try {
             $user = auth('api')->user();
-            $data = PostModel::where(['id' =>  $post_id, 'user_id' => $user->id])->first();
+            $data = PostModel::where(['id' =>  $request->id, 'user_id' => $user->id])->first();
             if (!isset($data)) {
                 throw new \Exception('Data Not Found');
             }
@@ -75,6 +78,9 @@ class PostController extends Controller
 
     public function deletePost(Request $request)
     {
+        $request->validate([
+            'id' => 'required'
+        ]);
         DB::beginTransaction();
         try {
             $user = auth('api')->user();

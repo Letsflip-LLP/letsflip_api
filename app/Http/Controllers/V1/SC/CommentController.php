@@ -7,17 +7,21 @@ use Illuminate\Http\Request;
 use App\Http\Models\SC\CommentModel;
 use App\Http\Transformers\V1\SC\CommentTransformer;
 use App\Http\Requests\Comment\CreateRequest;
+use App\Http\Requests\Comment\UpdateRequest;
 use DB;
 use Ramsey\Uuid\Uuid;
 use App\Http\Transformers\ResponseTransformer;
 
 class CommentController extends Controller
 {
-    public function index(Request $request, $post_id)
+    public function index(Request $request)
     {
+        $request->validate([
+            'post_id' => 'required'
+        ]);
         try {
             $data = CommentModel::where([
-                'post_id' => $post_id
+                'post_id' => $request->post_id
             ])->with(['replies'])
                 ->withTrashed()
                 ->whereNull('parent_id')
@@ -29,7 +33,7 @@ class CommentController extends Controller
         }
     }
 
-    public function createComment(CreateRequest $request, $post_id)
+    public function createComment(CreateRequest $request)
     {
         DB::beginTransaction();
         try {
@@ -37,7 +41,7 @@ class CommentController extends Controller
             $fill = [
                 'id' => Uuid::uuid4(),
                 'user_id' => $user->id,
-                'post_id' => $post_id,
+                'post_id' => $request->post_id,
                 'text' => $request->text
             ];
             if ($request->filled('parent_id')) {
@@ -52,14 +56,14 @@ class CommentController extends Controller
         }
     }
 
-    public function updateComment(CreateRequest $request, $post_id, $comment_id)
+    public function updateComment(UpdateRequest $request)
     {
         DB::beginTransaction();
         try {
             $user = auth('api')->user();
             $data = CommentModel::where([
-                'id' =>  $comment_id,
-                'post_id' => $post_id,
+                'id' =>  $request->comment_id,
+                'post_id' => $request->post_id,
                 'user_id' => $user->id
             ])->first();
             if (!isset($data)) {
@@ -76,14 +80,18 @@ class CommentController extends Controller
         }
     }
 
-    public function deleteComment($post_id, $comment_id)
+    public function deleteComment(Request $request)
     {
+        $request->validate([
+            'post_id' => 'required',
+            'comment_id' => 'required'
+        ]);
         DB::beginTransaction();
         try {
             $user = auth('api')->user();
             $data = CommentModel::where([
-                'id' =>  $comment_id,
-                'post_id' => $post_id,
+                'id' =>  $request->comment_id,
+                'post_id' => $request->post_id,
                 'user_id' => $user->id
             ])->with('replies')->first();
             if (!isset($data)) {

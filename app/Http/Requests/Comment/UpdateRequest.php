@@ -4,7 +4,7 @@ namespace App\Http\Requests\Comment;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,8 @@ class CreateRequest extends FormRequest
     {
         $rules = [
             'post_id' => 'required',
-            'text' => 'required'
+            'comment_id' => 'required',
+            'text' => 'required',
         ];
         return $rules;
     }
