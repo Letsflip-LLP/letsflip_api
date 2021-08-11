@@ -140,7 +140,7 @@ class UserController extends Controller
         try { 
             $user = auth('api')->user();  
             $notif =  NotificationModel::where('user_id_to',$user->id);
-            $notif =  $notif->orderBy('created_at','DESC');   
+            $notif =  $notif->orderBy('updated_at','DESC');   
             $notif =  $notif->paginate($request->input('per_page',10));
         DB::commit();
 
@@ -158,8 +158,8 @@ class UserController extends Controller
 
     public function userFollowAction(Request $request)
     {        
-        // DB::beginTransaction();
-        // try { 
+        DB::beginTransaction();
+        try { 
             $user = auth('api')->user();
             $action = 'add';
 
@@ -188,10 +188,10 @@ class UserController extends Controller
             return (new ResponseTransformer)->toJson(200,__('messages.200'),$action);
 
 
-        // } catch (\exception $exception){
-        //     DB::rollBack();
-        //     return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
-        // }  
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
     }
 
     public function userSelfUpdateProfile(Request $request)
