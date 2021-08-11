@@ -3,9 +3,9 @@
     <table width="100%">
         <tbody>
         <tr>
-        <td style="font-size:14px;color:#333;font-weight:bold;padding-top:10px;padding-bottom:50px;text-align:left;padding-left:10px">  Hello learning community.  </td>
+        <td style="font-size:14px;color:#333;font-weight:bold;padding-top:10px;padding-bottom:50px;text-align:left;padding-left:10px">  this is upgrade template.  </td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px">
                 I see the awesome work you are putting into making this world of learning a better space and we want to invite you to do more. You are receiving this email because you have been upgraded to enjoy the {{$account_type}} space. You now have access to creating your own,
             </td>
@@ -37,7 +37,7 @@
             </td>
         </tr>
         <tr>
-        </tr>
+        </tr> --}}
         </tbody>
     </table>
 @endsection

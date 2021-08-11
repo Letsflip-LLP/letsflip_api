@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <h2>Congratulation page</h2>
-{{-- <table width="600px" align="center" style="font-family: arial ; padding-right: 10px">
+<table width="600px" align="center" style="font-family: arial ; padding-right: 10px">
     <tbody>
         <tr>
             <td>
@@ -15,7 +15,7 @@
                         background-position: center;
                         position: relative;
                         background-size: cover;
-                        background-image: url({{url('template/image/Classroom_pix.png')}});
+                        background-image: url(https://via.placeholder.com/720x280);
                     "
                 >
                     <!-- <img src="image/pic2.png" alt=""> -->
@@ -36,15 +36,13 @@
                             style="
                                 display: block;
                             "
-                            >Let's
-                            get</span
+                            >Content</span
                         >
-                        started
                     </p>
                 </a>
             </td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td>
                 <h4
                     style="
@@ -539,8 +537,8 @@
                     Now</a
                 >
             </td>
-        </tr>
+        </tr> --}}
     </tbody>
-</table> --}}
+</table>
 
 @stop

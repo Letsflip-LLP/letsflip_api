@@ -132,9 +132,9 @@
                                                    <span style="width:100%;height:4px;border-radius:50px;display:block;
                                                                   background: rgb(223,71,135);
                                                                   margin-top : 30px;
-                                                                  background: -moz-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
-                                                                  background: -webkit-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
-                                                                  background: linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
+                                                                  background: -moz-linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);
+                                                                  background: -webkit-linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);
+                                                                  background: linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);
                                                                   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#df4787',endColorstr='#3d2b93',GradientType=1);
                                                    "></span>
                                                 </td>
@@ -166,7 +166,7 @@
                                                    <tr style="background-color:#DDDDDD">
                                                                            <td align="center" style="font-size:0px;padding:15px 15px 15px 15px;word-break:break-word;">
                                                                               <div style="font-family:Arial, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:left;color:#000000;">
-                                                                                 <p style="text-align: center;"><span style="color: #333333;">Copyright &copy; 2020 Let&rsquo;s Fl!p. All Rights Reserved.</span></p>
+                                                                                 <p style="text-align: center;"><span style="color: #333333;">Copyright &copy; 2021 All Rights Reserved.</span></p>
                                                                               </div>
                                                                            </td>
                                                                         </tr>

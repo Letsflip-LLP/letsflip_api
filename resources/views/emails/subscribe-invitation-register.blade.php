@@ -3,9 +3,9 @@
     <table width="100%">
         <tbody>
         <tr>
-        <td style="font-size:14px;color:#333;font-weight:bold;padding-top:10px;padding-bottom:50px;text-align:left;padding-left:10px">  Hey there!  </td>
+        <td style="font-size:14px;color:#333;font-weight:bold;padding-top:10px;padding-bottom:50px;text-align:left;padding-left:10px">  This is register template!  </td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px"> You have been invited to join As a member of the Let’s Fl!p community, you will enjoy access to a variety of {{$account_type}} and missions created by educators and students from all over the world.</td>
         </tr>
         <tr>
@@ -21,7 +21,7 @@
             <td style="font-size:14px;color:#333;font-weight:normal;padding-top:0px;padding-bottom:20px;text-align:left;padding-left:10px"> Please click on the invite link to begin your Let’s Fl!p journey with us! Have fun and we wish you all the best.</td>
         </tr>
         <tr>
-        </tr>
+        </tr> --}}
         </tbody>
     </table>
 @endsection

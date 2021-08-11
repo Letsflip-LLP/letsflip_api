@@ -7,8 +7,8 @@
 		<title>Confirm reset password</title>
 	</head>
 	<body>
-		<header>
-			<div class="logo">
+		<header style="background:linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);">
+			<div class="logo" style="background-color:linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);">
 				<img src="/web/images/logo.png" alt="" />
 			</div>
 		</header>
@@ -17,26 +17,28 @@
 				<p>
 					{{$message}}
 				</p>
-				<h3>
+				<h3 style="color:linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);">
 					The world<br />
 					is now your<br />
 					classroom
 				</h3>
 			</div>
-			<div class="right-side">
-				<img src="/web/images/flip_mobile01.png" alt="" />
+			<div class="right-side" style="margin:0px">
+                <img src="https://via.placeholder.com/620x420" alt="" />
+
+				{{-- <img src="/web/images/flip_mobile01.png" alt="" /> --}}
 			</div>
 		</div>
 	</body>
 
 <script>
-	var fullPath = window.location.protocol + "//" + window.location.host + window.location.pathname + window.location.search
-	var deeplinkUrl = 'letsflip:' + "//" + window.location.host + window.location.pathname + window.location.search
-	
-	const urlParams = new URLSearchParams(window.location.search);	
-	if(urlParams.get('attempt') == null && urlParams.get('success') == null){
-		setTimeout(function(){ location.href = fullPath+'&attempt=1&success=true' ;},25);
-		location.href = deeplinkUrl;
-	}
+	// var fullPath = window.location.protocol + "//" + window.location.host + window.location.pathname + window.location.search
+	// var deeplinkUrl = 'letsflip:' + "//" + window.location.host + window.location.pathname + window.location.search
+
+	// const urlParams = new URLSearchParams(window.location.search);
+	// if(urlParams.get('attempt') == null && urlParams.get('success') == null){
+	// 	setTimeout(function(){ location.href = fullPath+'&attempt=1&success=true' ;},25);
+	// 	location.href = deeplinkUrl;
+	// }
 </script>
 </html>

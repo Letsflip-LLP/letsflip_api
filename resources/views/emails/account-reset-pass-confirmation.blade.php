@@ -31,15 +31,14 @@
 		>
 			A request has been
 			received to reset the
-			password for your Let’s
-			Fl!p account
+			password for your account
 		</td>
 	</tr>
 	<tr>
 		<td
 			style="
 				text-align: center;
-				padding: 5px; 
+				padding: 5px;
 			"
 		>
 			<a href="{{$reset_password_url}}" >
@@ -51,12 +50,12 @@
                   height: 50px;
                   background-size: contain;
                   background-repeat: no-repeat;
-                  border-radius: 13px;   
+                  border-radius: 13px;
                   background: rgb(223,71,135);
                   margin-top : 30px;
-                  background: -moz-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
-                  background: -webkit-linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
-                  background: linear-gradient(90deg, rgba(223,71,135,1) 0%, rgba(46,77,196,1) 50%, rgba(61,43,147,1) 100%);
+                  background: -moz-linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);
+                  background: -webkit-linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);
+                  background: linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);
                   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#df4787',endColorstr='#3d2b93',GradientType=1);
                   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3d2893', endColorstr='#df4786', GradientType=1 );
                   border-radius: 10px;
@@ -90,7 +89,7 @@
 					display: inline-block;
 					color: #274bc7;
 				"
-				>support@getletsflip.com</span
+				>developer@mail.com</span
 			>
 		</td>
 	</tr>
@@ -126,8 +125,7 @@
 					margin: 0;
 				"
 			>
-				Let’s Fl!p
-				Application team
+				Developer team
 			</p>
 		</td>
 	</tr>
