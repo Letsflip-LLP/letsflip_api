@@ -137,14 +137,11 @@ class UserController extends Controller
 
         DB::beginTransaction();
 
-        try {
-
-            $user = auth('api')->user(); 
-        
+        try { 
+            $user = auth('api')->user();  
             $notif =  NotificationModel::where('user_id_to',$user->id);
             $notif =  $notif->orderBy('created_at','DESC');   
             $notif =  $notif->paginate($request->input('per_page',10));
-             
         DB::commit();
 
             return (new NotificationTransformer)->list(200,"Success",$notif);
