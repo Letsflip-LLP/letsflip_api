@@ -64,7 +64,7 @@ class NotificationTransformer {
             if($model->type==3)
                 $text_ = $model->Mission ? $model->Mission->title : 'deleted mission';
             if($model->type==4)
-                $text_ = $model->Respone ? $model->Respone->Mission->title : 'deleted respone';
+                $text_ = $model->Respone && $model->Respone->Mission ? $model->Respone->Mission->title : 'deleted respone';
 
             $temp->text    = __('notification.TEXT.'.$model->type,[ 'user_name_from' => $model->UserFrom->first_name.' '.$model->UserFrom->last_name , 'module_title' => $text_]);         
         }
