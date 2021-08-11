@@ -21,7 +21,7 @@ class CommentController extends Controller
             ])->with(['replies'])
                 ->withTrashed()
                 ->whereNull('parent_id')
-                ->orderBy('created_at', 'asc')
+                ->orderBy('created_at', 'desc')
                 ->paginate(5);
             return (new CommentTransformer)->list(200, __('message.200'), $data);
         } catch (\Exception $e) {
