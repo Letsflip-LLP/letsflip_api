@@ -158,10 +158,9 @@ class UserController extends Controller
 
     public function userFollowAction(Request $request)
     {        
-        DB::beginTransaction();
-        try { 
-            $user = auth('api')->user(); 
-
+        // DB::beginTransaction();
+        // try { 
+            $user = auth('api')->user();
             $action = 'add';
 
             $check = UserFollowModel::where([
@@ -183,14 +182,16 @@ class UserController extends Controller
             };
 
             DB::commit(); 
+
+            if($action == 'add') $notif_mission = NotificationManager::addNewNotification($user->id,$request->user_id,[],25);
  
             return (new ResponseTransformer)->toJson(200,__('messages.200'),$action);
 
 
-        } catch (\exception $exception){
-            DB::rollBack();
-            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
-        }  
+        // } catch (\exception $exception){
+        //     DB::rollBack();
+        //     return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        // }  
     }
 
     public function userSelfUpdateProfile(Request $request)
