@@ -15,18 +15,39 @@ use App\Http\Controllers\V1\SC\CommentController;
 |
 */
 
+// Route::get('vw', function () {
+//     $ar = [
+//         'first_name' => 'aaa',
+//         'last_name' => 'aaa',
+//         'reset_password_url' => 'aaa',
+//         'email' => 'aaa',
+//         'password' => 'aaa',
+//         'activate_url' => 'aaa',
+//         'account_type' => 'aaa',
+//         'url' => 'aaa',
+//         'message' => 'aaa',
+//         'activate_url' => 'aaa',
+//         'activate_url' => 'aaa',
+//         'activate_url' => 'aaa',
+//     ];
+//     return view('accounts.confirmation-ress-pass', $ar);
+// });
+
 Route::group(['middleware' => ['auth:api', 'verified']], function () {
+    Route::get('home', [PostController::class, 'home']);
+
     Route::group(['prefix' => 'posts', 'as' => 'posts.'], function () {
         Route::get('/', [PostController::class, 'index']);
         Route::post('/', [PostController::class, 'createPost']);
-        Route::post('{post_id}', [PostController::class, 'updatePost']);
-        Route::get('{post_id}/delete', [PostController::class, 'deletePost']);
+        // Route::post('{post_id}', [PostController::class, 'updatePost']);
+        Route::get('delete', [PostController::class, 'deletePost']);
 
         Route::group(['prefix' => '{post_id}/comments', 'as' => 'comments.'], function () {
             Route::get('/', [CommentController::class, 'index']);
             Route::post('/', [CommentController::class, 'createComment']);
-            Route::post('{comment_id}', [CommentController::class, 'updateComment']);
-            Route::get('{comment_id}/delete', [CommentController::class, 'deleteComment']);
+            Route::post('delete', [CommentController::class, 'createComment']);
+            // Route::post('{comment_id}', [CommentController::class, 'updateComment']);
+            // Route::get('{comment_id}/delete', [CommentController::class, 'deleteComment']);
         });
     });
 });

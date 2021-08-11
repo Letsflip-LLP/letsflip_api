@@ -26,12 +26,21 @@ class PostTransformer
 
     public function item($model, $type = null)
     {
+        // dd($model->user);
         $temp = (object)[
             'id' => $model->id,
             'text' => $model->text,
             'total_share' => $model->total_share,
             'total_like' => $model->total_like,
             'total_comment' => $model->total_comment,
+            'user' => [
+                'id' => $model->user->id,
+                'first_name' => $model->user->first_name,
+                'last_name' => $model->user->last_name,
+                'email' => $model->user->email,
+                'username' => $model->user->username,
+                'image_profile' => defaultImage('user', $model)
+            ]
         ];
 
         return $temp;
