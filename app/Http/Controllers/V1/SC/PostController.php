@@ -10,6 +10,7 @@ use Ramsey\Uuid\Uuid;
 use App\Http\Transformers\V1\SC\PostTransformer;
 use DB;
 use App\Http\Transformers\ResponseTransformer;
+use App\Http\Models\User;
 
 class PostController extends Controller
 {
@@ -18,7 +19,15 @@ class PostController extends Controller
     {
         try {
             $user = auth('api')->user();
-            $data = PostModel::where(['user_id' => $user->id])->paginate(5);
+            if ($request->filled('user_id')) {
+                $user = User::where('id', $request->user_id)->first();
+            }
+            if (!isset($user)) {
+                throw new \Exception('User not found');
+            }
+            $data = PostModel::where(['user_id' => $user->id])
+                ->orderBy('created_at', 'desc')
+                ->paginate(5);
             return (new PostTransformer)->list(200, __('message.200'), $data);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
