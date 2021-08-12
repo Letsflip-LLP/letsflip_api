@@ -3,7 +3,7 @@
 namespace App\Http\Transformers\V1\SC;
 
 use App\Http\Transformers\ResponseTransformer;
-use 
+ 
 class PostTransformer
 {
 
