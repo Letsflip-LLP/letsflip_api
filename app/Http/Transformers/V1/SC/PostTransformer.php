@@ -33,6 +33,7 @@ class PostTransformer
             'total_share' => $model->total_share,
             'total_like' => $model->total_like,
             'total_comment' => $model->total_comment,
+            'created_at' => $model->created_at,
             'user' => [
                 'id' => $model->user->id,
                 'first_name' => $model->user->first_name,

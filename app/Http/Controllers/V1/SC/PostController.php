@@ -21,13 +21,16 @@ class PostController extends Controller
             $user = auth('api')->user();
             if ($request->filled('user_id')) {
                 $user = User::where('id', $request->user_id)->first();
+                if (!isset($user)) {
+                    throw new \Exception('User not found');
+                }
             }
-            if (!isset($user)) {
-                throw new \Exception('User not found');
+
+            $data = new PostModel;
+            if (issest($user)) {
+                $data = $data->where('user_id', $user->id);
             }
-            $data = PostModel::where(['user_id' => $user->id])
-                ->orderBy('created_at', 'desc')
-                ->paginate(5);
+            $data = $data->orderBy('created_at', 'desc')->paginate(5);
             return (new PostTransformer)->list(200, __('message.200'), $data);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
