@@ -27,7 +27,7 @@ class PostController extends Controller
             }
 
             $data = new PostModel;
-            if (issest($user)) {
+            if (isset($user)) {
                 $data = $data->where('user_id', $user->id);
             }
             $data = $data->orderBy('created_at', 'desc')->paginate(5);
