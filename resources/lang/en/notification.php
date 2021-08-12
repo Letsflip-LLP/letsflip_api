@@ -28,7 +28,8 @@ return [
         21 => "Oh no! Your mission :mission_title has been rejected in :classroom_title",
         22 => "Your mission has been graded! Tap to find out how you fared!", 
         23 => "You have a new guest! See who dropped into your Private Classroom",
-        24 => "Oooh, :user_name_from just kicked you out of their classroom!! Click here to request access again"
+        24 => "Oooh, :user_name_from just kicked you out of their classroom!! Click here to request access again",
+        25 => "Someone is following you, Check it out here!"
     ],
     "TYPE" => [
         1 => "New Response in My Mission",
@@ -54,6 +55,7 @@ return [
         21 => "Classroom Tagging Rejected",
         22 => "Your response has been Graded!",  
         23 => "You have a new guest!",//"New guest into your Private Classroom!",
-        24 => "Oooh, Someone kicked you out of their classroom!!"
+        24 => "Oooh, Someone kicked you out of their classroom!!",
+        25 => "Someone is following you"
     ]
 ];

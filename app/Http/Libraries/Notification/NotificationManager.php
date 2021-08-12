@@ -34,7 +34,20 @@ class NotificationManager {
             // $delete_current = NotificationModel::where(['user_id_from' => $user_id_from,'user_id_to' => $user_id_to,'type'=> $type])->delete();
             
             $notif_mission = new NotificationModel; 
-            $data = $notif_mission->insert($data); 
+
+            if(!in_array($type,[25]))
+                $data = $notif_mission->insert($data); 
+
+            if(in_array($type,[25])){
+                $check = NotificationModel::where(['type'=>25,'user_id_from' =>  $user_id_from ,'user_id_to' => $user_id_to ])->first();
+                if($check){
+                    $check->update(['updated_at' => date('Y-m-d H:i:s')]);
+                    $data = $check;
+                    $uuid = $check->id;
+                }else{
+                    $data = $notif_mission->insert($data);
+                } 
+            }
             
             $getDevices = User::where('id',$user_id_to)->first();
 
@@ -48,7 +61,7 @@ class NotificationManager {
             };
 
             DB::commit();
-
+            
             $inserted = NotificationModel::where('id',$uuid)->first();
             $wording  = NotificationTransformer::item($inserted);  
              

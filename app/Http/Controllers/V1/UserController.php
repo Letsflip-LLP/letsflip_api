@@ -137,14 +137,11 @@ class UserController extends Controller
 
         DB::beginTransaction();
 
-        try {
-
-            $user = auth('api')->user(); 
-        
+        try { 
+            $user = auth('api')->user();  
             $notif =  NotificationModel::where('user_id_to',$user->id);
-            $notif =  $notif->orderBy('created_at','DESC');   
+            $notif =  $notif->orderBy('updated_at','DESC');   
             $notif =  $notif->paginate($request->input('per_page',10));
-             
         DB::commit();
 
             return (new NotificationTransformer)->list(200,"Success",$notif);
@@ -163,8 +160,7 @@ class UserController extends Controller
     {        
         DB::beginTransaction();
         try { 
-            $user = auth('api')->user(); 
-
+            $user = auth('api')->user();
             $action = 'add';
 
             $check = UserFollowModel::where([
@@ -186,6 +182,8 @@ class UserController extends Controller
             };
 
             DB::commit(); 
+
+            if($action == 'add') $notif_mission = NotificationManager::addNewNotification($user->id,$request->user_id,[],25);
  
             return (new ResponseTransformer)->toJson(200,__('messages.200'),$action);
 
