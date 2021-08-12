@@ -11,6 +11,7 @@ use App\Http\Transformers\V1\SC\PostTransformer;
 use DB;
 use App\Http\Transformers\ResponseTransformer;
 use App\Http\Models\User;
+use App\Http\Models\SC\UserFriendsModel;
 
 class PostController extends Controller
 {
@@ -25,12 +26,24 @@ class PostController extends Controller
                     throw new \Exception('User not found');
                 }
             }
+            $ids[] = $user->id;
+            if ($request->filled('with_friend_post')) {
+                $f_ids = UserFriendsModel::where('user_id_from', $user->id)
+                    ->orWhere('user_id_to', $user->id)
+                    ->get();
 
-            $data = new PostModel;
-            if (isset($user)) {
-                $data = $data->where('user_id', $user->id);
+                $f_ids = $f_ids->transform(function ($v) use ($user) {
+                    return $v->user_id_from;
+                })->values()
+                    ->toArray();
+                $ids = array_merge($ids, $f_ids);
             }
-            $data = $data->orderBy('created_at', 'desc')->paginate(5);
+            $data = new PostModel;
+            if (count($ids) > 0) {
+                $data = $data->whereIn('user_id', $ids);
+            }
+            $data = $data->orderBy('created_at', 'desc')
+                ->paginate($request->input('per_page', 5));
             return (new PostTransformer)->list(200, __('message.200'), $data);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
@@ -59,7 +72,7 @@ class PostController extends Controller
             }
             if ($request->filled('files')) {
                 foreach ($request->files as $file) {
-                    $data->content()->create([
+                    $data->Content()->create([
                         'file_path' => $file['file_path'],
                         'file_name' => $file['file_name'],
                         'file_mime' => $file['file_mime'],
@@ -112,7 +125,7 @@ class PostController extends Controller
             if (!isset($data)) {
                 throw new \Exception('Data Not Found');
             }
-            $data->comments()->delete();
+            $data->Comments()->delete();
             $data->delete();
             DB::commit();
             return (new ResponseTransformer)->toJson(200, __('messages.200'), 'delete');
@@ -122,18 +135,18 @@ class PostController extends Controller
         }
     }
 
-    public function home(Request $request)
-    {
-        try {
-            $user = auth('api')->user();
-            $ids = array_column($user->Follower->pluck('id')->toArray(), 'id');
-            $ids[] = $user->id;
-            $data = PostModel::with('user')->whereIn('user_id', $ids)
-                ->orderBy('created_at', 'desc')
-                ->paginate(5);
-            return (new PostTransformer)->list(200, __('message.200'), $data);
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
-    }
+    // public function home(Request $request)
+    // {
+    //     try {
+    //         $user = auth('api')->user();
+    //         $ids = array_column($user->Follower->pluck('id')->toArray(), 'id');
+    //         $ids[] = $user->id;
+    //         $data = PostModel::with('user')->whereIn('user_id', $ids)
+    //             ->orderBy('created_at', 'desc')
+    //             ->paginate(5);
+    //         return (new PostTransformer)->list(200, __('message.200'), $data);
+    //     } catch (\Exception $e) {
+    //         throw new \Exception($e->getMessage());
+    //     }
+    // }
 }

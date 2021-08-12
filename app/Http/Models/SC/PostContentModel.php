@@ -12,7 +12,7 @@ class PostContentModel extends Model
     protected $table = 'post_content';
     protected $guarded = [];
 
-    public function post()
+    public function Post()
     {
         return $this->belongsTo('App\Http\Models\SC\PostModel', 'post_id', 'id');
     }

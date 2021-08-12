@@ -14,17 +14,17 @@ class PostModel extends Model
     protected $table = 'post';
     protected $guarded = [];
 
-    public function user()
+    public function User()
     {
         return $this->belongsTo('App\Http\Models\User', 'user_id', 'id');
     }
 
-    public function comments()
+    public function Comments()
     {
         return $this->hasMany('App\Http\Models\SC\CommentModel', 'post_id', 'id')->whereNull('parent_id');
     }
 
-    public function content()
+    public function Content()
     {
         return $this->hasMany('App\Http\Models\SC\PostContentModel', 'relation_id', 'id');
     }

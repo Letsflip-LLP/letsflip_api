@@ -40,7 +40,7 @@ class PostTransformer
                 'last_name' => $model->user->last_name,
                 'email' => $model->user->email,
                 'username' => $model->user->username,
-                'image_profile' => defaultImage('user', $model)
+                'image_profile' => defaultImage('user', $model->user)
             ]
         ];
 

@@ -14,22 +14,22 @@ class CommentModel extends Model
     protected $table = 'comments';
     protected $guarded = [];
 
-    public function user()
+    public function User()
     {
         return $this->belongsTo('App\Http\Models\User', 'user_id', 'id');
     }
 
-    public function post()
+    public function Post()
     {
         return $this->belongsTo('App\Http\Models\SC\PostModel', 'post_id', 'id');
     }
 
-    public function content()
+    public function Content()
     {
         return $this->hasMany('App\Http\Models\SC\PostContentModel', 'relation_id', 'id')->where('type', 2);
     }
 
-    public function replies()
+    public function Replies()
     {
         return $this->hasMany('App\Http\Models\SC\CommentModel', 'parent_id', 'id')->withTrashed();
     }

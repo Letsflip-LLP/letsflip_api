@@ -22,7 +22,7 @@ class CommentController extends Controller
         try {
             $data = CommentModel::where([
                 'post_id' => $request->post_id
-            ])->with(['replies'])
+            ])->with('Replies')
                 ->withTrashed()
                 ->whereNull('parent_id')
                 ->orderBy('created_at', 'desc')
@@ -93,11 +93,11 @@ class CommentController extends Controller
                 'id' =>  $request->comment_id,
                 'post_id' => $request->post_id,
                 'user_id' => $user->id
-            ])->with('replies')->first();
+            ])->with('Replies')->first();
             if (!isset($data)) {
                 throw new \Exception('Data Not Found');
             }
-            $data->replies()->delete();
+            $data->Replies()->delete();
             $data->delete();
             DB::commit();
             return (new ResponseTransformer)->toJson(200, __('messages.200'), 'delete');

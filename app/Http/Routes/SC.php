@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\AuthController;
 use App\Http\Controllers\V1\SC\PostController;
 use App\Http\Controllers\V1\SC\CommentController;
+use App\Http\Controllers\V1\SC\FriendsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,7 +36,13 @@ use App\Http\Controllers\V1\SC\CommentController;
 // });
 
 Route::group(['middleware' => ['auth:api', 'verified']], function () {
-    Route::get('home', [PostController::class, 'home']);
+    // Route::get('home', [PostController::class, 'home']);
+    Route::group(['prefix' => 'friends', 'as' => 'friends.'], function () {
+        Route::get('/', [FriendsController::class, 'list']);
+        Route::get('invitation', [FriendsController::class, 'invitation']);
+        Route::post('add', [FriendsController::class, 'add']);
+        Route::post('remove', [FriendsController::class, 'remove']);
+    });
 
     Route::group(['prefix' => 'posts', 'as' => 'posts.'], function () {
         Route::get('/', [PostController::class, 'index']);
