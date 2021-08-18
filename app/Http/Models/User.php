@@ -140,9 +140,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne('App\Http\Models\CompanyModel', 'id', 'company_id');
     }
-
-    public function Friends()
-    {
-        return $this->belongsToMany('App\Http\Models\User', 'user_from_id', 'user_to_id')->withPivot('status');
-    }
 }
