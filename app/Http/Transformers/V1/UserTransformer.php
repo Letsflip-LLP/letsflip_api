@@ -20,6 +20,7 @@ class UserTransformer {
         $temp->description  = $model->description;
         $temp->company      = null;
         $temp->followed      = false;
+        $temp->friend        = false;
 
         $temp->blocked_user = $model->BlockedFrom->count();
 
@@ -33,6 +34,12 @@ class UserTransformer {
                 "title" =>  $model->Company->title
             ];
         }
+
+        if(auth('api')->user()){
+            $is_friend  = $model->Friends->where('user_id_from',auth('api')->user()->id())->first();
+            if($is_friend) $temp->friend = true;
+        }
+
 
         if(auth('api')->user() !=null && $model->Followed)
             $temp->followed = $model->Follower->where('user_id_from',auth('api')->user()->id)->count() > 0 ? true : false;
