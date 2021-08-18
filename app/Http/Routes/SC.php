@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
         Route::post('add', [FriendsController::class, 'add']);
         Route::post('accept', [FriendsController::class, 'accept']);
         Route::post('remove', [FriendsController::class, 'remove']);
+        Route::post('confirm', [FriendsController::class, 'confirm']);
     });
 
     Route::group(['prefix' => 'posts', 'as' => 'posts.'], function () {

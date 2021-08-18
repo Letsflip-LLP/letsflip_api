@@ -25,6 +25,7 @@ use App\Http\Models\SubscriberModel;
 use App\Http\Models\ClassroomAccessModel; 
 use App\Http\Libraries\Notification\NotificationManager;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Models\SC\UserFriendsModel;
 
 
 class UserController extends Controller
@@ -108,6 +109,14 @@ class UserController extends Controller
             $users = $users->whereHas('BlockedTo',function($q){
                 $q->where('user_id_from',$this->user_login->id);
             });
+        }
+
+        if($this->user_login->id && $request->filled('invitation')){
+            $invite = UserFriendsModel::where('user_id_to',$this->user_login->id)
+            ->where('status', 2) 
+            ->get()->toArray();
+            $invite = array_column($invite,'user_id_from');
+            $users = $users->whereIn('id',$invite);
         }
  
         if($request->filled('classroom_id')){
