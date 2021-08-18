@@ -34,6 +34,9 @@ use App\Http\Controllers\V1\SC\FriendsController;
 //     ];
 //     return view('accounts.confirmation-ress-pass', $ar);
 // });
+Route::get('bebek', function () {
+    return 'ini api';
+});
 
 Route::group(['middleware' => ['auth:api', 'verified']], function () {
     // Route::get('home', [PostController::class, 'home']);
@@ -41,6 +44,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
         Route::get('/', [FriendsController::class, 'list']);
         Route::get('invitation', [FriendsController::class, 'invitation']);
         Route::post('add', [FriendsController::class, 'add']);
+        Route::post('accept', [FriendsController::class, 'accept']);
         Route::post('remove', [FriendsController::class, 'remove']);
     });
 

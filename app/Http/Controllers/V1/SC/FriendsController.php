@@ -71,6 +71,35 @@ class FriendsController extends Controller
         }
     }
 
+    public function accept(Request $request)
+    {
+        $request->validate([
+            'user_id' =>  'required|exists:users,id'
+        ]);
+        $user = auth('api')->user();
+        DB::beginTransaction();
+        try {
+            $data = UserFriendsModel::where(function ($q) use ($user, $request) {
+                $q->where([
+                    'user_id_from' => $user->id,
+                    'user_id_to' => $request->user_id,
+                ]);
+            })->orWhere(function ($q) use ($user, $request) {
+                $q->where([
+                    'user_id_from' => $request->user_id,
+                    'user_id_to' => $user->id,
+                ]);
+            })->update([
+                'status' => 1
+            ]);
+            DB::commit();
+            return (new ResponseTransformer)->toJson(200, __('message.200'), true);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new \Exception($e->getMessage());
+        }
+    }
+
     public function remove(Request $request)
     {
 
