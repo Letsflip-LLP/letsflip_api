@@ -56,13 +56,13 @@ class FriendsController extends Controller
                 'id' => Uuid::uuid4(),
                 'status' => 2,
             ]);
-            UserFriendsModel::firstOrCreate([
-                'user_id_from' => $request->user_id,
-                'user_id_to' => $user->id,
-            ], [
-                'id' => Uuid::uuid4(),
-                'status' => 2,
-            ]);
+            // UserFriendsModel::firstOrCreate([
+            //     'user_id_from' => $request->user_id,
+            //     'user_id_to' => $user->id,
+            // ], [
+            //     'id' => Uuid::uuid4(),
+            //     'status' => 2,
+            // ]);
             DB::commit();
             return (new ResponseTransformer)->toJson(200, __('message.200'), true);
         } catch (\Exception $e) {
@@ -80,18 +80,20 @@ class FriendsController extends Controller
         DB::beginTransaction();
         try {
             $data = UserFriendsModel::where(function ($q) use ($user, $request) {
-                $q->where([
-                    'user_id_from' => $user->id,
-                    'user_id_to' => $request->user_id,
-                ]);
-            })->orWhere(function ($q) use ($user, $request) {
-                $q->where([
-                    'user_id_from' => $request->user_id,
-                    'user_id_to' => $user->id,
-                ]);
-            })->update([
-                'status' => 1
+                    $q->where([
+                        'user_id_from' => $request->user_id,
+                        'user_id_to' => $user->id,
+                    ]);
+                    })->update([
+                        'status' => 1
+                    ]);
+
+            UserFriendsModel::insert([
+                'user_id_from' => $user->id,
+                'user_id_to' => $request->user_id,
+                'id' => Uuid::uuid4()
             ]);
+
             DB::commit();
             return (new ResponseTransformer)->toJson(200, __('message.200'), true);
         } catch (\Exception $e) {

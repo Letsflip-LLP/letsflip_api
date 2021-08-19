@@ -92,13 +92,6 @@ class UserController extends Controller
     { 
         $users = new User;
          
-        if($request->filled('friends_only') && $request->friends_only == true)
-            $users = $users->whereHas('Follower',function($q1){
-                $q1->where('user_id_from',$this->user_login->id);
-            });
-
-
-
         if($this->user_login->id && !$request->filled('blocked')){
             $users = $users->whereDoesntHave('BlockedTo',function($q){
                 $q->where('user_id_from',$this->user_login->id);
@@ -114,6 +107,14 @@ class UserController extends Controller
         if($this->user_login->id && $request->filled('invitation')){
             $invite = UserFriendsModel::where('user_id_to',$this->user_login->id)
             ->where('status', 2) 
+            ->get()->toArray();
+            $invite = array_column($invite,'user_id_from');
+            $users = $users->whereIn('id',$invite);
+        }
+
+        if($this->user_login->id && $request->filled('friends_only')){
+            $invite = UserFriendsModel::where('user_id_to',$this->user_login->id)
+            ->where('status', 1)
             ->get()->toArray();
             $invite = array_column($invite,'user_id_from');
             $users = $users->whereIn('id',$invite);
