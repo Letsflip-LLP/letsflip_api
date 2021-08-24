@@ -266,8 +266,7 @@ class UserController extends Controller
 
             DB::commit(); 
  
-            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
-
+            return (new UserTransformer)->detail(200, __("messages.200"), $user);  
 
         } catch (\exception $exception){
             DB::rollBack();
