@@ -41,7 +41,8 @@ class PostTransformer
                 'email' => $model->user->email,
                 'username' => $model->user->username,
                 'image_profile' => defaultImage('user', $model->user)
-            ]
+            ],
+            'contents' =>  $model->Content
         ];
 
         return $temp;

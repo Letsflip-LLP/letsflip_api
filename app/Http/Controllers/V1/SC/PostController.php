@@ -70,9 +70,10 @@ class PostController extends Controller
                     'text' => $request->text
                 ]);
             }
-            if ($request->filled('files')) {
-                foreach ($request->files as $file) {
+            if ($request->filled('files')) { 
+                foreach ($request->input('files') as $file) {
                     $data->Content()->create([
+                        'id' => Uuid::uuid4(),
                         'file_path' => $file['file_path'],
                         'file_name' => $file['file_name'],
                         'file_mime' => $file['file_mime'],

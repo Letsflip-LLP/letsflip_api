@@ -26,6 +26,6 @@ class PostModel extends Model
 
     public function Content()
     {
-        return $this->hasMany('App\Http\Models\SC\PostContentModel', 'relation_id', 'id');
+        return $this->hasMany('App\Http\Models\SC\PostContentModel', 'post_id', 'id');
     }
 }
