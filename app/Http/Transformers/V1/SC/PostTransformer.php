@@ -42,9 +42,20 @@ class PostTransformer
                 'username' => $model->user->username,
                 'image_profile' => defaultImage('user', $model->user)
             ],
-            'contents' =>  $model->Content
+            'contents' =>  $model->Content ? $this->contentRender($model->Content) : []
         ];
 
         return $temp;
+    }
+
+    public function contentRender($content){
+        $data = [];
+        foreach($content as $dat){
+            $temp = $dat;
+            $temp->file_full_path = getPublicFile($dat->file_path,$dat->file_name);
+            $data[] = $temp;
+        }
+
+        return $data;
     }
 }
