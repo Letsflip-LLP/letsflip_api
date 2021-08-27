@@ -89,7 +89,7 @@ class UserController extends Controller
     }
 
     public function getPublicList(Request $request)
-    { 
+    {  
         $users = new User;
          
         if($this->user_login->id && !$request->filled('blocked')){
@@ -113,11 +113,17 @@ class UserController extends Controller
         }
 
         if($this->user_login->id && $request->filled('friends_only')){
-            $invite = UserFriendsModel::where('user_id_to',$this->user_login->id)
-            ->where('status', 1)
-            ->get()->toArray();
-            $invite = array_column($invite,'user_id_from');
-            $users = $users->whereIn('id',$invite);
+             $users = $users->whereHas('Friends',function($q) {
+                $q->where('user_friends.user_id_from',$this->user_login->id);
+                $q->where('user_friends.status',1);
+             });
+        }
+
+        if($this->user_login->id && $request->filled('invitation_sent')){
+            $users = $users->whereHas('FriendInvitaionReceived',function($q) {
+               $q->where('user_friends.user_id_from',$this->user_login->id);
+               $q->where('user_friends.status',2);
+            });
         }
  
         if($request->filled('classroom_id')){

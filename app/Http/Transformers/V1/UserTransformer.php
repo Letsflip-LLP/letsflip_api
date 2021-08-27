@@ -128,7 +128,7 @@ class UserTransformer {
             // friend_relation_type (1) Friend (2) any request from user login (3) any request from user list
             
             // Check in user is friends 
-            if($model->Friends->where(['status'=>1,'user_id_to' => $user_login->id])->first())
+            if($model->Friends->where('status',1)->where('user_id_from',$user_login->id)->first())
                 $tmp->friend_relation_type = 1;
              
             // CHECK IF USER LOGIN HAS REQUEST TO USER LIST
