@@ -20,7 +20,7 @@ class UserTransformer {
         $temp->description  = $model->description;
         $temp->company      = null;
         $temp->followed      = false;
-        $temp->friend        = false;
+        $temp->friend_relation_type = false;
 
         $temp->blocked_user = $model->BlockedFrom->count();
 
@@ -36,8 +36,20 @@ class UserTransformer {
         }
 
         if(auth('api')->user()){
-            $is_friend  = $model->Friends->where('user_id_to',auth('api')->user()->id)->first();
-            if($is_friend) $temp->friend = true;
+            $user_login = auth('api')->user();
+            // friend_relation_type (1) Friend (2) any request from user login (3) any request from user list
+            
+            // Check in user is friends 
+            if($model->Friends->where(['status'=>1,'user_id_to' => $user_login->id])->first())
+                $tmp->friend_relation_type = 1;
+             
+            // CHECK IF USER LOGIN HAS REQUEST TO USER LIST
+            if($model->FriendInvitaionReceived->where('status',2)->where('user_id_from',$user_login->id)->first())
+                $tmp->friend_relation_type = 2;
+ 
+            // CHECK IF USER USER LIST REQUEST TO LOGIN LOGIN
+            if($model->FriendInvitaionWaitingConfirm->where('status',2)->where('user_id_to',$user_login->id)->first())
+                $tmp->friend_relation_type = 3;
         }
 
 
@@ -105,11 +117,28 @@ class UserTransformer {
         $tmp->first_name    = $model->first_name;
         $tmp->last_name     = $model->last_name;
         $tmp->followed      = false;
-        $tmp->friend        = false;
+        $tmp->friend_relation_type = false;
 
         $tmp->username      = $model->username; 
         $tmp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
         $tmp->total_following  = $model->Followed ? $model->Followed->count() : 0;
+
+        if(auth('api')->user()){
+            $user_login = auth('api')->user();
+            // friend_relation_type (1) Friend (2) any request from user login (3) any request from user list
+            
+            // Check in user is friends 
+            if($model->Friends->where(['status'=>1,'user_id_to' => $user_login->id])->first())
+                $tmp->friend_relation_type = 1;
+             
+            // CHECK IF USER LOGIN HAS REQUEST TO USER LIST
+            if($model->FriendInvitaionReceived->where('status',2)->where('user_id_from',$user_login->id)->first())
+                $tmp->friend_relation_type = 2;
+ 
+            // CHECK IF USER USER LIST REQUEST TO LOGIN LOGIN
+            if($model->FriendInvitaionWaitingConfirm->where('status',2)->where('user_id_to',$user_login->id)->first())
+                $tmp->friend_relation_type = 3;
+        }
 
         if(auth('api')->user()){
             $is_friend  = $model->Friends->where('user_id_to',auth('api')->user()->id)->first();
