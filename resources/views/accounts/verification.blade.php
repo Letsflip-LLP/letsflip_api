@@ -9,7 +9,7 @@
 	<body>
 		<header style="background:linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);">
 			<div class="logo" style="background-color:linear-gradient(0deg, rgba(255,211,56,1) 0%, rgba(223,71,135,1) 100%);">
-				<img src="/web/images/logo.png" alt="" />
+				{{-- <img src="/web/images/logo.png" alt="" /> --}}
 			</div>
 		</header>
 		<div class="page-container">
