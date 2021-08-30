@@ -32,6 +32,14 @@ class CommentTransformer
             'total_share' => $model->total_share,
             'total_like' => $model->total_like,
             'total_comment' => $model->total_comment,
+            'user' => [
+                'id' => $model->User->id,
+                'first_name' => $model->User->first_name,
+                'last_name' => $model->User->last_name,
+                'email' => $model->User->email,
+                'username' => $model->User->username,
+                'image_profile' => defaultImage('user', $model->User)
+            ],
             'replies' => []
         ];
         if ($model->deleted_at !== NULL) {
@@ -42,21 +50,8 @@ class CommentTransformer
             return $temp;
         }
 
-        foreach ($model->replies as $rep) {
-            $i_rep = [
-                'id' => $rep->id,
-                'text' => $rep->text,
-                'total_share' => $rep->total_share,
-                'total_like' => $rep->total_like,
-                'total_comment' => $rep->total_comment,
-            ];
-            if ($rep->deleted_at !== NULL) {
-                $i_rep['text'] = 'This Comment has been deleted';
-                $i_rep['total_share'] = '';
-                $i_rep['total_like'] = '';
-                $i_rep['total_comment'] = '';
-            }
-            $temp['replies'][] = $i_rep;
+        foreach ($model->replies as $rep) { 
+            $temp['replies'][] = $this->item($rep);
         }
 
         return (object)$temp;
