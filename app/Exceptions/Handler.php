@@ -52,14 +52,17 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        $route = explode('/', $request->route()->uri);
-        if ($route[0] === 'api') {
-            if ($exception instanceof \Illuminate\Validation\ValidationException) {
-                return (new ResponseTransformer)->toJson(400, 'Error Input', $exception->errors());
-            } else {
-                return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);
+        if (isset($request->route()->uri)) {
+            $route = explode('/', $request->route()->uri);
+            if ($route[0] === 'api') {
+                if ($exception instanceof \Illuminate\Validation\ValidationException) {
+                    return (new ResponseTransformer)->toJson(400, 'Error Input', $exception->errors());
+                } else {
+                    return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);
+                }
             }
         }
+
         return parent::render($request, $exception);
     }
 
