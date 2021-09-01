@@ -27,6 +27,18 @@ class CreateRequest extends FormRequest
             'name' => 'required',
             'description' => 'required'
         ];
+
+        $route_name = $this->route()->action['as'];
+        $name = explode('.', $route_name);
+        $name = $name[count($name) - 1];
+
+        if ($name == 'edit') {
+            $rule['id'] = 'required';
+        } else if ($name == 'detail' || $name == 'delete') {
+            $rule['id'] = 'required';
+            unset($rule['name']);
+            unset($rule['description']);
+        }
         return $rule;
     }
 }
