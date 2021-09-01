@@ -7,7 +7,7 @@ use App\Http\Controllers\V1\SC\CommentController;
 use App\Http\Controllers\V1\SC\FriendsController;
 
 use App\Http\Controllers\V1\SC\ServerController;
-use App\Http\Controllers\V1\SC\ServerCategoryController;
+use App\Http\Controllers\V1\SC\RoomCategoryController;
 
 use App\Http\Controllers\V1\SC\ChannelController;
 use App\Http\Controllers\V1\SC\ChannelMemberTypeController;
@@ -78,17 +78,17 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
         Route::get('servers', [ServerController::class, 'index']);
         Route::group(['prefix' => 'server', 'as' => 'server.'], function () {
             Route::post('add', [ServerController::class, 'add']);
-            Route::post('edit', [ServerController::class, 'edit']);
-            Route::post('delete', [ServerController::class, 'delete']);
-            Route::get('detail', [ServerController::class, 'detail']);
+            Route::post('edit', [ServerController::class, 'edit'])->name('edit');
+            Route::post('delete', [ServerController::class, 'delete'])->name('delete');
+            Route::get('detail', [ServerController::class, 'detail'])->name('detail');
         });
 
-        Route::get('categories', [ServerCategoryController::class, 'index']);
-        Route::group(['prefix' => 'category', 'as' => 'server.'], function () {
-            Route::post('add', [ServerCategoryController::class, 'index']);
-            Route::post('edit', [ServerCategoryController::class, 'index']);
-            Route::post('delete', [ServerCategoryController::class, 'index']);
-            Route::get('detail', [ServerCategoryController::class, 'index']);
+        Route::get('categories', [RoomCategoryController::class, 'index'])->name('category.index');
+        Route::group(['prefix' => 'category', 'as' => 'category.'], function () {
+            Route::post('add', [RoomCategoryController::class, 'add'])->name('add');
+            Route::post('edit', [RoomCategoryController::class, 'edit'])->name('edit');
+            Route::post('delete', [RoomCategoryController::class, 'delete'])->name('delete');
+            Route::get('detail', [RoomCategoryController::class, 'detail'])->name('detail');
         });
         // Route::get('/', [ServerController::class, 'index']);
         // Route::get('/', [ServerController::class, 'index']);
