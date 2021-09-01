@@ -11,7 +11,7 @@ class ServerModel extends Model
     use HasFactory;
     use SoftDeletes;
     public $incrementing = false;
-    protected $table = 'server';
+    protected $table = 'room_servers';
     protected $guarded = [];
 
     public function roomCategory()

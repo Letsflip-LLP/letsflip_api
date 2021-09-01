@@ -13,7 +13,7 @@ class CreateServerTable extends Migration
      */
     public function up()
     {
-        Schema::create('server', function (Blueprint $table) {
+        Schema::create('room_servers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->string('name');
