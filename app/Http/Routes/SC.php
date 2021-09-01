@@ -26,24 +26,7 @@ use App\Http\Controllers\V1\SC\ChannelMemberController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-// Route::get('vw', function () {
-//     $ar = [
-//         'first_name' => 'aaa',
-//         'last_name' => 'aaa',
-//         'reset_password_url' => 'aaa',
-//         'email' => 'aaa',
-//         'password' => 'aaa',
-//         'activate_url' => 'aaa',
-//         'account_type' => 'aaa',
-//         'url' => 'aaa',
-//         'message' => 'aaa',
-//         'activate_url' => 'aaa',
-//         'activate_url' => 'aaa',
-//         'activate_url' => 'aaa',
-//     ];
-//     return view('accounts.confirmation-ress-pass', $ar);
-// });
+ 
 Route::get('bebek', function () {
     return 'ini api';
 });
