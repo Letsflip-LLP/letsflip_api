@@ -39,7 +39,7 @@ class RoomCategoryTransformer
                 'image_profile' => defaultImage('user', $model->user)
             ],
             'server' => [
-                'id' => $model->server,
+                'id' => $model->server->id,
                 'name' => $model->server->name,
                 'text' => $model->server->text,
                 'user' => [

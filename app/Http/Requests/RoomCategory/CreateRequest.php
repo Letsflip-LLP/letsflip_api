@@ -29,20 +29,20 @@ class CreateRequest extends FormRequest
 
         if ($name == 'index') {
             $rule = [
-                'server_id' => 'required|exists:server,id'
+                'server_id' => 'required|exists:room_servers,id'
             ];
         } else if ($name == 'add') {
             $rule = [
                 'name' => 'required',
                 'description' => 'required',
-                'server_id' => 'required|exists:server,id'
+                'server_id' => 'required|exists:room_servers,id'
             ];
         } else if ($name == 'edit') {
             $rule = [
                 'id' => 'required',
                 'name' => 'required',
                 'description' => 'required',
-                'server_id' => 'required|exists:server,id'
+                'server_id' => 'required|exists:room_servers,id'
             ];
         } else if ($name == 'detail' || $name == 'delete') {
             $rule = [
