@@ -63,9 +63,6 @@ class ServerController extends Controller
 
     public function edit(CreateRequest $request)
     {
-        $request->validate([
-            'id' => 'required'
-        ]);
         DB::beginTransaction();
         try {
             $user = auth('api')->user();
@@ -88,9 +85,6 @@ class ServerController extends Controller
     public function delete(Request $request)
     {
 
-        $request->validate([
-            'id' => 'required'
-        ]);
         DB::beginTransaction();
         try {
             $user = auth('api')->user();
