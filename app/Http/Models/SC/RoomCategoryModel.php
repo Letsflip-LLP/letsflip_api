@@ -23,4 +23,9 @@ class RoomCategoryModel extends Model
     {
         return $this->belongsTo('App\Http\Models\User', 'user_id', 'id');
     }
+
+    public function channels()
+    {
+        return $this->hasMany('App\Http\Models\SC\RoomChannelModel', 'category_id', 'id');
+    }
 }

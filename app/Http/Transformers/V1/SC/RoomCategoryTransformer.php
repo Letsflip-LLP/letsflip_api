@@ -3,6 +3,7 @@
 namespace App\Http\Transformers\V1\SC;
 
 use App\Http\Transformers\ResponseTransformer;
+use App\Http\Transformers\V1\SC\RoomChannelTransformer;
 
 class RoomCategoryTransformer
 {
@@ -50,9 +51,19 @@ class RoomCategoryTransformer
                     'username' => $model->server->user->username,
                     'image_profile' => defaultImage('user', $model->server->user)
                 ],
-            ]
+            ],
+            "channels" => $this->renderChannelItem($model->channels)
         ];
 
         return $temp;
+    }
+
+    private function renderChannelItem($channels){
+        $data = [];
+        foreach($channels as $channel){
+            $tmp  = (new RoomChannelTransformer)->item($channel);
+            $data[] = $tmp;
+        }
+        return $data;
     }
 }
