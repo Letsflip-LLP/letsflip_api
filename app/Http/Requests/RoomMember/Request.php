@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\RoomChannel;
+namespace App\Http\Requests\RoomMember;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -30,23 +30,23 @@ class Request extends FormRequest
         $rule = [];
         if ($name == 'index') {
             $rule = [
-                'category_id' => 'required|exists:room_category,id'
+                'channel_id' => 'required|exists:room_channels,id'
             ];
         } else if ($name == 'add' || $name == 'edit') {
             $rule = [
-                'category_id' => 'required|exists:room_category,id',
-                'name' => 'required',
-                'description' => 'required',
+                'user_id' => 'required|exists:users,id',
+                'channel_id' => 'required|exists:room_channels,id',
+                'room_member_type_id' => 'required|exists:room_member_types,id'
             ];
             if ($name == 'edit') {
-                $rule['id'] = 'required|exists:room_channels,id';
+                $rule['id'] = 'required|exists:room_members,id';
+                unset($rule['user_id']);
             }
         } else if ($name == 'detail' || $name == 'delete') {
             $rule = [
-                'id' => 'required|exists:room_channels,id',
+                'id' => 'required|exists:room_members,id',
             ];
         }
-
         return $rule;
     }
 }

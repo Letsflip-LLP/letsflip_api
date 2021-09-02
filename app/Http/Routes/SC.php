@@ -9,6 +9,7 @@ use App\Http\Controllers\V1\SC\FriendsController;
 use App\Http\Controllers\V1\SC\ServerController;
 use App\Http\Controllers\V1\SC\RoomCategoryController;
 use App\Http\Controllers\V1\SC\RoomChannelController;
+use App\Http\Controllers\V1\SC\RoomMemberController;
 use App\Http\Controllers\V1\SC\RoomMemberTypeController;
 
 use App\Http\Controllers\V1\SC\ChannelController;
@@ -82,6 +83,14 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
             Route::post('edit', [RoomChannelController::class, 'edit'])->name('edit');
             Route::post('delete', [RoomChannelController::class, 'delete'])->name('delete');
             Route::get('detail', [RoomChannelController::class, 'detail'])->name('detail');
+
+            Route::get('members', [RoomMemberController::class, 'index'])->name('member.index');
+            Route::group(['prefix' => 'member', 'as' => 'member.'], function () {
+                Route::post('add', [RoomMemberController::class, 'add'])->name('add');
+                Route::post('edit', [RoomMemberController::class, 'edit'])->name('edit');
+                Route::post('delete', [RoomMemberController::class, 'delete'])->name('delete');
+                Route::get('detail', [RoomMemberController::class, 'detail'])->name('detail');
+            });
         });
 
         Route::get('member-types', [RoomMemberTypeController::class, 'index'])->name('member-type.index');
@@ -91,9 +100,5 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
             Route::post('delete', [RoomMemberTypeController::class, 'delete'])->name('delete');
             Route::get('detail', [RoomMemberTypeController::class, 'detail'])->name('detail');
         });
-        // Route::get('/', [ServerController::class, 'index']);
-        // Route::get('/', [ServerController::class, 'index']);
-        // Route::get('/', [ServerController::class, 'index']);
-        // Route::get('/', [ServerController::class, 'index']);
     });
 });
