@@ -8,6 +8,8 @@ use App\Http\Controllers\V1\SC\FriendsController;
 
 use App\Http\Controllers\V1\SC\ServerController;
 use App\Http\Controllers\V1\SC\RoomCategoryController;
+use App\Http\Controllers\V1\SC\RoomChannelController;
+use App\Http\Controllers\V1\SC\RoomMemberTypeController;
 
 use App\Http\Controllers\V1\SC\ChannelController;
 use App\Http\Controllers\V1\SC\ChannelMemberTypeController;
@@ -26,7 +28,7 @@ use App\Http\Controllers\V1\SC\ChannelMemberController;
 | contains the "web" middleware group. Now create something great!
 |
 */
- 
+
 Route::get('bebek', function () {
     return 'ini api';
 });
@@ -72,6 +74,22 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
             Route::post('edit', [RoomCategoryController::class, 'edit'])->name('edit');
             Route::post('delete', [RoomCategoryController::class, 'delete'])->name('delete');
             Route::get('detail', [RoomCategoryController::class, 'detail'])->name('detail');
+        });
+
+        Route::get('channels', [RoomChannelController::class, 'index'])->name('channel.index');
+        Route::group(['prefix' => 'channel', 'as' => 'channel.'], function () {
+            Route::post('add', [RoomChannelController::class, 'add'])->name('add');
+            Route::post('edit', [RoomChannelController::class, 'edit'])->name('edit');
+            Route::post('delete', [RoomChannelController::class, 'delete'])->name('delete');
+            Route::get('detail', [RoomChannelController::class, 'detail'])->name('detail');
+        });
+
+        Route::get('member-types', [RoomMemberTypeController::class, 'index'])->name('member-type.index');
+        Route::group(['prefix' => 'member-type', 'as' => 'member-type.'], function () {
+            Route::post('add', [RoomMemberTypeController::class, 'add'])->name('add');
+            Route::post('edit', [RoomMemberTypeController::class, 'edit'])->name('edit');
+            Route::post('delete', [RoomMemberTypeController::class, 'delete'])->name('delete');
+            Route::get('detail', [RoomMemberTypeController::class, 'detail'])->name('detail');
         });
         // Route::get('/', [ServerController::class, 'index']);
         // Route::get('/', [ServerController::class, 'index']);
