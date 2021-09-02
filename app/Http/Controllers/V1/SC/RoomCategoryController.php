@@ -18,8 +18,8 @@ class RoomCategoryController extends Controller
     {
         try {
             $data = RoomCategoryModel::where('server_id', $request->server_id);
-            $data = $data->orderBy('created_at', 'desc')
-                ->paginate($request->input('per_page', 5));
+            $data = $data->orderBy('created_at', 'desc')->get();
+                // ->paginate($request->input('per_page', 5));
             return (new RoomCategoryTransformer)->list(200, __('message.200'), $data);
         } catch (\Exception $e) {
             throw $e;
