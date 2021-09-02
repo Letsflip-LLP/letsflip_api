@@ -23,4 +23,9 @@ class RoomMemberTypeModel extends Model
     {
         return $this->belongsTo('App\Http\Models\SC\RoomChannelModel', 'channel_id', 'id');
     }
+
+    public function member()
+    {
+        return $this->hasMany('App\Http\Models\SC\RoomMemberModel', 'room_member_type_id', 'id');
+    }
 }
