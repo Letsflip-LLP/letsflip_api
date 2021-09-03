@@ -46,27 +46,26 @@ class RoomChannelTransformer
             'member_type' => [],
             'member' => []
         ];
-        foreach ($model->memberType as $memType) {
+        foreach ($model->memberType->where('type','!=',1) as $memType) {
             $temp->member_type[] = [
                 'id' => $memType->id,
                 'name' => $memType->name,
                 'type' => $memType->type
             ];
         }
-
-        foreach ($model->member as $mem) {
-            $temp->member[] = [
-                'id' => $mem->id,
-                'user' => [
-                    'id' => $mem->user->id,
-                    'first_name' => $mem->user->first_name,
-                    'last_name' => $mem->user->last_name,
-                    'email' => $mem->user->email,
-                    'username' => $mem->user->username,
-                    'image_profile' => defaultImage('user', $mem->user)
-                ],
-            ];
-        }
+        // foreach ($model->member as $mem) {
+        //     $temp->member[] = [
+        //         'id' => $mem->id,
+        //         'user' => [
+        //             'id' => $mem->user->id,
+        //             'first_name' => $mem->user->first_name,
+        //             'last_name' => $mem->user->last_name,
+        //             'email' => $mem->user->email,
+        //             'username' => $mem->user->username,
+        //             'image_profile' => defaultImage('user', $mem->user)
+        //         ],
+        //     ];
+        // }
 
         return $temp;
     }
