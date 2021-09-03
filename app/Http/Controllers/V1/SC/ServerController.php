@@ -16,9 +16,15 @@ class ServerController extends Controller
 {
     public function index(Request $request)
     {
+
         try {
             $user = auth('api')->user();
-            $data = ServerModel::where('user_id', $user->id);
+            $data = ServerModel::where('user_id', $user->id)
+                ->orWhere(function ($q) use ($user) {
+                    $q->whereHas('roomCategory.channels.member', function ($q1) use ($user) {
+                        $q1->where('user_id', $user->id);
+                    });
+                });
             $data = $data->orderBy('created_at', 'desc')
                 ->paginate($request->input('per_page', 5));
             return (new ServerTransformer)->list(200, __('message.200'), $data);
