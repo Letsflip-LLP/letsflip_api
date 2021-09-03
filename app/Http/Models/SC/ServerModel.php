@@ -16,7 +16,7 @@ class ServerModel extends Model
 
     public function roomCategory()
     {
-        return $this->hasMany('App\Models\SC\RoomCategory', 'server_id', 'id');
+        return $this->hasMany('App\Http\Models\SC\RoomCategoryModel', 'server_id', 'id');
     }
 
 
