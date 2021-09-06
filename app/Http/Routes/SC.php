@@ -11,10 +11,8 @@ use App\Http\Controllers\V1\SC\RoomCategoryController;
 use App\Http\Controllers\V1\SC\RoomChannelController;
 use App\Http\Controllers\V1\SC\RoomMemberController;
 use App\Http\Controllers\V1\SC\RoomMemberTypeController;
+use App\Http\Controllers\V1\SC\RoomMessageController;
 
-use App\Http\Controllers\V1\SC\ChannelController;
-use App\Http\Controllers\V1\SC\ChannelMemberTypeController;
-use App\Http\Controllers\V1\SC\ChannelMemberController;
 // use App\Http\Controllers\V1\SC\ServerCategoryController;
 // use App\Http\Controllers\V1\SC\ServerCategoryController;
 
@@ -90,6 +88,14 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
                 Route::post('edit', [RoomMemberController::class, 'edit'])->name('edit');
                 Route::post('delete', [RoomMemberController::class, 'delete'])->name('delete');
                 Route::get('detail', [RoomMemberController::class, 'detail'])->name('detail');
+            });
+
+            //
+            Route::get('messages', [RoomMessageController::class, 'index'])->name('message.index');
+            Route::group(['prefix' => 'message', 'as' => 'message.'], function () {
+                Route::post('send', [RoomMessageController::class, 'add'])->name('add');
+                Route::post('edit', [RoomMessageController::class, 'edit'])->name('edit');
+                Route::post('delete', [RoomMessageController::class, 'delete'])->name('delete');
             });
         });
 

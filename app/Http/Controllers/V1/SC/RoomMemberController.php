@@ -18,6 +18,7 @@ class RoomMemberController extends Controller
             $data = RoomMemberModel::where('room_channel_id', $request->channel_id);
             $data = $data->orderBy('created_at', 'desc')
                 ->paginate($request->input('per_page', 5));
+            $data->withPath(route('room.channel.member.index'));
             return (new RoomMemberTransformer)->list(200, __('message.200'), $data);
         } catch (\Exception $e) {
             throw $e;
