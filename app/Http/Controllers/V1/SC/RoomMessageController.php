@@ -8,6 +8,7 @@ use App\Http\Models\SC\RoomMessageContentModel;
 use App\Http\Models\SC\RoomChannelModel;
 use App\Http\Requests\RoomMessage\Request;
 use App\Http\Transformers\V1\SC\RoomMessageTransformer;
+use App\Http\Libraries\RedisSocket\RedisSocketManager;
 
 use DB;
 use Ramsey\Uuid\Uuid;
@@ -68,6 +69,9 @@ class RoomMessageController extends Controller
             }
             DB::commit();
             // return $this->index($request);
+            $RedisSocket = new RedisSocketManager;
+            $RedisSocket = $RedisSocket->publishRedisSocket($request->channel_id,"CHANNEL_CHATS","CREATE",(new RoomMessageTransformer)->item($data));
+
             return (new RoomMessageTransformer)->detail(200, __('message.200'), $data);
         } catch (\Exception $e) {
             DB::rollBack();
