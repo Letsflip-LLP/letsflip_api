@@ -67,8 +67,8 @@ class RoomMessageController extends Controller
                 }
             }
             DB::commit();
-            return $this->index($request);
-            // return (new RoomMessageTransformer)->detail(200, __('message.200'), $data);
+            // return $this->index($request);
+            return (new RoomMessageTransformer)->detail(200, __('message.200'), $data);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
