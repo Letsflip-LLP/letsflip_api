@@ -38,6 +38,9 @@ class ServerController extends Controller
         try {
             $user = auth('api')->user();
             $data = ServerModel::where('id', $request->id)
+                ->with(['roomCategory.channels.member' => function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                }])
                 ->where('user_id', $user->id)
                 ->firstOrFail();
 
