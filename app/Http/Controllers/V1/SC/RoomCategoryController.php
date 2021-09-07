@@ -39,6 +39,11 @@ class RoomCategoryController extends Controller
         try {
             $user = auth('api')->user();
             $data = RoomCategoryModel::where('id', $request->id)
+                ->with(['channels' => function ($q) use ($user) {
+                    $q->whereHas('member', function ($q1) use ($user) {
+                        $q1->where('user_id', $user->id);
+                    });
+                }])
                 // ->whereHas('channels.member', function ($q) use ($user) {
                 //     $q->where('user_id', $user->id);
                 // })
