@@ -17,9 +17,17 @@ class RoomCategoryController extends Controller
     public function index(CreateRequest $request)
     {
         try {
-            $data = RoomCategoryModel::where('server_id', $request->server_id);
+            $user = auth('api')->user();
+            $data = RoomCategoryModel::where('server_id', $request->server_id)
+                ->where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                        ->orWhereHas('channels.member', function ($q) use ($user) {
+                            $q->where('user_id', $user->id);
+                        });
+                });
+
             $data = $data->orderBy('created_at', 'desc')->get();
-                // ->paginate($request->input('per_page', 5));
+            // ->paginate($request->input('per_page', 5));
             return (new RoomCategoryTransformer)->list(200, __('message.200'), $data);
         } catch (\Exception $e) {
             throw $e;
@@ -31,7 +39,10 @@ class RoomCategoryController extends Controller
         try {
             $user = auth('api')->user();
             $data = RoomCategoryModel::where('id', $request->id)
-                ->where('user_id', $user->id)
+                // ->whereHas('channels.member', function ($q) use ($user) {
+                //     $q->where('user_id', $user->id);
+                // })
+                // ->where('user_id', $user->id)
                 ->firstOrFail();
 
             return (new RoomCategoryTransformer)->detail(200, __('message.200'), $data);

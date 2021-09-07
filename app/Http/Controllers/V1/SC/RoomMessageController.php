@@ -56,6 +56,16 @@ class RoomMessageController extends Controller
                 'parent_id' => isset($request->parent_id) ? $request->parent_id : NULL,
                 'room_channel_id' => $request->channel_id
             ]);
+            if ($request->filled('files')) {
+                foreach ($request->input('files') as $file) {
+                    $data->content()->create([
+                        'id' => Uuid::uuid4(),
+                        'file_path' => $file['file_path'],
+                        'file_name' => $file['file_name'],
+                        'file_mime' => $file['file_mime'],
+                    ]);
+                }
+            }
             DB::commit();
             // return $this->index($request);
             return (new RoomMessageTransformer)->detail(200, __('message.200'), $data);

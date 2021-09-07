@@ -19,7 +19,11 @@ class RoomChannelController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = RoomChannelModel::where('category_id', $request->category_id);
+            $user = auth('api')->user();
+            $data = RoomChannelModel::where('category_id', $request->category_id)
+                ->whereHas('member', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                });
             $data = $data->orderBy('created_at', 'desc')
                 ->paginate($request->input('per_page', 5));
             return (new RoomChannelTransformer)->list(200, __('message.200'), $data);
@@ -31,7 +35,11 @@ class RoomChannelController extends Controller
     public function detail(Request $request)
     {
         try {
+            $user = auth('api')->user();
             $data = RoomChannelModel::where('id', $request->id)
+                // ->whereHas('member', function ($q) use ($user) {
+                //     $q->where('user_id', $user->id);
+                // })
                 ->firstOrFail();
 
             return (new RoomChannelTransformer)->detail(200, __('message.200'), $data);
