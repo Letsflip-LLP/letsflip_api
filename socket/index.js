@@ -38,7 +38,7 @@ Redis.subscribe('message', function (err, count) {
 });
 
 Redis.on('message', function (redis_channel, data) {
-  console.log(data);
+  console.log(redis_channel,data);
   sub.subscribe(redis_channel);
   data = JSON.parse(data)
   const socket_chanel = data.chanel;

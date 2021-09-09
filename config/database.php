@@ -127,7 +127,8 @@ return [
     */
 
     'redis' => [
-
+        'cluster' => true, 
+        
         'client' => env('REDIS_CLIENT', 'predis'),
 
         'options' => [
