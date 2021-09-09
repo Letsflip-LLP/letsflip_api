@@ -24,7 +24,11 @@ class RoomCategoryController extends Controller
                         ->orWhereHas('channels.member', function ($q) use ($user) {
                             $q->where('user_id', $user->id);
                         });
-                });
+                })->with(['channels' => function ($q) use ($user) {
+                    $q->whereHas('member', function ($q1) use ($user) {
+                        $q1->where('user_id', $user->id);
+                    });
+                }]);
 
             $data = $data->orderBy('created_at', 'desc')->get();
             // ->paginate($request->input('per_page', 5));
