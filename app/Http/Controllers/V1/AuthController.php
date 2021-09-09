@@ -120,8 +120,8 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
 
             $email = User::where('email', $request->email)->orWhere('username', $request->email)->first();
 
@@ -157,10 +157,10 @@ class AuthController extends Controller
             DB::commit();
 
             return (new UserTransformer)->detail(200, __("messages.200"), $user);
-        // } catch (\exception $exception) {
-        //     DB::rollBack();
-        //     return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);
-        // }
+        } catch (\exception $exception) {
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);
+        }
     }
 
     public function verificationAccount(Request $request)
