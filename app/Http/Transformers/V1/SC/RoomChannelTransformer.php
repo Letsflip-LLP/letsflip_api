@@ -43,6 +43,9 @@ class RoomChannelTransformer
                 'name' => $model->category->name,
                 'text' => $model->category->text,
             ],
+            'server' => (object) [
+                "id" =>  $model->category->server_id
+            ],
             'member_type' => [],
             'member' => []
         ];
