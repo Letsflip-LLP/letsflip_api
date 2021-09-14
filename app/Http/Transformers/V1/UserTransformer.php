@@ -41,15 +41,15 @@ class UserTransformer {
             
             // Check in user is friends 
             if($model->Friends->where(['status'=>1,'user_id_to' => $user_login->id])->first())
-                $tmp->friend_relation_type = 1;
+                $temp->friend_relation_type = 1;
              
             // CHECK IF USER LOGIN HAS REQUEST TO USER LIST
             if($model->FriendInvitaionReceived->where('status',2)->where('user_id_from',$user_login->id)->first())
-                $tmp->friend_relation_type = 2;
+                $temp->friend_relation_type = 2;
  
             // CHECK IF USER USER LIST REQUEST TO LOGIN LOGIN
             if($model->FriendInvitaionWaitingConfirm->where('status',2)->where('user_id_to',$user_login->id)->first())
-                $tmp->friend_relation_type = 3;
+                $temp->friend_relation_type = 3;
         }
 
 
