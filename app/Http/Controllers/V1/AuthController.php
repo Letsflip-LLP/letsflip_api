@@ -26,6 +26,8 @@ use App\Http\Models\UserDeviceModel;
 use App\Http\Transformers\V1\UserTransformer;
 use App\Http\Models\SubscriberModel;
 
+use Carbon\Carbon;
+
 class AuthController extends Controller
 {
     /**
@@ -624,6 +626,77 @@ class AuthController extends Controller
         } catch (\exception $exception) {
             DB::rollBack();
             return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);
+        }
+    }
+
+    public function forgotPasswordRequest(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::where('email', $request->email)->first();
+            if ($user == NULL) {
+                return (new ResponseTransformer)->toJson(500, 'User not found', false);
+            }
+
+            $addMinutes = ENV('FORGOT_PASSWORD_DURATION');
+            if (!isset($addMinutes)) {
+                $addMinutes = 180;
+            }
+            // $exp = Carbon::now()->addMinutes($addMinutes);
+            $payload = [
+                'payload' => $user->email,
+                'iat' => time(),
+                'exp' => time() + $addMinutes,
+            ];
+            $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+            PasswordResetModel::updateOrCreate([
+                'email' => $user->email,
+            ], [
+                'id' => Uuid::uuid4(),
+                'token' => $token
+            ]);
+            $email_payload = [
+                "first_name" => $user->first_name,
+                "last_name" => $user->last_name,
+                "reset_password_url" => env('APP_WO_DEEPLINK', url('/')) . '/account/confirm-reset-password/forgot?temporary_token=' . $token
+            ];
+
+            \Mail::to($user->email)->queue(new \App\Mail\resetPasswordConfirmation($email_payload));
+            DB::commit();
+            return (new ResponseTransformer)->toJson(200, __('messages.200'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500, $e->getMessage(), false);
+        }
+    }
+
+    public function forgotPasswordSubmit(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            if (!$request->filled('token') || !$request->filled('password') || !$request->filled('confirm_password')) {
+                return (new ResponseTransformer)->toJson(500, 'Required field not filled', false);
+            } else if ($request->password !== $request->confirm_password) {
+                return (new ResponseTransformer)->toJson(500, 'Password Not Match', false);
+            }
+
+            $payload_decode = $this->decodePublicToken($request->token);
+            $exp          = Carbon::parse($payload_decode->exp);
+            $email          = $payload_decode->payload;
+            $ps_data = PasswordResetModel::where('token', $request->token)->first();
+            if (Carbon::now() > $exp || $ps_data == NULL) {
+                return (new ResponseTransformer)->toJson(500, 'Token Expired', false);
+            }
+            User::where('email', $email)->update([
+                'password' => bcrypt($request->password)
+            ]);
+            $ps_data->delete();
+            DB::commit();
+            return (new ResponseTransformer)->toJson(200, __('messages.200'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500, $e->getMessage(), false);
         }
     }
 }

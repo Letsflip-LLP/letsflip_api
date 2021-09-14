@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\AuthController;
- 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,7 +14,7 @@ use App\Http\Controllers\V1\AuthController;
 |
 */
 
-$router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
+$router->group(['middleware' => ['form'], 'prefix' => 'auth'], function ($router) {
 
     Route::get('check-update', [AuthController::class, 'checkAppUpdate']);
 
@@ -37,10 +37,11 @@ $router->group(['middleware'=> ['form'],'prefix' => 'auth'], function($router){
     Route::post('request-reset-password', [AuthController::class, 'requestResetPassword'])->name('PostAuthControllerRequestResetPassword');
     Route::post('submit-reset-password', [AuthController::class, 'submitResetPassword'])->name('PostAuthControllerSubmitResetPassword');
 
-    $router->get('email-verification', function (Request $request){
-        \Mail::to("andhi.saputro1508@gmail.com")->queue(new \App\Mail\verificationUserRegister(["reset_password_url"=> "http://www.facebok.com","email" => "andhi@email.com" , 'password' => "*****" , "activate_url" => "http://www.facebook.com" ,"first_name" => "ANd" , "last_name" => "sapu"]));
-        return view('emails.account-verification',["reset_password_url"=> "http://www.facebok.com","email" => "andhi@email.com" , 'password' => "*****" , "activate_url" => "http://www.facebook.com" ,"first_name" => "ANd" , "last_name" => "sapu"]);
-    }); 
-}); 
- 
+    Route::post('request-forgot-password', [AuthController::class, 'forgotPasswordRequest'])->name('PostAuthControllerForgotPasswordRequest');
+    Route::post('submit-forgot-password', [AuthController::class, 'forgotPasswordSubmit'])->name('PostAuthControllerForgotPasswordSubmit');
 
+    $router->get('email-verification', function (Request $request) {
+        \Mail::to("andhi.saputro1508@gmail.com")->queue(new \App\Mail\verificationUserRegister(["reset_password_url" => "http://www.facebok.com", "email" => "andhi@email.com", 'password' => "*****", "activate_url" => "http://www.facebook.com", "first_name" => "ANd", "last_name" => "sapu"]));
+        return view('emails.account-verification', ["reset_password_url" => "http://www.facebok.com", "email" => "andhi@email.com", 'password' => "*****", "activate_url" => "http://www.facebook.com", "first_name" => "ANd", "last_name" => "sapu"]);
+    });
+});
