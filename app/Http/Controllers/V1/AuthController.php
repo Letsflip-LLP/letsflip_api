@@ -359,16 +359,11 @@ class AuthController extends Controller
     {
         DB::beginTransaction();
 
-        try {
-
-            $driver = Socialite::driver('google');
-            $access_token = $driver->getAccessTokenResponse($request->server_auth_code);
-            $google_token_id = $access_token['id_token'];
-
-            // \Firebase\JWT\JWT::$leeway = 180+8;
-            $client = new \Google_Client(['client_id' => env('GOOGLE_CLIENT_ID'), 'client_secret' => env('GOOGLE_CLIENT_SECRET')]);
-            $payload = $client->verifyIdToken($google_token_id);
-
+        try { 
+            \Firebase\JWT\JWT::$leeway = 180+8;
+            $client  = new \Google_Client(['client_id' => env('GOOGLE_CLIENT_ID'), 'client_secret' => env('GOOGLE_CLIENT_SECRET')]);
+            $payload = $client->verifyIdToken($request->server_auth_code);
+ 
             if ($payload == false)
                 return (new ResponseTransformer)->toJson(400, __('message.401'), 'google_token_id : ' . __('messages.401'));
 
