@@ -37,12 +37,16 @@ class ServerController extends Controller
     {
         try {
             $user = auth('api')->user();
-            $data = ServerModel::where('id', $request->id)
-                ->with(['roomCategory.channels.member' => function ($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                }])
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            $data = new ServerModel;
+            $data = $data->where('id',$request->id);
+            $data = $data->whereHas('roomCategory',function($q1) use ($user){
+                $q1->whereHas('channels',function($q2) use ($user){
+                    $q2->whereHas('member',function($q3) use ($user){
+                        $q3->where('user_id',$user->id);
+                    });
+                });
+            });
+            $data = $data->first();
 
             return (new ServerTransformer)->detail(200, __('message.200'), $data);
         } catch (\Exception $e) {
