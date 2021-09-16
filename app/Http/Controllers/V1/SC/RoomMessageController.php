@@ -18,6 +18,13 @@ class RoomMessageController extends Controller
     public function index(Request $request)
     {
         try {
+            $user = auth('api')->user();
+            RoomMemberModel::where('channel_id', $request->channel_id)
+                ->where('user_id', $user->id)
+                ->update([
+                    'last_seen' => Carbon::now()
+                ]);
+
             $data = RoomMessageModel::withTrashed()
                 ->whereNull('parent_id')
                 ->where('room_channel_id', $request->channel_id);
@@ -49,7 +56,9 @@ class RoomMessageController extends Controller
         try {
             $user = auth('api')->user();
             $this->isCan($user, $request);
-
+            RoomChannelModel::where('id', $request->channel_id)->update([
+                'last_message_time' => Carbon::now()
+            ]);
             $data = RoomMessageModel::create([
                 'user_id' => $user->id,
                 'id' => Uuid::uuid4(),
@@ -70,7 +79,7 @@ class RoomMessageController extends Controller
             DB::commit();
             // return $this->index($request);
             $RedisSocket = new RedisSocketManager;
-            $RedisSocket = $RedisSocket->publishRedisSocket($request->channel_id,"CHANNEL_CHATS","CREATE",(new RoomMessageTransformer)->item($data));
+            $RedisSocket = $RedisSocket->publishRedisSocket($request->channel_id, "CHANNEL_CHATS", "CREATE", (new RoomMessageTransformer)->item($data));
 
             return (new RoomMessageTransformer)->detail(200, __('message.200'), $data);
         } catch (\Exception $e) {

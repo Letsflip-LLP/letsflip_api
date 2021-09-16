@@ -27,7 +27,9 @@ class RoomCategoryController extends Controller
                 })->with(['channels' => function ($q) use ($user) {
                     $q->whereHas('member', function ($q1) use ($user) {
                         $q1->where('user_id', $user->id);
-                    });
+                    })->with(['member' => function ($q2) use ($user) {
+                        $q2->where('user_id', $user->id);
+                    }]);
                 }]);
 
             $data = $data->orderBy('created_at', 'desc')->get();

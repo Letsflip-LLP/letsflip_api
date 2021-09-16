@@ -10,6 +10,8 @@ use App\Http\Transformers\V1\SC\RoomMemberTransformer;
 use DB;
 use Ramsey\Uuid\Uuid;
 
+use Carbon\Carbon;
+
 class RoomMemberController extends Controller
 {
     public function index(Request $request)
@@ -50,6 +52,7 @@ class RoomMemberController extends Controller
             ], [
                 'room_member_type_id' => $request->room_member_type_id,
                 'id' => Uuid::uuid4(),
+                'last_seen' => Carbon::now()
             ]);
             DB::commit();
             return $this->index($request);

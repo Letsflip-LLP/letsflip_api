@@ -13,6 +13,7 @@ use App\Http\Transformers\V1\SC\RoomChannelTransformer;
 
 use DB;
 use Ramsey\Uuid\Uuid;
+use Carbon\Carbon;
 
 class RoomChannelController extends Controller
 {
@@ -60,6 +61,7 @@ class RoomChannelController extends Controller
                 'category_id' => $request->category_id,
                 'name' => $request->name,
                 'text' => $request->description,
+                'last_message_time' => Carbon::now()
             ]);
             // ADMIN MEMBER TYPE
             $admin_type = RoomMemberTypeModel::firstOrCreate([

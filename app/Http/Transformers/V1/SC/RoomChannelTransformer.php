@@ -30,6 +30,7 @@ class RoomChannelTransformer
             'id' => $model->id,
             'name' => $model->name,
             'text' => $model->text,
+            'has_new_message' => ($model->last_message_time > $model->member[0]->last_seen) ? TRUE : FALSE,
             'user' => [
                 'id' => $model->user->id,
                 'first_name' => $model->user->first_name,
@@ -43,10 +44,13 @@ class RoomChannelTransformer
                 'name' => $model->category->name,
                 'text' => $model->category->text,
             ],
+            'server' => (object) [
+                "id" =>  $model->category->server_id
+            ],
             'member_type' => [],
             'member' => []
         ];
-        foreach ($model->memberType->where('type','!=',1) as $memType) {
+        foreach ($model->memberType->where('type', '!=', 1) as $memType) {
             $temp->member_type[] = [
                 'id' => $memType->id,
                 'name' => $memType->name,
