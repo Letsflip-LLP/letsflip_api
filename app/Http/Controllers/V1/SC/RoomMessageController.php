@@ -8,6 +8,7 @@ use App\Http\Models\SC\RoomMessageContentModel;
 use App\Http\Models\SC\RoomChannelModel;
 use App\Http\Requests\RoomMessage\Request;
 use App\Http\Transformers\V1\SC\RoomMessageTransformer;
+use App\Http\Transformers\V1\SC\RoomChannelTransformer;
 use App\Http\Libraries\RedisSocket\RedisSocketManager;
 
 use DB;
@@ -36,7 +37,6 @@ class RoomMessageController extends Controller
             throw $e;
         }
     }
-
     public function add(Request $request)
     {
         DB::beginTransaction();
