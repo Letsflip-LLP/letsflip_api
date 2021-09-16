@@ -21,7 +21,7 @@ class RoomMessageController extends Controller
     {
         try {
             $user = auth('api')->user();
-            RoomMemberModel::where('channel_id', $request->channel_id)
+            RoomMemberModel::where('room_channel_id', $request->channel_id)
                 ->where('user_id', $user->id)
                 ->update([
                     'last_seen' => Carbon::now()
