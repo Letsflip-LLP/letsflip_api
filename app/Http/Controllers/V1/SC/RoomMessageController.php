@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1\SC;
 use App\Http\Controllers\Controller;
 use App\Http\Models\SC\RoomMessageModel;
 use App\Http\Models\SC\RoomMessageContentModel;
+use App\Http\Models\SC\RoomMemberModel;
 use App\Http\Models\SC\RoomChannelModel;
 use App\Http\Requests\RoomMessage\Request;
 use App\Http\Transformers\V1\SC\RoomMessageTransformer;
