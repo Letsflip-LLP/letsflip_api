@@ -37,28 +37,16 @@ class RoomMessageController extends Controller
         }
     }
 
-    // public function detail(Request $request)
-    // {
-    //     try {
-    //         $user = auth('api')->user();
-    //         $data = RoomMessageModel::where('id', $request->id)
-    //             ->firstOrFail();
-
-    //         return (new RoomMessageTransformer)->detail(200, __('message.200'), $data);
-    //     } catch (\Exception $e) {
-    //         throw $e;
-    //     }
-    // }
-
     public function add(Request $request)
     {
         DB::beginTransaction();
         try {
             $user = auth('api')->user();
-            $this->isCan($user, $request);
+            $member_check = $this->isCan($user, $request);
             RoomChannelModel::where('id', $request->channel_id)->update([
                 'last_message_time' => Carbon::now()
             ]);
+            $channel_detail = (new RoomChannelModel)->where('id', $request->channel_id)->first();
             $data = RoomMessageModel::create([
                 'user_id' => $user->id,
                 'id' => Uuid::uuid4(),
@@ -78,8 +66,17 @@ class RoomMessageController extends Controller
             }
             DB::commit();
             // return $this->index($request);
-            $RedisSocket = new RedisSocketManager;
-            $RedisSocket = $RedisSocket->publishRedisSocket($request->channel_id, "CHANNEL_CHATS", "CREATE", (new RoomMessageTransformer)->item($data));
+            // SEND FOR MESSAGE
+            $message_live = (new RedisSocketManager)->publishRedisSocket($request->channel_id, "CHANNEL_CHATS", "CREATE", (new RoomMessageTransformer)->item($data));
+
+            // SEND FOR SERVER
+            $socket_server_data = (object)[
+                "type" => "channel",
+                "channel_id" => $request->channel_id,
+                "category_id" => $member_check->Category->id,
+                "data"        => (new RoomChannelTransformer)->item($channel_detail)
+            ];
+            $server_update = (new RedisSocketManager)->publishRedisSocket($member_check->Category->server_id, "SERVER_UPDATE", "CREATE", $socket_server_data);
 
             return (new RoomMessageTransformer)->detail(200, __('message.200'), $data);
         } catch (\Exception $e) {
@@ -143,6 +140,6 @@ class RoomMessageController extends Controller
         if (!isset($member)) {
             throw new \Exception('User not in channel');
         }
-        return true;
+        return $member;
     }
 }
