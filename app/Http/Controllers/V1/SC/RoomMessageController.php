@@ -8,6 +8,7 @@ use App\Http\Models\SC\RoomMessageContentModel;
 use App\Http\Models\SC\RoomChannelModel;
 use App\Http\Requests\RoomMessage\Request;
 use App\Http\Transformers\V1\SC\RoomMessageTransformer;
+use App\Http\Transformers\V1\SC\RoomChannelTransformer; 
 use App\Http\Libraries\RedisSocket\RedisSocketManager;
 
 use DB;
@@ -36,7 +37,7 @@ class RoomMessageController extends Controller
         try {
             $user  = auth('api')->user();
             $member_check = $this->isCan($user, $request);
-
+            $channel_detail = (new RoomChannelModel)->where('id',$request->channel_id)->first();
             $data = RoomMessageModel::create([
                 'user_id' => $user->id,
                 'id' => Uuid::uuid4(),
@@ -58,13 +59,13 @@ class RoomMessageController extends Controller
             // return $this->index($request);
             // SEND FOR MESSAGE
             $message_live = (new RedisSocketManager)->publishRedisSocket($request->channel_id,"CHANNEL_CHATS","CREATE",(new RoomMessageTransformer)->item($data));
-
+ 
             // SEND FOR SERVER 
             $socket_server_data = (object)[
-                "type" => "new_chat",
+                "type" => "channel",
                 "channel_id" => $request->channel_id,
                 "category_id" => $member_check->Category->id,
-                "data"        => (new RoomMessageTransformer)->item($data)
+                "data"        => (new RoomChannelTransformer)->item($channel_detail)
             ];
             $server_update = (new RedisSocketManager)->publishRedisSocket($member_check->Category->server_id,"SERVER_UPDATE","CREATE",$socket_server_data);
 

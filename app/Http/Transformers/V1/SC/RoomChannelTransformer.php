@@ -25,7 +25,7 @@ class RoomChannelTransformer
     }
 
     public function item($model, $type = null)
-    {
+    { 
         $temp = (object)[
             'id' => $model->id,
             'name' => $model->name,
