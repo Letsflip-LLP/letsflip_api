@@ -3,6 +3,7 @@
 namespace App\Http\Requests\RoomCategory;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Models\SC\ServerModel;
 
 class CreateRequest extends FormRequest
 {
@@ -35,14 +36,38 @@ class CreateRequest extends FormRequest
             $rule = [
                 'name' => 'required',
                 'description' => 'required',
-                'server_id' => 'required|exists:room_servers,id'
+                'server_id' => [
+                    'required',
+                    'exists:room_servers,id',
+                    function ($attribute, $value, $fail) {
+                        $usr = auth('api')->user();
+                        $svr = ServerModel::where('user_id', $usr->id)
+                            ->where('id', $value)
+                            ->count();
+                        if ($svr < 1) {
+                            $fail('You are not server creator');
+                        }
+                    }
+                ]
             ];
         } else if ($name == 'edit') {
             $rule = [
                 'id' => 'required',
                 'name' => 'required',
                 'description' => 'required',
-                'server_id' => 'required|exists:room_servers,id'
+                'server_id' => [
+                    'required',
+                    'exists:room_servers,id',
+                    function ($attribute, $value, $fail) {
+                        $usr = auth('api')->user();
+                        $svr = ServerModel::where('user_id', $usr->id)
+                            ->where('id', $value)
+                            ->count();
+                        if ($svr < 1) {
+                            $fail('You are not server creator');
+                        }
+                    }
+                ]
             ];
         } else if ($name == 'detail' || $name == 'delete') {
             $rule = [

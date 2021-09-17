@@ -110,6 +110,9 @@ class RoomCategoryController extends Controller
         try {
             $user = auth('api')->user();
             $data = RoomCategoryModel::where('id', $request->id)
+                ->whereHas('server', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })
                 ->where('user_id', $user->id)
                 ->firstOrFail();
 

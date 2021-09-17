@@ -3,6 +3,7 @@
 namespace App\Http\Requests\RoomChannel;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Models\SC\RoomCategoryModel;
 
 class Request extends FormRequest
 {
@@ -34,9 +35,21 @@ class Request extends FormRequest
             ];
         } else if ($name == 'add' || $name == 'edit') {
             $rule = [
-                'category_id' => 'required|exists:room_category,id',
                 'name' => 'required',
                 'description' => 'required',
+                'category_id' => [
+                    'required',
+                    'exists:room_category,id',
+                    function ($attribute, $value, $fail) {
+                        $usr = auth('api')->user();
+                        $svr = RoomCategoryModel::where('user_id', $usr->id)
+                            ->where('id', $value)
+                            ->count();
+                        if ($svr < 1) {
+                            $fail('You are not category creator');
+                        }
+                    }
+                ]
             ];
             if ($name == 'edit') {
                 $rule['id'] = 'required|exists:room_channels,id';
