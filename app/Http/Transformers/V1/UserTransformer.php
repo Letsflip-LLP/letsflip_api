@@ -7,6 +7,7 @@ use App\Http\Transformers\ResponseTransformer;
 use Carbon\Carbon; 
 use Illuminate\Support\Facades\Storage;
 use App\Http\Models\SubscriberModel; 
+use App\Http\Models\SC\UserDailyFeeling; 
 
 class UserTransformer {  
 
@@ -21,6 +22,14 @@ class UserTransformer {
         $temp->company      = null;
         $temp->followed      = false;
         $temp->friend_relation_type = false;
+ 
+        $temp->user_feeling = $model->UserFeeling ? (new UserDailyFeeling)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->first() : null;
+
+        if($temp->user_feeling && $temp->user_feeling->id){
+            $feel_option = config('account.feelings_options');
+            $feel_index = array_search($temp->user_feeling->feeling_id, array_column($feel_option, 'id')); 
+            $temp->user_feeling = $feel_option[$feel_index];
+        }
 
         $temp->blocked_user = $model->BlockedFrom->count();
 

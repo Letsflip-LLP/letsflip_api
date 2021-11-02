@@ -15,6 +15,7 @@ use App\Http\Models\UserFollowModel;
 use App\Http\Models\UserBlockModel;
 use App\Http\Models\ClassRoomModel;
 use App\Http\Models\UserDevices;
+use App\Http\Models\SC\UserDailyFeeling;
 use Ramsey\Uuid\Uuid;
 use App\Http\Libraries\StorageCdn\StorageManager;
 use App\Http\Libraries\ApplePay\ApplePayManager;
@@ -589,6 +590,58 @@ class UserController extends Controller
             DB::commit(); 
  
             return (new ResponseTransformer)->toJson(200,__('messages.200'),$action);
+
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    public function feelingAvailableOption(Request $request)
+    {        
+        DB::beginTransaction();
+        try {
+            $option = config('account.feelings_options');
+ 
+            DB::commit(); 
+ 
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),$option);
+
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
+    public function updateDailyFeeling(Request $request)
+    {        
+        DB::beginTransaction();
+        try {
+            $user = auth('api')->user(); 
+            $option = config('account.feelings_options');
+            
+
+            $data =  (new UserDailyFeeling)->where('user_id',$user->id)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->first();
+            
+            if($data){
+                $data->update([
+                    'feeling_id' => $request->id,
+                ]);
+            }else{
+                $data = (new UserDailyFeeling)->insert([
+                    "id" =>  Uuid::uuid4(),
+                    "user_id" => $user->id,
+                    "feeling_id" => $request->id,
+                    "created_at" => date('Y-m-d H:i:s'),
+                    "updated_at" => date('Y-m-d H:i:s')
+                ]);
+            } 
+
+            DB::commit(); 
+ 
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),true);
 
 
         } catch (\exception $exception){

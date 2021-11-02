@@ -27,6 +27,10 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
             Route::post('/update-profile', [UserController::class, 'userSelfUpdateProfile'])->name('PostUpdateProfileUserControllerUserSelfUpdateProfile');
 
             Route::get('/', [UserController::class, 'self'])->name('GetUserControllerSelf');
+
+            Route::get('/feelings-option', [UserController::class, 'feelingAvailableOption'])->name('GetUserControllerFeelingAvailableOption');
+            Route::post('/feelings/update', [UserController::class, 'updateDailyFeeling'])->name('PostUserUserControllerUpdateDailyFeeling');
+
             Route::get('notification', [UserController::class, 'getSelfNotification'])->name('GetUserControllerSelf');
         
             Route::post('/follow/action', [UserController::class, 'userFollowAction'])->name('GetUserControllerAddUserFollow');

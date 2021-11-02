@@ -341,6 +341,12 @@ class FormValidation
             'user_id' => 'required|exists:users,id',
           ];
         break;
+
+        case 'PostUserUserControllerUpdateDailyFeeling':
+          return [
+            'id'  => 'required', 
+          ];
+        break;
         
         default:
           return [];

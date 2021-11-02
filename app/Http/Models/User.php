@@ -155,4 +155,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany('App\Http\Models\SC\UserFriendsModel','user_id_from','id')->where('status',2);
     }
+
+    public function UserFeeling()
+    {
+        return $this->hasMany('App\Http\Models\SC\UserDailyFeeling','user_id','id');
+    }
 }
