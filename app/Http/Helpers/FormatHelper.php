@@ -82,7 +82,8 @@ function defaultImage($module,$data = null){
 }
 
 function getPublicFile($path,$file){
-    return  Illuminate\Support\Facades\Storage::disk('gcs')->url($path.'/'.$file);
+    // return  Illuminate\Support\Facades\Storage::disk('gcs')->url($path.'/'.$file);
+    return 'https://storage.googleapis.com/'.env('GOOGLE_CLOUD_STORAGE_BUCKET').'/'.env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX').'/'.$path.'/'.$file;
 }
 
 function subsType($type){
