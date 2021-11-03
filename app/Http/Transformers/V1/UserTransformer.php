@@ -23,7 +23,7 @@ class UserTransformer {
         $temp->followed      = false;
         $temp->friend_relation_type = false;
  
-        $temp->user_feeling = $model->UserFeeling ? (new UserDailyFeeling)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->first() : null;
+        $temp->user_feeling = $model->UserFeeling ? (new UserDailyFeeling)->where('user_id',$model->id)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->first() : null;
 
         if($temp->user_feeling && $temp->user_feeling->id){
             $feel_option = config('account.feelings_options');
