@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\RoomMessage;
 
+use App\Http\Models\SC\RoomMemberModel;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Models\SC\RoomMessageModel;
 
@@ -35,7 +36,19 @@ class Request extends FormRequest
             ];
         } else if ($name == 'add' || $name == 'edit') {
             $rule = [
-                'channel_id' => 'required|exists:room_channels,id',
+                'channel_id' => [
+                    'required',
+                    'exists:room_channels,id',
+                    function ($attribute, $value, $fail) {
+                        $usr = auth('api')->user();
+                        $svr = RoomMemberModel::where('user_id', $usr->id)
+                            ->where('room_channel_id', $value)
+                            ->count();
+                        if ($svr < 1) {
+                            $fail('You are not channel member');
+                        }
+                    }
+                ],
                 'message' => 'required'
             ];
             if (isset($this->parent_id)) {

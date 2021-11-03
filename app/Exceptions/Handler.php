@@ -57,6 +57,10 @@ class Handler extends ExceptionHandler
             if ($route[0] === 'api') {
                 if ($exception instanceof \Illuminate\Validation\ValidationException) {
                     return (new ResponseTransformer)->toJson(400, 'Error Input', $exception->errors());
+                } else if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                    $model = $exception->getModel();
+                    $className = strtolower(last(explode('\\', $model)));
+                    return (new ResponseTransformer)->toJson(400, 'Error Input', 'Data ' . $className . ' not found');
                 } else {
                     return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);
                 }
