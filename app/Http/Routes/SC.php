@@ -27,11 +27,7 @@ use App\Http\Controllers\V1\SC\RoomMessageController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('bebek', function () {
-    return 'ini api';
-});
-
+ 
 Route::group(['middleware' => ['auth:api', 'verified']], function () {
     // Route::get('home', [PostController::class, 'home']);
     Route::group(['prefix' => 'friends', 'as' => 'friends.'], function () {

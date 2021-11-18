@@ -193,8 +193,9 @@ class PostController extends Controller
 
         try {
  
-        $user       = auth('api')->user();
-        $data = PostModel::where(['id' =>  $request->id, 'user_id' => $user->id])->first(); 
+        $user       = auth('api')->user(); 
+
+        $data = PostModel::where(['id' =>  $request->id])->first(); 
         return (new PostTransformer)->detail(200, __('message.200'), $data);
 
         $return = (object)[
