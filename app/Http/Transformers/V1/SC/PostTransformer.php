@@ -30,8 +30,8 @@ class PostTransformer
         $temp = (object)[
             'id' => $model->id,
             'text' => $model->text,
-            'total_share' => $model->total_share,
-            'total_like' => $model->total_like,
+            'total_share' => 0,
+            'total_like' => $model->Like->count(),
             'total_comment' => $model->total_comment,
             'created_at' => dbLocalTime($model->created_at),
             'user' => [

@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
     Route::group(['prefix' => 'posts', 'as' => 'posts.'], function () {
         Route::get('/', [PostController::class, 'index']);
         Route::post('/', [PostController::class, 'createPost']);
+        Route::get('/detail', [PostController::class, 'detailPost']);
         // Route::post('{post_id}', [PostController::class, 'updatePost']);
         Route::post('delete', [PostController::class, 'deletePost']);
 

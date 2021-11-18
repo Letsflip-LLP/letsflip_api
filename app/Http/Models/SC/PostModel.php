@@ -28,4 +28,9 @@ class PostModel extends Model
     {
         return $this->hasMany('App\Http\Models\SC\PostContentModel', 'post_id', 'id');
     }
+
+    public function Like()
+    {
+        return $this->hasMany('App\Http\Models\LikeModel', 'post_id', 'id');
+    }
 }

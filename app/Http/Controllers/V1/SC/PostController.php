@@ -182,4 +182,35 @@ class PostController extends Controller
             return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
         }  
     } 
+
+    public function detailPost(Request $request){
+ 
+        $request->validate([
+            'id' => 'required'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+ 
+        $user       = auth('api')->user();
+        $data = PostModel::where(['id' =>  $request->id, 'user_id' => $user->id])->first(); 
+        return (new PostTransformer)->detail(200, __('message.200'), $data);
+
+        $return = (object)[
+            "total_like" => $count,
+            "liked"      => $liked
+        ];
+
+        DB::commit();
+    
+            return (new ResponseTransformer)->toJson(200,__('messages.200'),$return);
+
+        } catch (\exception $exception){
+           
+            DB::rollBack();
+
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    } 
 }
