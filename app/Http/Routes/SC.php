@@ -49,6 +49,10 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
         // Route::post('{post_id}', [PostController::class, 'updatePost']);
         Route::post('delete', [PostController::class, 'deletePost']);
 
+        Route::group(['prefix' => 'like'], function () {
+            Route::post('/', [PostController::class, 'likePost']); 
+        });
+
         Route::group(['prefix' => 'comments', 'as' => 'comments.'], function () {
             Route::get('/', [CommentController::class, 'index']);
             Route::post('/', [CommentController::class, 'createComment']);
