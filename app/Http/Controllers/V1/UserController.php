@@ -265,6 +265,34 @@ class UserController extends Controller
         }  
     }
 
+    public function userSelfDeleteProfile(Request $request)
+    {        
+        DB::beginTransaction();
+        try { 
+            $user = auth('api')->user(); 
+             
+            $loginData = [
+                'email' => $user->email,
+                'password' => $request->password
+            ];
+
+            if (!$token = auth('api')->attempt($loginData))
+                return (new ResponseTransformer)->toJson(400, __('validation.password'), false);
+
+            $user->request_deleted_at = Carbon::now()->add('days',30);
+            $user->save();
+
+            DB::commit(); 
+ 
+            return (new ResponseTransformer)->toJson(200,__('validation.custom.success-delete-account'),true);
+
+
+        } catch (\exception $exception){
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500,$exception->getMessage(),false);
+        }  
+    }
+
     public function getPublicDetailUser(Request $request)
     { 
         $users = new User;

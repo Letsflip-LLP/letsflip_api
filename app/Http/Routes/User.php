@@ -26,6 +26,9 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
         $router->group(['prefix' => 'self' ], function($router){
             Route::post('/update-profile', [UserController::class, 'userSelfUpdateProfile'])->name('PostUpdateProfileUserControllerUserSelfUpdateProfile');
 
+            Route::post('/delete-account', [UserController::class, 'userSelfDeleteProfile'])->name('PostUserControlleruserSelfDeleteProfile');
+
+            
             Route::get('/', [UserController::class, 'self'])->name('GetUserControllerSelf');
             Route::get('notification', [UserController::class, 'getSelfNotification'])->name('GetUserControllerSelf');
         

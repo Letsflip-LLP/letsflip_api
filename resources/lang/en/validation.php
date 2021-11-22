@@ -134,6 +134,7 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'success-delete-account' => 'We will permanently delete your account within 30 days, If you login to the app before 30 days then the deletion will be cancelled.'
     ],
 
     /*
