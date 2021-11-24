@@ -347,6 +347,13 @@ class FormValidation
             'id'  => 'required', 
           ];
         break;
+
+        case 'PostAuthControllerForgotPasswordSubmit':
+          return [
+            'password'  => 'required|same:confirm_password',
+            'confirm_password'  => 'required', 
+          ];
+        break;
         
         default:
           return [];

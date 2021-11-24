@@ -653,7 +653,7 @@ class AuthController extends Controller
             $email_payload = [
                 "first_name" => $user->first_name,
                 "last_name" => $user->last_name,
-                "reset_password_url" => env('APP_WO_DEEPLINK', url('/')) . '/account/confirm-reset-password/forgot?temporary_token=' . $token
+                "reset_password_url" => env('APP_FROTEND_URL', url('/')) . '/auth/confirm-reset-password?tmp_token=' . $token
             ];
 
             \Mail::to($user->email)->queue(new \App\Mail\resetPasswordConfirmation($email_payload));
