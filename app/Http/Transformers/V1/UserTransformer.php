@@ -132,6 +132,14 @@ class UserTransformer {
         $tmp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
         $tmp->total_following  = $model->Followed ? $model->Followed->count() : 0;
 
+        $tmp->user_feeling = $model->UserFeeling ? (new UserDailyFeeling)->where('user_id',$model->id)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->first() : null;
+
+        if($tmp->user_feeling && $tmp->user_feeling->id){
+            $feel_option = config('account.feelings_options');
+            $feel_index = array_search($tmp->user_feeling->feeling_id, array_column($feel_option, 'id')); 
+            $tmp->user_feeling = $feel_option[$feel_index];
+        }
+
         if(auth('api')->user()){
             $user_login = auth('api')->user();
             // friend_relation_type (1) Friend (2) any request from user login (3) any request from user list

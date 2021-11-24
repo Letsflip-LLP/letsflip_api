@@ -3,7 +3,8 @@
 namespace App\Http\Transformers\V1\SC;
 
 use App\Http\Transformers\ResponseTransformer;
- 
+use App\Http\Transformers\V1\UserTransformer; 
+
 class PostTransformer
 {
 
@@ -34,14 +35,7 @@ class PostTransformer
             'total_like' => $model->Like->count(),
             'total_comment' => $model->total_comment,
             'created_at' => dbLocalTime($model->created_at),
-            'user' => [
-                'id' => $model->user->id,
-                'first_name' => $model->user->first_name,
-                'last_name' => $model->user->last_name,
-                'email' => $model->user->email,
-                'username' => $model->user->username,
-                'image_profile' => defaultImage('user', $model->user)
-            ],
+            'user' => (new UserTransformer)->item($model->user),
             'contents' =>  $model->Content ? $this->contentRender($model->Content) : []
         ];
 
