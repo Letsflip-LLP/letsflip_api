@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable ;
+    use SoftDeletes; 
 
     public $incrementing = false;
 
@@ -24,6 +26,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'first_name',
         'last_name',
+        'delete_at',
         'email',
         'password',
         'email_verified_at',
@@ -33,7 +36,8 @@ class User extends Authenticatable implements JWTSubject
         'image_profile_file',
         'image_background_path',
         'image_background_file',
-        'company_id'
+        'company_id',
+        'request_deleted_at'
     ];
 
     /**
