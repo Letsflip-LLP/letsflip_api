@@ -13,6 +13,7 @@ use App\Http\Transformers\ResponseTransformer;
 use App\Http\Models\User;
 use App\Http\Models\SC\UserFriendsModel;
 use App\Http\Models\LikeModel;
+use App\Http\Models\NotificationModel;
 
 class PostController extends Controller
 {
@@ -151,16 +152,31 @@ class PostController extends Controller
         $liked      = false;
 
         $check = (new LikeModel)->where('user_id',$user->id)->where('post_id',$request->id)->first();
+        $post_detail = (new PostModel)->where('id',$request->id)->first(); 
 
         if($check!=null){
             $check->delete();
+            $delete_notif =  new NotificationModel;
+            $delete_notif = $delete_notif->first();  
+            if($delete_notif) $delete_notif->delete();
         }else{
             $insert = (new LikeModel)->insert([
                 'user_id'   => $user->id,
                 'post_id'   => $request->id,
-                'id'        => Uuid::uuid4()
+                'id'        => $like_id = Uuid::uuid4()
             ]);
-            $liked      = true;
+             
+            (new NotificationModel)->insert([
+                'id'=> $notif_id = Uuid::uuid4(),
+                'post_id' => $post_detail->id,
+                'type' => 26,
+                'user_id_from' => $user->id,
+                'user_id_to' => $post_detail->user_id,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+
+            $liked = true; 
         }
 
         $count = (new LikeModel)->where('post_id',$request->id)->count(); 

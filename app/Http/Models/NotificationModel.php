@@ -14,7 +14,7 @@ class NotificationModel extends Model
     public $incrementing = false; 
     protected $table = 'notifications'; 
     protected $fillable = [
-        "id", "classroom_id", "point_id", "classroom_access_id", "mission_id", "respone_id", "mission_comment_id", "respone_comment_id", "user_id_from", "user_id_to", "type", "read_at", "created_at", "updated_at", "deleted_at"
+        "deleted_at","id", "classroom_id", "point_id", "classroom_access_id", "mission_id", "respone_id", "mission_comment_id", "respone_comment_id", "user_id_from", "user_id_to", "type", "read_at", "created_at", "updated_at", "deleted_at"
     ];
 
     public function UserFrom()
@@ -50,5 +50,10 @@ class NotificationModel extends Model
     public function ClassRoom()
     {
         return $this->hasOne('App\Http\Models\ClassRoomModel','id','classroom_id');
+    }
+
+    public function Post()
+    {
+        return $this->hasOne('App\Http\Models\SC\PostModel','id','post_id');
     }
 }
