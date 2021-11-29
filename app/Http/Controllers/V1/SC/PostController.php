@@ -166,15 +166,16 @@ class PostController extends Controller
                 'id'        => $like_id = Uuid::uuid4()
             ]);
              
-            (new NotificationModel)->insert([
-                'id'=> $notif_id = Uuid::uuid4(),
-                'post_id' => $post_detail->id,
-                'type' => 26,
-                'user_id_from' => $user->id,
-                'user_id_to' => $post_detail->user_id,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            ]);
+            if($user->id != $post_detail->user_id)
+                (new NotificationModel)->insert([
+                    'id'=> $notif_id = Uuid::uuid4(),
+                    'post_id' => $post_detail->id,
+                    'type' => 26,
+                    'user_id_from' => $user->id,
+                    'user_id_to' => $post_detail->user_id,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
 
             $liked = true; 
         }
