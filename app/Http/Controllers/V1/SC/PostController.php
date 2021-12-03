@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Post\CreateRequest;
 use App\Http\Models\SC\PostModel;
+use App\Http\Models\SC\EventModel;
 use Ramsey\Uuid\Uuid;
 use App\Http\Transformers\V1\SC\PostTransformer;
 use DB;
@@ -57,6 +58,31 @@ class PostController extends Controller
         DB::beginTransaction();
         try {
             $user = auth('api')->user();
+
+            //CREATE EVENT
+            if($request->filled('event_title') && $request->filled('event_text')){
+                $event_image = new \stdClass();
+                if ($request->filled('files')) {
+                    foreach ($request->input('files') as $file) {
+                        $event_image->file_path =  $file['file_path'];
+                        $event_image->file_name =  $file['file_name'];
+                        $event_image->file_mime =  $file['file_mime'];
+                    }
+                } 
+                $event = EventModel::create([
+                    "id" => $event_id = Uuid::uuid4(),
+                    "user_id" => $user->id,
+                    "title" => $request->event_title,
+                    "text" => $request->event_text,
+                    "location" => $request->event_location,
+                    "date" => $request->event_date, 
+                    "file_path" => $event_image->file_path,
+                    "file_name" => $event_image->file_name,
+                    "file_mime" => $event_image->file_mime,
+                ]);
+            }
+
+
             if ($request->filled('id')) {
                 $data = PostModel::where(['id' =>  $request->id, 'user_id' => $user->id])->first();
                 if (!isset($data)) {
@@ -69,9 +95,12 @@ class PostController extends Controller
                 $data = PostModel::create([
                     'id' => Uuid::uuid4(),
                     'user_id' => $user->id,
-                    'text' => $request->text
+                    'text' => $request->filled('event_text') ? $request->event_text : $request->text,
+                    'event_id' => isset($event_id) ? $event_id : null
                 ]);
+ 
             }
+
             if ($request->filled('files')) { 
                 foreach ($request->input('files') as $file) {
                     $data->Content()->create([
