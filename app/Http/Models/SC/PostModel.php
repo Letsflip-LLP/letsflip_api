@@ -33,4 +33,9 @@ class PostModel extends Model
     {
         return $this->hasMany('App\Http\Models\LikeModel', 'post_id', 'id');
     }
+
+    public function Event()
+    {
+        return $this->hasOne('App\Http\Models\SC\EventModel', 'id', 'event_id');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Transformers\V1\SC;
 
 use App\Http\Transformers\ResponseTransformer;
 use App\Http\Transformers\V1\UserTransformer; 
+use App\Http\Transformers\V1\SC\EventTransformer; 
 
 class PostTransformer
 {
@@ -36,7 +37,8 @@ class PostTransformer
             'total_comment' => $model->total_comment,
             'created_at' => dbLocalTime($model->created_at),
             'user' => (new UserTransformer)->item($model->user),
-            'contents' =>  $model->Content ? $this->contentRender($model->Content) : []
+            'contents' =>  $model->Content ? $this->contentRender($model->Content) : [],
+            'event' => $model->Event ? (new EventTransformer)->item($model->Event) : null
         ];
 
         return $temp;

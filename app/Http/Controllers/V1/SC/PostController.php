@@ -98,7 +98,6 @@ class PostController extends Controller
                     'text' => $request->filled('event_text') ? $request->event_text : $request->text,
                     'event_id' => isset($event_id) ? $event_id : null
                 ]);
- 
             }
 
             if ($request->filled('files')) { 
