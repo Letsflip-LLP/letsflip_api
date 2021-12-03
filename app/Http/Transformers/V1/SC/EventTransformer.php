@@ -12,7 +12,7 @@ class EventTransformer
             "title" => $model->title,
             "text" => $model->text,
             "location" => $model->location,
-            "date" => dbLocalTime($model->date),
+            "date" => $model->date ,
             "file_path" => $model->file_path,
             "file_name" => $model->file_name,
             "file_mime" => $model->file_mime,
