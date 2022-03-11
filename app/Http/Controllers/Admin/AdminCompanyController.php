@@ -41,10 +41,10 @@ class AdminCompanyController extends Controller
         $company    = $company->get(); 
 
         $data  = [
-            "page" => "Company - List",
+            "page" => "Compan(ies)",
             "breadcrumbs" => [
                 [ "name" => "Dashboard" , "url" => url('/admin/dashboard') ],
-                [ "name" => "Company" , "url" => url('/admin/company') ],
+                [ "name" => "Companies" , "url" => url('/admin/company/list') ],
                 [ "name" => "List" , "url" =>url('/admin/company/list') ],
             ], 
             "company" => $company

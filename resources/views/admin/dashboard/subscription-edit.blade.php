@@ -60,7 +60,7 @@
               <input {{$subscriber->is_creator ? "checked" : ""}} name="is_creator" type="checkbox" class="form-check-input"> Is Creator <i class="input-helper"></i></label>
           </div>
           <br>
-          <button class="btn btn-light" type="button">Cancel</button>
+          <a class="btn btn-light" href={{url('admin/user/subscribers')}}>Cancel</a>
           <button type="submit" class="btn btn-gradient-primary mr-2">Edit</button>
          </form>
       </div>

@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\AuthController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\verificationUserRegister;
+use App\Http\Requests\RoomChannel\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +44,7 @@ $router->group(['middleware' => ['form'], 'prefix' => 'auth'], function ($router
     Route::post('submit-forgot-password', [AuthController::class, 'forgotPasswordSubmit'])->name('PostAuthControllerForgotPasswordSubmit');
 
     $router->get('email-verification', function (Request $request) {
-        \Mail::to("andhi.saputro1508@gmail.com")->queue(new \App\Mail\verificationUserRegister(["reset_password_url" => "http://www.facebok.com", "email" => "andhi@email.com", 'password' => "*****", "activate_url" => "http://www.facebook.com", "first_name" => "ANd", "last_name" => "sapu"]));
+        Mail::to("imamdaru8@gmail.com")->queue(new verificationUserRegister(["reset_password_url" => "http://www.facebok.com", "email" => "andhi@email.com", 'password' => "*****", "activate_url" => "http://www.facebook.com", "first_name" => "Imamdaru8@gmail.com", "last_name" => "sapu"]));
         return view('emails.account-verification', ["reset_password_url" => "http://www.facebok.com", "email" => "andhi@email.com", 'password' => "*****", "activate_url" => "http://www.facebook.com", "first_name" => "ANd", "last_name" => "sapu"]);
     });
 });

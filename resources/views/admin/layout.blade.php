@@ -195,6 +195,8 @@
           </a>
           <div class="collapse" id="ui-basic">
             <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{{url('admin/user/users')}}">All Users</a></li>
+              {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
               <li class="nav-item"> <a class="nav-link" href="{{url('admin/user/subscribers')}}">Subscribers</a></li>
               {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
             </ul>
@@ -211,7 +213,21 @@
               <li class="nav-item"> <a class="nav-link" href="{{url('admin/company/list')}}">List</a></li> 
             </ul>
           </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="collapse" href="#system-menu" aria-expanded="false" aria-controls="system-menu">
+            <span class="menu-title">System</span>
+            <i class="menu-arrow"></i>
+            <i class="mdi mdi-laptop-mac menu-icon"></i>
+          </a>
+          <div class="collapse" id="system-menu">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{{url('admin/system/prices')}}">Price</a></li>
+              {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
+            </ul>
+          </div>
         </li> 
+         
       </ul>
     </nav>
     <!-- partial -->
