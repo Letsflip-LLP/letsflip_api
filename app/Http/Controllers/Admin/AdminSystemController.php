@@ -209,4 +209,12 @@ class AdminSystemController extends Controller
 
         return redirect('admin/user/users');
     }
+
+    public function userSubmitDelete($key)
+    {
+        $user = new User;
+        $user = $user->where('id', $key)->delete();
+
+        return redirect('admin/user/users');
+    }
 }

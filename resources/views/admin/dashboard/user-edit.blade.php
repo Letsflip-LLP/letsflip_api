@@ -15,7 +15,7 @@
           <input type="hidden" name="id" value="{{$user->id}}">
           <div class="form-group">
             <label for="email">Email</label>
-            <input disabled value="{{$user->email}}" type="email" required placeholder="Email" name="email" class="form-control"/>
+            <input disabled value="{{$user->email}}" type="email" required placeholder="Email" name="email" class="form-control" />
           </div>
 
           <div class="form-group">
@@ -23,24 +23,24 @@
             <select name="company_id" placeholder="Company" name="company" class="form-control">
               <option value="">-- Unregistered to any company --</option>
               @foreach ($company as $com)
-                <option {{ ( $user->company_id == $com->id) || $user->company_id == $com->id ? 'selected' : ''}} value={{$com->id}}>{{$com->title}}</option>
+              <option {{ ( $user->company_id == $com->id) || $user->company_id == $com->id ? 'selected' : ''}} value={{$com->id}}>{{$com->title}}</option>
               @endforeach
             </select>
           </div>
 
           <div class="form-group">
-            <label for="name">Name</label>
-            <input disabled value="{{$user->first_name}}" type="text" required name="name" class="form-control"/>
+            <label for="name">First Name</label>
+            <input disabled value="{{$user->first_name}}" type="text" required name="name" class="form-control" />
           </div>
 
           <div class="form-group">
-            <label for="name">Name</label>
-            <input disabled value="{{$user->last_name}}" type="text" required name="name" class="form-control"/>
+            <label for="name">Last Name</label>
+            <input disabled value="{{$user->last_name}}" type="text" required name="name" class="form-control" />
           </div>
 
           <div class="form-group">
             <label for="username">Username</label>
-            <input disabled value="{{$user->username}}" type="text" required name="username" class="form-control"/>
+            <input disabled value="{{$user->username}}" type="text" required name="username" class="form-control" />
           </div>
 
           <div class="form-check form-check-flat form-check-primary">
@@ -56,10 +56,24 @@
 
           <a class="btn btn-light" href={{url('admin/user/users')}}>Cancel</a>
           <button type="submit" class="btn btn-gradient-primary mr-2">Edit</button>
-         </form>
+          <button type="submit" onclick="deleteConfirmation()" class="btn btn-danger">Delete Account</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  function deleteConfirmation() {
+    let confirmation = prompt("PLEASE ENTER THE EMAIL OF THE ACCOUNT TO BE DELETED: {{$user->email}}");
+    if (confirmation == null || confirmation == "")
+      alert("Please enter the email");
+    else if (confirmation == "{{$user->email}}") {
+      location.href = "{{url('admin/user/users/delete/'.$user->id)}}";
+      alert("Account has successfully deleted");
+    } else
+      alert("Wrong Input !!");
+  }
+</script>
 
 @endsection
