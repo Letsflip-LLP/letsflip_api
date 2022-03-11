@@ -12,3 +12,5 @@ npm-debug.log
 yarn-error.log
 /public/tmp/*
 composer.lock
+.env.save
+*.sql

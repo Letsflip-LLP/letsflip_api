@@ -1482,9 +1482,10 @@ class MissionController extends Controller
                 });
             }
             $point = $point->groupBy('user_id_to'); 
-            $point = $point->orderBy('value','DESC');
+            //$point = $point->orderBy('value','DESC');
             $point = $point->selectRaw('*, sum(value) as sum');
-            $point = $point->paginate($request->input('per_page',5));
+            $point = $point->orderBy('sum','DESC');
+	    $point = $point->paginate($request->input('per_page',5));
 
             // return (new ResponseTransformer)->toJson(200,'',$point);
 
