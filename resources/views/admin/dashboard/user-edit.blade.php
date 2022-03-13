@@ -69,8 +69,14 @@
     if (confirmation == null || confirmation == "")
       alert("Please enter the email");
     else if (confirmation == "{{$user->email}}") {
-      location.href = "{{url('admin/user/users/delete/'.$user->id)}}";
-      alert("Account has successfully deleted");
+      let crossCheck = confirm("This account will be deleted permanently. This user's account will not have any data in our database anymore. Proceed? (OK/Cancel)");
+      if (crossCheck) {
+        location.href = "{{url('admin/user/users/delete/'.$user->id)}}";
+        alert("Account has successfully deleted");
+      } else {
+        location.href = "{{url('admin/user/users/')}}";
+        alert("Account delete canceled");
+      }
     } else
       alert("Wrong Input !!");
   }

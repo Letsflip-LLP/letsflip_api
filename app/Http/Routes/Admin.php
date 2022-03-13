@@ -36,6 +36,7 @@ $router->group(['middleware' => ['admin_dashboard']], function ($router) {
         Route::get('/users/edit/{id}', [AdminSystemController::class, 'userEdit']);
         Route::post('/users/edit', [AdminSystemController::class, 'userSubmitEdit']);
         Route::get('/users/delete/{id}', [AdminSystemController::class, 'userSubmitDelete']);
+        Route::get('/users/mission/{id}', [AdminSystemController::class, 'userMission']);
 
 
         Route::get('/subscribers', [AdminSubscriberController::class, 'subscriberList']);

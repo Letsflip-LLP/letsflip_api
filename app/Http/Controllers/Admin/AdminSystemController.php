@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Models\PriceTemplateModel;
+use App\Http\Models\SubscriberModel;
 use App\Http\Models\CompanyModel;
 use App\Http\Models\User;
 use App\Http\Controllers\Controller;
@@ -213,8 +214,14 @@ class AdminSystemController extends Controller
     public function userSubmitDelete($key)
     {
         $user = new User;
+
         $user = $user->where('id', $key)->delete();
 
         return redirect('admin/user/users');
+    }
+
+    public function userMission($key)
+    {
+        return view('admin.dashboard.user-mission');
     }
 }
