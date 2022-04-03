@@ -18,7 +18,7 @@ return [
     'throttled' => 'Please wait before retrying.',
     'token' => 'This password reset token is invalid.',
     'user' => "We can't find a user with that email address.",
-    'email_verification' => 'We have emailed the verification. Please to Verify before Login.',
+    'email_verification' => 'A verification code has been sent to your email. Please verify your account before logging in.',
     'reset_pass_verification_mail' => 'We have emailed the verification. Please to Verify before Reset Password.',
     'failed' => 'The Password, Username or Email is incorrect.'
 ];

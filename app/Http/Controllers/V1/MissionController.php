@@ -521,7 +521,10 @@ class MissionController extends Controller
 
             $mission = new MissionModel;
 
-            if(!$this->user_login || !$this->user_login->id)
+            // if(!$this->user_login || !$this->user_login->id)
+            //     $mission = $mission->where('status',1);
+
+            if(!$this->user_login || $request->user_id != $this->user_login->id)
                 $mission = $mission->where('status',1);
         
             if(!$request->filled('user_id') || ($this->user_login && $request->filled('user_id') != $this->user_login->id))
@@ -609,7 +612,7 @@ class MissionController extends Controller
             $mission            = new MissionModel;
             $mission            = $mission->where('id',$request->id)->first();
             $classroomDetail    = $mission->ClassRoomTag->count() > 0 ? $mission->ClassRoomTag[0] : null;
- 
+
             if($classroomDetail && $classroomDetail->type != 1){
                 if($this->user_login == null)
                     return (new ResponseTransformer)->toJson(400,__('messages.401'),(object) [ 'classroom_id' => $classroomDetail->id  ]);

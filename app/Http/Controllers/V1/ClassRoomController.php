@@ -500,7 +500,16 @@ class ClassRoomController extends Controller
             $add_point = $point_event->pointOnAddMission($mission_detail);
         }
 
-        $notif_tag = NotificationManager::addNewNotification(null,$mission_detail->user_id,[
+        if($status == 3){
+            // $removeTag = $tag->update([
+            //     'foreign_id' => $foreign_id = ''
+            // ]);
+            $changeToDraft = $mission_detail->update([
+                'status' => 2
+            ]);
+        }
+
+        $notif_tag = NotificationManager::addNewNotification($this->user_login->id,$mission_detail->user_id,[
             "mission_id"   => $mission_detail->id,
             "classroom_id" => $classroom->id
         ], $status == 1 ? 20 : 21);

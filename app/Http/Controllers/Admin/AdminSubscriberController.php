@@ -5,24 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Models\SubscriberModel;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 use DB;
 use Illuminate\Support\Facades\Crypt;
-use App\Http\Libraries\RedisSocket\RedisSocketManager;
-use Validator;
 use Ramsey\Uuid\Uuid;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\MessageBag;
-use \Firebase\JWT\JWT;
-use Laravel\Socialite\Facades\Socialite;
-use Session;
 use App\Http\Models\User;
-
 use App\Http\Models\CompanyModel;
-
 use App\Mail\subscribeInvitationToRegister;
 use App\Mail\subscribeInvitationHasAccount;
 use Carbon\Carbon;
@@ -45,14 +34,15 @@ class AdminSubscriberController extends Controller
         $company    = $company->get();
 
         $subscribers = new SubscriberModel;
+        $emailQuery = $subscribers->all();
 
-        if ($request->filled('email'))
-            $subscribers = $subscribers->where('email', 'LIKE', '%' . $request->email . '%');
+        if ($request->filled('email') && $request->email != "-- All Email --")
+            $subscribers = $subscribers->where('email', $request->email);
 
-        if ($request->filled('type') && $request->type != 'all')
+        if ($request->filled('type') && $request->type != "NULL")
             $subscribers = $subscribers->where('type', $request->type);
 
-        if ($request->filled('status') && $request->status != 'all') {
+        if ($request->filled('status') && $request->status != "NULL") {
             if ($request->status == 1)
                 $subscribers = $subscribers->whereHas('User');
 
@@ -68,15 +58,22 @@ class AdminSubscriberController extends Controller
             $subscribers = $subscribers->where('company_id', $request->company_id);
         }
 
+        if ($request->filled('date_start') && $request->date_start != "NULL") {
+            $subscribers = $subscribers->where('date_start', $request->date_start);
+        }
+
+        if ($request->filled('date_end') && $request->date_end != "NULL") {
+            $subscribers = $subscribers->where('date_end', $request->date_end);
+        }
 
         $subscribers = $subscribers->orderBy('created_at', 'desc');
-        $subscribers = $subscribers->paginate($request->input('per_page', 5));
+        $subscribers = $subscribers->paginate($request->per_page);
 
         $data  = [
-            "page" => "Subscribers",
+            "page" => "Subscriber(s)",
             "breadcrumbs" => [
                 ["name" => "Dashboard", "url" => url('/admin/dashboard')],
-                ["name" => "User", "url" => url('/admin/user/subscribers')],
+                ["name" => "Users", "url" => url('/admin/user/subscribers')],
                 ["name" => "Subscribers", "url" => url('/admin/user/subscribers')]
             ],
             "default" => [
@@ -84,6 +81,7 @@ class AdminSubscriberController extends Controller
                 "end_date"   =>  Carbon::now()->add('years', 1)->format('Y-m-d'),
             ],
             "subscribers" => $subscribers,
+            "emails" => $emailQuery,
             "companies" =>  $company
         ];
 
@@ -158,23 +156,22 @@ class AdminSubscriberController extends Controller
         }
     }
 
-    public function subscriberEdit(Request $request)
+    public function subscriberEdit($key)
     {
-
         $company    = new CompanyModel;
         $company    = $company->get();
 
         $subscriber = new SubscriberModel;
-        $subscriber = $subscriber->where('id', $request->id)->first();
+        $subscriber = $subscriber->where('id', $key)->first();
 
         if ($subscriber == null)
             return redirect('admin/dashboard');
 
         $data  = [
-            "page" => "Subscribers - Edit",
+            "page" => "Subscriber - Edit",
             "breadcrumbs" => [
                 ["name" => "Dashboard", "url" => url('/admin/dashboard')],
-                ["name" => "User", "url" => url('/admin/user/subscribers')],
+                ["name" => "Users", "url" => url('/admin/user/subscribers')],
                 ["name" => "Subscribers", "url" => url('/admin/user/subscribers')]
             ],
             "subscriber" => $subscriber,
@@ -206,7 +203,7 @@ class AdminSubscriberController extends Controller
 
         $subscribers->save();
 
-        return redirect()->back();
+        return redirect('admin/user/subscribers');
     }
 
     public function resendInviteSubscriber(Request $request)

@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route; 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\AdminCompanyController;
+use App\Http\Controllers\Admin\AdminSystemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,7 @@ use App\Http\Controllers\Admin\AdminCompanyController;
 |
 */
 
-$router->group(['prefix' => 'auth'], function($router){
+$router->group(['prefix' => 'auth'], function ($router) {
     Route::get('login', [AdminAuthController::class, 'login']);
     Route::post('login', [AdminAuthController::class, 'postLogin']);
 
@@ -25,25 +26,44 @@ $router->group(['prefix' => 'auth'], function($router){
     Route::post('logout', [AdminAuthController::class, 'logout']);
 });
 
-$router->group(['middleware'=> ['admin_dashboard']], function($router){
-    $router->group(['prefix' => 'dashboard'], function($router){
-        Route::get('/', [AdminDashboardController::class,'index']);        
+$router->group(['middleware' => ['admin_dashboard']], function ($router) {
+    $router->group(['prefix' => 'dashboard'], function ($router) {
+        Route::get('/', [AdminDashboardController::class, 'index']);
     });
 
-    $router->group(['prefix' => 'user'], function($router){
-        Route::get('/subscribers', [AdminSubscriberController::class,'subscriberList']);  
-        Route::post('/subscribers', [AdminSubscriberController::class,'inviteSubscriber']);     
+    $router->group(['prefix' => 'user'], function ($router) {
+        Route::get('/users', [AdminSystemController::class, 'userList']);
+        Route::get('/users/edit/{id}', [AdminSystemController::class, 'userEdit']);
+        Route::post('/users/edit', [AdminSystemController::class, 'userSubmitEdit']);
+        Route::get('/users/delete/{id}', [AdminSystemController::class, 'userSubmitDelete']);
+        Route::get('/users/mission/{id}', [AdminSystemController::class, 'userMission']);
+
+        Route::get('/users/mission/responses/{id}', [AdminSystemController::class, 'missionResponse']);
+        Route::get('/users/mission/responsecomments/{id}', [AdminSystemController::class, 'missionResponseComment']);
+        Route::get('/users/mission/comments/{id}', [AdminSystemController::class, 'missionComment']);
+        Route::get('/users/mission/questions/{id}', [AdminSystemController::class, 'missionQuestion']);
+        Route::get('/users/mission/answers/{id}', [AdminSystemController::class, 'missionAnswer']);
+
+        Route::get('/subscribers', [AdminSubscriberController::class, 'subscriberList']);
+        Route::post('/subscribers', [AdminSubscriberController::class, 'inviteSubscriber']);
 
         // EDIT SUB 
-        Route::get('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberEdit']);     
-        Route::post('/subscribers/edit/{id}', [AdminSubscriberController::class,'subscriberSubmitEdit']);    
-        Route::get('/subscribers/resend-invitation/{id}', [AdminSubscriberController::class,'resendInviteSubscriber']);     
+        Route::get('/subscribers/edit/{id}', [AdminSubscriberController::class, 'subscriberEdit']);
+        Route::post('/subscribers/edit/{id}', [AdminSubscriberController::class, 'subscriberSubmitEdit']);
+        Route::get('/subscribers/resend-invitation/{id}', [AdminSubscriberController::class, 'resendInviteSubscriber']);
     });
 
-    $router->group(['prefix' => 'company'], function($router){
-        Route::get('/list', [AdminCompanyController::class,'companyList']);
-        Route::post('/add', [AdminCompanyController::class,'companyAdd']);
-        Route::get('/edit/{id}', [AdminCompanyController::class,'companyEdit']);
-        Route::post('/submit-edit', [AdminCompanyController::class,'companySubmitEdit']);
+    $router->group(['prefix' => 'company'], function ($router) {
+        Route::get('/list', [AdminCompanyController::class, 'companyList']);
+        Route::post('/add', [AdminCompanyController::class, 'companyAdd']);
+        Route::get('/edit/{id}', [AdminCompanyController::class, 'companyEdit']);
+        Route::post('/submit-edit', [AdminCompanyController::class, 'companySubmitEdit']);
     });
-}); 
+
+    $router->group(['prefix' => 'system'], function ($router) {
+        Route::get('/prices', [AdminSystemController::class, 'priceList']);
+        Route::get('/prices/edit/{id}', [AdminSystemController::class, 'priceEdit']);
+        Route::post('/prices/edit', [AdminSystemController::class, 'priceEditSubmit']);
+        Route::post('/prices/add', [AdminSystemController::class, 'priceAdd']);
+    });
+});
