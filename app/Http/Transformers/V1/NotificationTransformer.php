@@ -105,9 +105,11 @@ class NotificationTransformer
         if ($model->type == 22)
             $temp->text  =  __('notification.TEXT.' . $model->type, ['point' => $model->Point->value]);
 
-        if ($model->type == 23)
-            $temp->text  =  __('notification.TEXT.' . $model->type);
+        if ($model->type == 23 && $model->ClassRoom && $model->ClassRoom->type == 2)
+            $temp->text  =  __('notification.TEXT.23', ['type' => 'Private Classroom']);
 
+        if ($model->type == 23 && $model->ClassRoom && $model->ClassRoom->type == 3)
+            $temp->text  =  __('notification.TEXT.23B', ['type' => 'Master Classroom']);
 
         if ($model->type == 24)
             $temp->text  =  __('notification.TEXT.' . $model->type, ['user_name_from' => $model->ClassRoom->User ? $model->ClassRoom->User->first_name . ' ' . $model->ClassRoom->User->last_name : ""]);
