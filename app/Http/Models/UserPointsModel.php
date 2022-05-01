@@ -20,7 +20,7 @@ class UserPointsModel extends Model
     
     public function User()
     {
-        return $this->hasOne('App\Http\Models\User','id','user_id');
+        return $this->hasMany('App\Http\Models\User','id','user_id_to');
     } 
 
     public function Respone()

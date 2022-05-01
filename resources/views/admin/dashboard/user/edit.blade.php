@@ -56,14 +56,14 @@
 
           <a class="btn btn-light" href={{url('admin/user/users')}}>Cancel</a>
           <button type="submit" class="btn btn-gradient-primary mr-2">Edit</button>
-          <button type="submit" onclick="deleteConfirmation()" class="btn btn-danger">Delete Account</button>
+          <!-- <button type="submit" onclick="deleteConfirmation()" class="btn btn-danger">Delete Account</button> -->
         </form>
       </div>
     </div>
   </div>
 </div>
 
-<script>
+<!-- <script>
   function deleteConfirmation() {
     let confirmation = prompt("PLEASE ENTER THE EMAIL OF THE ACCOUNT TO BE DELETED: {{$user->email}}");
     if (confirmation == null || confirmation == "")
@@ -80,6 +80,6 @@
     } else
       alert("Wrong Input !!");
   }
-</script>
+</script> -->
 
 @endsection

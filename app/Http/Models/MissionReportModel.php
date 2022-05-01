@@ -14,6 +14,21 @@ class MissionReportModel extends Model
 
     public function User()
     {
-        return $this->hasOne('App\Http\Models\User','id','user_id');
+        return $this->hasOne('App\Http\Models\User', 'id', 'user_id');
+    }
+
+    public function Mission()
+    {
+        return $this->hasOne('App\Http\Models\MissionModel', 'id', 'mission_id');
+    }
+
+    public function Classroom()
+    {
+        return $this->hasOne('App\Http\Models\ClassroomModel', 'id', 'classroom_id');
+    }
+
+    public function Response()
+    {
+        return $this->hasOne('App\Http\Models\MissionResponeModel', 'id', 'mission_respone_id');
     }
 }

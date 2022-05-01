@@ -40,9 +40,6 @@
                         <th>
                             Created at
                         </th>
-                        <th>
-                            Updated at
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,30 +77,27 @@
                         </td>
                         <td>
                             @if($missionQuestionExist->where('mission_id', $mission->id)->first() !== null)
-                            <a href="{{url('/admin/user/users/mission/questions/'.$mission->id)}}" class="badge badge-info">See Questions and Answers</a>
+                            <a href="{{url('/admin/user/mission/questions/'.$mission->id)}}" class="badge badge-info">See Questions and Answers</a>
                             @else
                             No Question(s)
                             @endif
                         </td>
                         <td>
                             @if($missionCommentExist->where('mission_id', $mission->id)->first() !== null)
-                            <a href="{{url('/admin/user/users/mission/comments/'.$mission->id)}}" class="badge badge-info">See Comments</a>
+                            <a href="{{url('/admin/user/mission/comments/'.$mission->id)}}" class="badge badge-info">See Comments</a>
                             @else
                             0 Comment
                             @endif
                         </td>
                         <td>
                             @if($missionResponseExist->where('mission_id', $mission->id)->first() !== null)
-                            <a href="{{url('/admin/user/users/mission/responses/'.$mission->id)}}" class="badge badge-info">See Responses</a>
+                            <a href="{{url('/admin/user/mission/responses/'.$mission->id)}}" class="badge badge-info">See Responses</a>
                             @else
                             0 Response
                             @endif
                         </td>
                         <td>
                             {{$mission->created_at}}
-                        </td>
-                        <td>
-                            {{$mission->updated_at}}
                         </td>
                     </tr>
                     @endforeach

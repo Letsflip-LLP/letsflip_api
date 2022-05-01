@@ -199,6 +199,8 @@
               {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
               <li class="nav-item"> <a class="nav-link" href="{{url('admin/user/subscribers')}}">Subscribers</a></li>
               {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
+              <li class="nav-item"> <a class="nav-link" href="{{url('admin/reported')}}">Reported</a></li>
+              {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
             </ul>
           </div>
         </li> 
@@ -210,7 +212,7 @@
           </a>
           <div class="collapse" id="company-menu-company-menu">
             <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="{{url('admin/company/list')}}">List</a></li> 
+              <li class="nav-item"> <a class="nav-link" href="{{url('admin/company')}}">List</a></li> 
             </ul>
           </div>
         </li>

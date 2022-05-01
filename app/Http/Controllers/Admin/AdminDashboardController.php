@@ -15,19 +15,9 @@ use App\Http\Models\MissionAnswerModel;
 use App\Http\Models\MissionCommentModel;
 use App\Http\Models\MissionModel;
 use App\Http\Models\MissionResponeModel;
-use Validator;
-use Ramsey\Uuid\Uuid;
 use Jenssegers\Agent\Agent;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\MessageBag;
-use \Firebase\JWT\JWT;
-use Laravel\Socialite\Facades\Socialite;
-use Session;
 use App\Http\Models\User;
-use App\Mail\subscribeInvitationToRegister;
-use App\Mail\subscribeInvitationHasAccount;
-use Illuminate\Support\Facades\DB;
+use App\Http\Models\UserDeviceModel;
 
 class AdminDashboardController extends Controller
 {
@@ -52,6 +42,7 @@ class AdminDashboardController extends Controller
         $allMissionResponses = new MissionResponeModel;
         $allAnswers = new MissionAnswerModel;
         $allComments = new MissionCommentModel;
+        $userDevice = new UserDeviceModel;
 
         // MISSION DATA
         $publicMissionPercentage = $allMissions->where('type', '1')->count() / $allMissions->all()->count() * 100;
@@ -73,6 +64,10 @@ class AdminDashboardController extends Controller
 
         $masterClassroomPercentage = $allClassrooms->where('type', '3')->count() / $allClassrooms->all()->count() * 100;
         $masterClassroomPercentageInt = (int)$masterClassroomPercentage;
+
+        // DEVICE DATA
+        $android = $userDevice->where('platform', 'android')->get();
+        $ios = $userDevice->where('platform', 'ios')->get();
 
         $data = [
             "page" => "Dashboard",
@@ -99,6 +94,9 @@ class AdminDashboardController extends Controller
             "privateClassroomPercentageInt" => $privateClassroomPercentageInt,
             "masterClassroomPercentage" => $masterClassroomPercentage,
             "masterClassroomPercentageInt" => $masterClassroomPercentageInt,
+            // PASSING DEVICE DATA
+            "android" => $android,
+            "ios" => $ios,
         ];
 
         return view('admin.dashboard.index', $data);

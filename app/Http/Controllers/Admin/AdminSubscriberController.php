@@ -72,8 +72,7 @@ class AdminSubscriberController extends Controller
         $data  = [
             "page" => "Subscriber(s)",
             "breadcrumbs" => [
-                ["name" => "Dashboard", "url" => url('/admin/dashboard')],
-                ["name" => "Users", "url" => url('/admin/user/subscribers')],
+                ["name" => "Users", "url" => url('/admin/user/users')],
                 ["name" => "Subscribers", "url" => url('/admin/user/subscribers')]
             ],
             "default" => [

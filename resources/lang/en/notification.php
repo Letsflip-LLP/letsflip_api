@@ -40,7 +40,7 @@ return [
         22 => "Your mission has been graded! Tap to find out how you fared!",
         23 => "You have a new guest! See who dropped into your :type",
         "23B" => "You have a new guest! See who dropped into your :type",
-        
+
         24 => "Oooh, :user_name_from just kicked you out of their classroom!! Click here to request access again",
         25 => ":user_name_from is following you, Check it out here!",
         // 26 => ":user_name created a mission in your :type. Click here to view or Accept/Reject it now."

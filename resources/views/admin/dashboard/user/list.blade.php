@@ -166,7 +166,7 @@
                             <a href="{{url('/admin/user/users/edit/'.$user->id)}}" class="badge badge-primary">Edit</a>
                         </td>
                         <td>
-                            <a href="{{url('/admin/user/users/mission/'.$user->id)}}" class="badge badge-info">Mission</a>
+                            <a href="{{url('/admin/user/mission/'.$user->id)}}" class="badge badge-info">Mission</a>
                         </td>
                     </tr>
                     @endforeach

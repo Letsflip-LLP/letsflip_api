@@ -33,7 +33,7 @@
             <div class="card-body">
                 <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
                     <div class="float-left">
-                        <i class="mdi mdi-star text-warning icon-lg"></i>
+                        <i class="mdi mdi-star text-danger icon-lg"></i>
                     </div>
                     <div class="float-right">
                         <p class="mb-0 text-right">Subscribers</p>
@@ -44,50 +44,6 @@
                 </div>
                 <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
                     <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Subscribers
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- COMPANIES -->
-    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
-        <div class="card card-statistics">
-            <div class="card-body">
-                <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
-                    <div class="float-left">
-                        <i class="mdi mdi-desktop-mac text-success icon-lg"></i>
-                    </div>
-                    <div class="float-right">
-                        <p class="mb-0 text-right">Companies</p>
-                        <div class="fluid-container">
-                            <h3 class="font-weight-medium text-right mb-0">{{$allCompanies->all()->count()}}</h3>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
-                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Companies
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ACTIVE CLASSROOMS -->
-    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
-        <div class="card card-statistics">
-            <div class="card-body">
-                <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
-                    <div class="float-left">
-                        <i class="mdi mdi-bulletin-board text-info icon-lg"></i>
-                    </div>
-                    <div class="float-right">
-                        <p class="mb-0 text-right">Active Classrooms</p>
-                        <div class="fluid-container">
-                            <h3 class="font-weight-medium text-right mb-0">{{$allClassrooms->all()->count()}}</h3>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
-                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Active Classrooms
                 </p>
             </div>
         </div>
@@ -109,79 +65,34 @@
                     </div>
                 </div>
                 <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
-                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Missions
+                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Active Missions
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- MISSION RESPONSES -->
+    <!-- CLASSROOMS -->
     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
         <div class="card card-statistics">
             <div class="card-body">
                 <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
                     <div class="float-left">
-                        <i class="mdi mdi-reply-all text-danger icon-lg"></i>
+                        <i class="mdi mdi-bulletin-board text-info icon-lg"></i>
                     </div>
                     <div class="float-right">
-                        <p class="mb-0 text-right">Mission Responses</p>
+                        <p class="mb-0 text-right">Classrooms</p>
                         <div class="fluid-container">
-                            <h3 class="font-weight-medium text-right mb-0">{{$allMissionResponses->all()->count()}}</h3>
+                            <h3 class="font-weight-medium text-right mb-0">{{$allClassrooms->all()->count()}}</h3>
                         </div>
                     </div>
                 </div>
                 <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
-                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Mission Responses
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ANSWERS -->
-    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
-        <div class="card card-statistics">
-            <div class="card-body">
-                <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
-                    <div class="float-left">
-                        <i class="mdi mdi-lightbulb-on-outline text-warning icon-lg"></i>
-                    </div>
-                    <div class="float-right">
-                        <p class="mb-0 text-right">Answers</p>
-                        <div class="fluid-container">
-                            <h3 class="font-weight-medium text-right mb-0">{{$allAnswers->all()->count()}}</h3>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
-                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Answers
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- COMMENTS -->
-    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
-        <div class="card card-statistics">
-            <div class="card-body">
-                <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
-                    <div class="float-left">
-                        <i class="mdi mdi-comment-multiple-outline text-success icon-lg"></i>
-                    </div>
-                    <div class="float-right">
-                        <p class="mb-0 text-right">Comments</p>
-                        <div class="fluid-container">
-                            <h3 class="font-weight-medium text-right mb-0">{{$allComments->all()->count()}}</h3>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
-                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Mission Comments
+                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Active Classrooms
                 </p>
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="row">
     <div class="col-sm-6 col-md-6 col-lg-6 grid-margin stretch-card">
@@ -293,21 +204,152 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col-md-7">
-                        <h4 class="card-title font-weight-medium mb-3">Amount Due</h4>
-                        <h1 class="font-weight-medium mb-0">$5998</h1>
-                        <p class="text-muted">Milestone Completed</p>
-                        <p class="mb-0">Payment for next week</p>
-                    </div>
-                    <div class="col-md-5 d-flex align-items-end mt-4 mt-md-0">
-                        <canvas id="conversionBarChart" height="150"></canvas>
-                    </div> -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<div class="row">
+
+    <!-- COMPANIES -->
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                    <div class="float-left">
+                        <i class="mdi mdi-desktop-mac text-success icon-lg"></i>
+                    </div>
+                    <div class="float-right">
+                        <p class="mb-0 text-right">Companies</p>
+                        <div class="fluid-container">
+                            <h3 class="font-weight-medium text-right mb-0">{{$allCompanies->all()->count()}}</h3>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
+                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Companies
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MISSION RESPONSES -->
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                    <div class="float-left">
+                        <i class="mdi mdi-reply-all text-warning icon-lg"></i>
+                    </div>
+                    <div class="float-right">
+                        <p class="mb-0 text-right">Mission Responses</p>
+                        <div class="fluid-container">
+                            <h3 class="font-weight-medium text-right mb-0">{{$allMissionResponses->all()->count()}}</h3>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
+                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Mission Responses
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANSWERS -->
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                    <div class="float-left">
+                        <i class="mdi mdi-lightbulb-on-outline text-warning icon-lg"></i>
+                    </div>
+                    <div class="float-right">
+                        <p class="mb-0 text-right">Answers</p>
+                        <div class="fluid-container">
+                            <h3 class="font-weight-medium text-right mb-0">{{$allAnswers->all()->count()}}</h3>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
+                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Answers
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMMENTS -->
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                    <div class="float-left">
+                        <i class="mdi mdi-comment-multiple-outline text-warning icon-lg"></i>
+                    </div>
+                    <div class="float-right">
+                        <p class="mb-0 text-right">Comments</p>
+                        <div class="fluid-container">
+                            <h3 class="font-weight-medium text-right mb-0">{{$allComments->all()->count()}}</h3>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted mt-3 mb-0 text-left text-md-center text-xl-left">
+                    <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i>Total Mission Comments
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 col-md-6 col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        <h4 class="card-title font-weight-medium mb-0 d-none d-md-block">Android Users</h4>
+                        <div class="card-body">
+                            <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                                <div class="float-left">
+                                    <i class="mdi mdi-android icon-lg" style="color: green;"></i>
+                                </div>
+                                <div class="float-right">
+                                    <div class="fluid-container">
+                                        <h3 class="font-weight-medium text-right mb-0">{{$android->count()}} Users</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-md-6 col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        <h4 class="card-title font-weight-medium mb-0 d-none d-md-block">iOS Users</h4>
+                        <div class="card-body">
+                            <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                                <div class="float-left">
+                                    <i class="mdi mdi-apple icon-lg""></i>
+                                </div>
+                                <div class="float-right">
+                                    <div class="fluid-container">
+                                        <h3 class="font-weight-medium text-right mb-0">{{$ios->count()}} Users</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
@@ -347,11 +389,9 @@
             }
         }
     });
-</script>
 
-<script>
-    var ctxP = document.getElementById("ClassroomsPieChart").getContext('2d');
-    var myPieChart = new Chart(ctxP, {
+    var ctxQ = document.getElementById("ClassroomsPieChart").getContext('2d');
+    var myPieChart = new Chart(ctxQ, {
         type: 'pie',
         data: {
             labels: ["Public", "Private", "Master"],

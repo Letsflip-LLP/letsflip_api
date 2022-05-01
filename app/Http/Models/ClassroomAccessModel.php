@@ -20,4 +20,8 @@ class ClassroomAccessModel extends Model
         return $this->hasOne('App\Http\Models\ClassRoomModel','id','classroom_id');
     }
 
+    public function User()
+    {
+        return $this->hasMany('App\Http\Models\User', 'id', 'user_id');
+    }
 }

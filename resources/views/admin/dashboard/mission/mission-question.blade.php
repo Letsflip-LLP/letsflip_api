@@ -110,7 +110,7 @@
                         </td>
                         <td>
                             @if($missionAnswerExist ->where('question_id', $mission->id)->first() !== null)
-                            <a href="{{url('/admin/user/users/mission/answers/'.$mission->id)}}" class="badge badge-info">See User Answer(s)</a>
+                            <a href="{{url('/admin/user/mission/answers/'.$mission->id)}}" class="badge badge-info">See User Answer(s)</a>
                             @else
                             0 Answer
                             @endif

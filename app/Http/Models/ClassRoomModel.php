@@ -53,4 +53,9 @@ class ClassRoomModel extends Model
     {
         return $this->hasOne('App\Http\Models\PriceTemplateModel','id','price_template_id');
     }
+
+    public function Report()
+    {
+        return $this->hasMany('App\Http\Models\MissionReportModel', 'classroom_id', 'id');
+    }
 }

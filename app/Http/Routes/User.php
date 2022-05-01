@@ -30,11 +30,11 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
 
             
             Route::get('/', [UserController::class, 'self'])->name('GetUserControllerSelf');
-            Route::get('notification', [UserController::class, 'getSelfNotification'])->name('GetUserControllerSelf');
+            Route::get('notification', [UserController::class, 'getSelfNotification'])->name('GetUserNotificationControllerSelf');
         
             Route::post('/follow/action', [UserController::class, 'userFollowAction'])->name('GetUserControllerAddUserFollow');
 
-            Route::post('/blocked/action', [UserController::class, 'userBlockedAction'])->name('GetUserControllerAddUserFollow');
+            Route::post('/blocked/action', [UserController::class, 'userBlockedAction'])->name('GetUserControllerAddUserBlock');
 
             Route::get('summary-update', [UserController::class, 'getSelfSummaryUpdate'])->name('GetUserControllerGetSelfSummaryUpdate');
 

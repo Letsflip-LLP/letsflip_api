@@ -7,15 +7,18 @@ use App\Http\Models\SubscriberModel;
 use App\Http\Models\CompanyModel;
 use App\Http\Models\User;
 use App\Http\Controllers\Controller;
+use App\Http\Models\ClassRoomModel;
 use App\Http\Models\MissionAnswerModel;
 use App\Http\Models\MissionCommentModel;
 use App\Http\Models\MissionCommentResponeModel;
 use App\Http\Models\MissionModel;
 use App\Http\Models\MissionQuestionModel;
+use App\Http\Models\MissionReportModel;
 use App\Http\Models\MissionResponeModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\Continue_;
 use Ramsey\Uuid\Uuid;
 
 
@@ -56,7 +59,7 @@ class AdminSystemController extends Controller
             "groupVendor" => $priceAll,
         ];
 
-        return view('admin.dashboard.price-list', $data);
+        return view('admin.dashboard.price.list', $data);
     }
 
     public function priceEdit($key)
@@ -77,7 +80,7 @@ class AdminSystemController extends Controller
             "prices" => $price,
         ];
 
-        return view('admin.dashboard.price-edit', $data);
+        return view('admin.dashboard.price.edit', $data);
     }
 
     public function priceEditSubmit(Request $request)
@@ -151,7 +154,6 @@ class AdminSystemController extends Controller
         $data  = [
             "page" => "All User(s)",
             "breadcrumbs" => [
-                ["name" => "Dashboard", "url" => url('/admin/dashboard')],
                 ["name" => "Users", "url" => url('/admin/user/users')],
                 ["name" => "All Users", "url" => url('/admin/user/users')]
             ],
@@ -166,7 +168,7 @@ class AdminSystemController extends Controller
 
         // return view('emails.subscribe-invitation-has-acount',['account_type'=> 'Private Account', 'email' => 'email@email.com']);
 
-        return view('admin.dashboard.user-list', $data);
+        return view('admin.dashboard.user.list', $data);
     }
 
     public function userEdit($key)
@@ -193,7 +195,7 @@ class AdminSystemController extends Controller
             "company" => $company
         ];
 
-        return view('admin.dashboard.user-edit', $data);
+        return view('admin.dashboard.user.edit', $data);
     }
 
     public function userSubmitEdit(Request $request)
@@ -217,14 +219,14 @@ class AdminSystemController extends Controller
         return redirect('admin/user/users');
     }
 
-    public function userSubmitDelete($key)
-    {
-        $user = new User;
+    // public function userSubmitDelete($key)
+    // {
+    //     $user = new User;
 
-        $user = $user->where('id', $key)->delete();
+    //     $user = $user->where('id', $key)->delete();
 
-        return redirect('admin/user/users');
-    }
+    //     return redirect('admin/user/users');
+    // }
 
     public function userMission($key)
     {
@@ -241,7 +243,7 @@ class AdminSystemController extends Controller
             "missionResponseExist" => $missionResponses,
         ];
 
-        return view('admin.dashboard.user-mission', $data);
+        return view('admin.dashboard.user.mission', $data);
     }
 
     public function missionQuestion($key)
@@ -325,5 +327,45 @@ class AdminSystemController extends Controller
         ];
 
         return view('admin.dashboard.mission.response.response-comment', $data);
+    }
+
+    public function reportedList(Request $request)
+    {
+        $fetch = new MissionReportModel;
+
+        if ($request->filled('type')) {
+            if ($request->type == 'Mission')
+                $typeID = 'mission_id';
+            elseif ($request->type == 'Classroom')
+                $typeID = 'classroom_id';
+            elseif ($request->type == 'Response')
+                $typeID = 'mission_respone_id';
+            else
+                goto all;
+            $fetch = $fetch->whereHas($request->type)->groupBy($typeID);
+        } else {
+            all:
+            $fetch = $fetch
+                ->whereHas('Classroom')->groupBy('classroom_id')
+                ->orWhereHas('Mission')->groupBy('mission_id')
+                ->orWhereHas('Response')->groupBy('mission_respone_id');
+        }
+
+        $fetch = $fetch->orderBy('updated_at', 'DESC')->paginate($request->input('per_page', 10));
+
+        $data  = [
+            "page" => "Reported",
+            "breadcrumbs" => [
+                ["name" => "Users", "url" => url('/admin/user/users')],
+                ["name" => "Reported", "url" => url('/admin/reported')],
+            ],
+            "default" => [
+                "start_date" =>  Carbon::now()->format('Y-m-d'),
+                "end_date"   =>  Carbon::now()->add('years', 1)->format('Y-m-d'),
+            ],
+            "report" => $fetch,
+        ];
+
+        return view('admin.dashboard.reported.list', $data);
     }
 }

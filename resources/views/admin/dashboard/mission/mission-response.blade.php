@@ -91,7 +91,7 @@
                         </td>
                         <td>
                         @if($missionResponseCommentExist->where('mission_respone_id', $mission->id)->first() !== null)
-                            <a href="{{url('/admin/user/users/mission/responsecomments/'.$mission->id)}}" class="badge badge-info">See Comments</a>
+                            <a href="{{url('/admin/user/mission/responsecomments/'.$mission->id)}}" class="badge badge-info">See Comments</a>
                             @else
                             0 Comment
                             @endif
