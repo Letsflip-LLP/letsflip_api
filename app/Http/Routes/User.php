@@ -18,7 +18,10 @@ $router->group(['middleware'=> ['auth:api','verified'],'prefix' => 'user'], func
 
     // Need Login
     $router->group(['middleware'=> ['auth:api','verified']], function($router){
-        Route::post('subscribe', [UserController::class, 'subscribePremiumAccount'])->name('PostUserControllerSubscribePremiumAccount'); 
+        Route::post('subscribe', [UserController::class, 'subscribePremiumAccount'])->name('PostUserControllerSubscribePremiumAccount');
+        
+        // REPORT 
+        Route::post('report-user', [UserController::class, 'reportActionUser'])->name('PostUserControllerReportActionUser'); 
 
         // GET USER LIST
         Route::get('list', [UserController::class, 'getPublicList'])->name('GetUserPublictList'); 
