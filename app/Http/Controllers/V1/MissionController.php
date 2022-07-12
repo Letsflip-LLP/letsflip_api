@@ -32,7 +32,12 @@ use Ramsey\Uuid\Uuid;
 use DB;
 use App\Http\Libraries\Notification\NotificationManager;
 use App\Http\Models\ClassroomAccessModel;
+use App\Http\Models\User;
+use App\Http\Transformers\V1\LeaderboardTransformer;
+use App\Http\Transformers\V1\UserTransformer;
+use Google\Service\AnalyticsData\OrderBy;
 use Google\Service\Classroom;
+use Google\Service\CloudSearch\Id;
 use Jenssegers\Agent\Agent;
 
 class MissionController extends Controller
@@ -559,7 +564,11 @@ class MissionController extends Controller
                     $mission = $mission->orderBy($order_by[0], $order_by[1]);
 
                 if ($order_by[0] == 'trending') {
-                    $mission = $mission->withCount('LastRespone')->orderBy('last_respone_count', 'desc')->orderBy('created_at', 'desc');
+                    // OLD TRENDING
+                    // $mission = $mission->withCount('LastRespone')->orderBy('last_respone_count', 'desc')->orderBy('created_at', 'desc');     
+
+                    // NEW TRENDING
+                    $mission = $mission->withCount('Respone', 'Like')->orderByRaw("((respone_count*3)+like_count) DESC");
                 }
             } else {
                 $mission = $mission->orderBy('created_at', 'DESC');
@@ -1490,65 +1499,87 @@ class MissionController extends Controller
         DB::beginTransaction();
 
         try {
-            // FETCH USER DATA (USER HAVE RESPONSE TO THE CLASSROOM'S MISSIONS)
-            $point = new UserPointsModel;
-            $point = $point->where('type', 5);
-            $point = $point->whereHas('Respone');
-
-            if ($request->filled('mission_id'))
+            if ($request->filled('mission_id')) {
+                $point = new UserPointsModel;
+                $point = $point->where('type', 5);
+                $point = $point->whereHas('Respone');
                 $point = $point->where('mission_id', $request->mission_id);
+                $point = $point->groupBy('user_id_to');
+                $point = $point->selectRaw('*, sum(value) as sum');
+                $point = $point->orderBy('sum', 'DESC');
+                // $point =  $request->per_page == '1' ? $point->get() : $point->paginate(5);
+                $point =  $point->paginate($request->input('per_page', 5));
+
+                $return = [];
+                foreach ($point as $pt) {
+                    $temp = $pt->Respone;
+                    $temp->total_point = $pt->sum;
+                    $return[] = $pt->Respone;
+                }
+
+                DB::commit();
+                return (new MissionTransformer)->list(200, __('messages.200'), $return);
+            }
+
 
 
             if ($request->filled('classroom_id')) {
-                $point = $point->whereHas('Mission', function ($q1) use ($request) {
-                    $q1->whereHas('ClassRoomTag', function ($q2) use ($request) {
-                        $q2->where('classrooms.id', $request->classroom_id);
+                $leaderBoard = new User;
+                $user = $leaderBoard->whereHas('PremiumClassRoomAccess', function ($q1) use ($request) {
+                    $q1->where('classroom_id', $request->classroom_id)->where('status', 1);
+                })->get();
+
+                $userId = [];
+                foreach ($user as $u) {
+                    $userId[] = $u->id;
+                };
+
+                $leaderBoard = $leaderBoard
+                    ->whereHas('Point', function ($q2) use ($userId, $request) {
+                        $q2->where('type', 5)->whereHas('Respone')->whereHas('Mission', function ($q4) use ($userId, $request) {
+                            $q4->whereHas('ClassRoomTag', function ($q5) use ($userId, $request) {
+                                $q5->where('classrooms.id', $request->classroom_id);
+                            });
+                        });
+                        $q2->orderBy('value', 'DESC');
+                    })
+                    ->with(['Point' => function ($q2) use ($userId, $request) {
+                        $q2->where('type', 5)->whereHas('Respone')->whereHas('Mission', function ($q4) use ($userId, $request) {
+                            $q4->whereHas('ClassRoomTag', function ($q5) use ($userId, $request) {
+                                $q5->where('classrooms.id', $request->classroom_id);
+                            });
+                        });
+                        $q2->orderBy('value', 'DESC');
+                    }])
+                    ->withSum(['Point' => function ($q2) use ($userId, $request) {
+                        $q2->where('type', 5)->whereHas('Respone')->whereHas('Mission', function ($q4) use ($userId, $request) {
+                            $q4->whereHas('ClassRoomTag', function ($q5) use ($userId, $request) {
+                                $q5->where('classrooms.id', $request->classroom_id);
+                            });
+                        });
+                        $q2->orderBy('value', 'DESC');
+                    }], 'value')
+                    ->orWhere(function ($q1) use ($userId) {
+                        $q1->whereIn('id', $userId);
                     });
-                });
+
+                $leaderBoard = $leaderBoard->orderBy('point_sum_value', 'DESC')->orderBy('first_name');
+                $leaderBoard = $request->per_page == '1' ? $leaderBoard->get() : $leaderBoard->paginate(5);
+
+                $return = [];
+                foreach ($leaderBoard as $lb) {
+                    foreach ($lb->Point as $lbs) {
+                        $temp = $lbs;
+                        $temp->response = $lbs->Respone;
+                        $lbs->Respone->MissionContentDefault;
+                        $lbs->Respone->Like;
+                        $temp->mission_responded = $lbs->Mission;
+                    }
+                    $return[] = $lb;
+                }
+
+                return (new LeaderboardTransformer)->list(200, __('messages.200'), $return);
             }
-            $point = $point->groupBy('user_id_to');
-            $point = $point->orderBy('value', 'DESC');
-            $point = $point->selectRaw('*, sum(value) as sum');
-            $point = $point->paginate($request->input('per_page', 5));
-
-            // FETCH USER DATA (USER DOESN'T HAVE RESPONSE TO THE CLASSROOM'S MISSIONS)
-            $userHavePointID = [];
-            foreach ($point as $pt)
-                $userHavePointID[] = $pt->user_id_to;
-
-            $zeroPoint = new UserPointsModel;
-            $zeroPoint = $zeroPoint->where('type', 5)->whereNotIn('user_id_to', $userHavePointID);
-
-            $zeroPoint = $zeroPoint->whereHas('User', function ($q1) use ($request) {
-                $q1->whereHas('PremiumClassRoomAccess', function ($q2) use ($request) {
-                    $q2->where('classroom_id', $request->classroom_id);
-                });
-            });
-            $zeroPoint = $zeroPoint->groupBy('user_id_to');
-            $zeroPoint = $zeroPoint->selectRaw('*, sum(value) as sum');
-            $zeroPoint = $zeroPoint->paginate($request->input('per_page', 5));
-
-            // PASS DATA TO MOBILE            
-            $return1 = [];
-            foreach ($point as $pt) {
-                $temp = $pt->Respone;
-                $temp->total_point = $pt->sum;
-                $return1[] = $pt->Respone;
-            }
-
-            $return2 = [];
-            foreach ($zeroPoint as $zp) {
-                $temp = $zp->Respone;
-                $temp->total_point = $zp->sum;
-                $return2[] = $zp->Respone;
-            }
-
-            $return = [];
-            $return = array_merge($return1, $return2);
-
-            DB::commit();
-
-            return (new MissionTransformer)->list(200, __('messages.200'), $return);
         } catch (\exception $exception) {
 
             DB::rollBack();

@@ -174,7 +174,7 @@
             </table>
 
             <div style="margin-top : 20">
-                {{ $users->appends(request()->input())->links("pagination::bootstrap-4") }}
+                <!-- {{ $users->appends(request()->input())->links("pagination::bootstrap-4") }} -->
             </div>
         </div>
     </div>

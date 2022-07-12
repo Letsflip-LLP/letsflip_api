@@ -31,4 +31,8 @@ class MissionReportModel extends Model
     {
         return $this->hasOne('App\Http\Models\MissionResponeModel', 'id', 'mission_respone_id');
     }
+
+    public function MissionComment(){
+        return $this->hasOne('App\Http\Models\MissionCommentModel', 'id', 'mission_comment_id');
+    }
 }

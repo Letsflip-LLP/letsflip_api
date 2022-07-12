@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Models\SubscriberModel;
+use App\Http\Models\MissionReportModel;
 use DB;
 use Illuminate\Support\Facades\Crypt;
 use Ramsey\Uuid\Uuid;
@@ -12,9 +13,11 @@ use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Models\User;
 use App\Http\Models\CompanyModel;
+use App\Http\Models\UserReportModel;
 use App\Mail\subscribeInvitationToRegister;
 use App\Mail\subscribeInvitationHasAccount;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class AdminSubscriberController extends Controller
 {
@@ -222,5 +225,54 @@ class AdminSubscriberController extends Controller
             DB::rollBack();
             return redirect()->back();
         }
+    }
+
+    public function userReportedList(Request $request)
+    {
+        $fetch = new UserReportModel;
+
+        $fetch = $fetch->orderBy('updated_at', 'DESC')->whereHas('UserTo');
+
+        $fetch = $fetch->groupBy('user_id_to')->paginate($request->input('per_page', 10));
+        // ->unique('user_id_to');
+
+        $data  = [
+            "page" => "Reported",
+            "breadcrumbs" => [
+                ["name" => "Users", "url" => url('/admin/user/users')],
+                ["name" => "Reported", "url" => url('/admin/reported/user')],
+            ],
+            "default" => [
+                "start_date" =>  Carbon::now()->format('Y-m-d'),
+                "end_date"   =>  Carbon::now()->add('years', 1)->format('Y-m-d'),
+            ],
+            "report" => $fetch,
+        ];
+
+        return view('admin.user.reported.list', $data);
+        // return dump($fetch);
+    }
+
+    public function userReportedDetails($key)
+    {
+        $details = new UserReportModel;
+
+        $details = $details->where('user_id_to', $key)->orderBy('updated_at', 'DESC')->get();
+
+
+        $data = [
+            "page" => "Reported",
+            "breadcrumbs" => [
+                ["name" => "Users", "url" => url('/admin/user/users')],
+                ["name" => "Reported", "url" => url('/admin/reported/user')],
+            ],
+            "default" => [
+                "start_date" =>  Carbon::now()->format('Y-m-d'),
+                "end_date"   =>  Carbon::now()->add('years', 1)->format('Y-m-d'),
+            ],
+            "details" => $details,
+        ];
+
+        return view('admin.user.reported.details', $data);
     }
 }

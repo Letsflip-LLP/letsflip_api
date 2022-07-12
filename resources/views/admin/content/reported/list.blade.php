@@ -10,7 +10,7 @@
 
             <!-- SEARCH ENGINE -->
             <!-- ================================================================================================ -->
-            <form method="GET" action="{{url('admin/reported')}}">
+            <form method="GET" action="{{url('admin/reported/content')}}">
                 {{ csrf_field() }}
                 <table class="table table-striped">
                     <tbody>
@@ -27,6 +27,7 @@
                                     <!-- <option value="">Comment</option> -->
                                     <option value="Response" {{request()->input('type') == 'Response' ? 'selected' : ''}}>Response</option>
                                     <option value="Classroom" {{request()->input('type') == 'Classroom' ? 'selected' : ''}}>Classroom</option>
+                                    <option value="MissionComment" {{request()->input('type') == 'MissionComment' ? 'selected' : ''}}>Comment</option>
                                 </select>
                             </td>
                             <!-- <td>
@@ -86,10 +87,15 @@
                             Description
                         </th>
                         <th>
+                            Content
+                        </th>
+                        <th>
                             Last Reported
                         </th>
                         <th>
                             Reported Details
+                        </th>
+                        <th>
                         </th>
                     </tr>
                 </thead>
@@ -104,11 +110,13 @@
                         </td>
                         <td>
                             @if($rp->Classroom)
-                            {{$rp->Classroom->User->first_name}} {{$rp->Classroom->User->last_name}}
+                            {{$rp->Classroom->User->first_name}}&nbsp;{{$rp->Classroom->User->last_name}}
                             @elseif($rp->Mission)
-                            {{$rp->Mission->User->first_name}} {{$rp->Mission->User->last_name}}
+                            {{$rp->Mission->User->first_name}}&nbsp;{{$rp->Mission->User->last_name}}
                             @elseif($rp->Response)
-                            {{$rp->Response->User->first_name}} {{$rp->Response->User->last_name}}
+                            {{$rp->Response->User->first_name}}&nbsp;{{$rp->Response->User->last_name}}
+                            @elseif($rp->MissionComment)
+                            {{$rp->MissionComment->User->first_name}}&nbsp;{{$rp->MissionComment->User->last_name}}
                             @endif
                         </td>
                         <td>
@@ -118,6 +126,8 @@
                             Mission
                             @elseif($rp->Response)
                             Response
+                            @elseif($rp->MissionComment)
+                            Comment
                             @endif
                         </td>
                         <td>
@@ -136,10 +146,21 @@
                             {{$rp->Mission->text}}
                             @elseif($rp->Response)
                             {{$rp->Response->text}}
+                            @elseif($rp->MissionComment)
+                            {{$rp->MissionComment->text}}
                             @endif
                         </td>
                         <td>
-                            {{$rp->updated_at}}
+                            @if($rp->Classroom)
+
+                            @elseif($rp->Mission)
+                            <a href="{{url('admin/reported/open-content/'.$rp->Mission->id)}}" target="_blank" class="badge badge-info">View</a>
+                            @elseif($rp->Response)
+                            <a href="{{url('admin/reported/open-content/'.$rp->Response->id)}}" target="_blank" class="badge badge-info">View</a>
+                            @endif
+                        </td>
+                        <td>
+                            {{$rp->max('updated_at')}}
                         </td>
                         <td>
                             Inappropriate:
@@ -149,6 +170,8 @@
                             {{$rp->where([['mission_id', $rp->mission_id],['title', "It's inappropriate"]])->count()}}
                             @elseif($rp->Response)
                             {{$rp->where([['mission_respone_id', $rp->mission_respone_id],['title', "It's inappropriate"]])->count()}}
+                            @elseif($rp->MissionComment)
+                            {{$rp->where([['mission_comment_id', $rp->mission_comment_id],['title', "It's inappropriate"]])->count()}}
                             @endif <br>
                             Spam:
                             @if($rp->Classroom)
@@ -157,18 +180,61 @@
                             {{$rp->where([['mission_id', $rp->mission_id],['title', "It's spam"]])->count()}}
                             @elseif($rp->Response)
                             {{$rp->where([['mission_respone_id', $rp->mission_respone_id],['title', "It's spam"]])->count()}}
+                            @elseif($rp->MissionComment)
+                            {{$rp->where([['mission_comment_id', $rp->mission_comment_id],['title', "It's spam"]])->count()}}
                             @endif
-
+                            <br> <br>
+                            @if($rp->Classroom)
+                            <a href="{{url('admin/reported/details/'.$rp->Classroom->id)}}" class="badge badge-info">Details</a>
+                            @elseif($rp->Mission)
+                            <a href="{{url('admin/reported/details/'.$rp->Mission->id)}}" class="badge badge-info">Details</a>
+                            @elseif($rp->Response)
+                            <a href="{{url('admin/reported/details/'.$rp->Response->id)}}" class="badge badge-info">Details</a>
+                            @elseif($rp->MissionComment)
+                            <a href="{{url('admin/reported/details/'.$rp->MissionComment->id)}}" class="badge badge-info">Details</a>
+                            @endif
+                        </td>
+                        <td>
+                            @if($rp->Classroom)
+                            <button type="submit" onclick="deleteConfirmation('{{$rp->Classroom->id}}')" class="btn btn-danger">Take Down</button>
+                            @elseif($rp->Mission)
+                            <button type="submit" onclick="deleteConfirmation('{{$rp->Mission->id}}')" class="btn btn-danger">Take Down</button>
+                            @elseif($rp->Response)
+                            <button type="submit" onclick="deleteConfirmation('{{$rp->Response->id}}')" class="btn btn-danger">Take Down</button>
+                            @elseif($rp->MissionComment)
+                            <button type="submit" onclick="deleteConfirmation('{{$rp->MissionComment->id}}')" class="btn btn-danger">Take Down</button>
+                            @endif
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
             <div style="margin-top : 20">
-                {{ $report->appends(request()->input())->links("pagination::bootstrap-4") }}
+                
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function deleteConfirmation(id) {
+        let confirmation = prompt("PLEASE ENTER 't@k3_d0wn_c0nt3nt': ");
+        if (confirmation == "")
+            alert("Please enter the keywords");
+        else if (confirmation == null)
+            return;
+        else if (confirmation == "t@k3_d0wn_c0nt3nt") {
+            let crossCheck = confirm("This content will be taken down. Proceed? (OK/Cancel)");
+            if (crossCheck) {
+                location.href = "/admin/reported/take-down/"+id;
+                alert("Content has been taken down");
+            } else {
+                location.href = "";
+                alert("Canceled");
+            }
+        } else
+            alert("Wrong Input !!");
+    }
+</script>
 
 @endsection

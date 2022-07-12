@@ -34,7 +34,7 @@
               <p class="mb-1 text-black">{{$user->first_name}}&nbsp;{{$user->last_name}}</p>
             </div>
           </a>
-          <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown"> 
+          <div class="dropdown-menu navbar-dropdown" aria-labelledby="p rofileDropdown"> 
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{url('admin/auth/logout')}}">
               <i class="mdi mdi-logout mr-2 text-primary"></i>
@@ -191,7 +191,7 @@
           <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
             <span class="menu-title">Users</span>
             <i class="menu-arrow"></i>
-            <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+            <i class="mdi mdi-account-multiple menu-icon"></i>
           </a>
           <div class="collapse" id="ui-basic">
             <ul class="nav flex-column sub-menu">
@@ -199,7 +199,20 @@
               {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
               <li class="nav-item"> <a class="nav-link" href="{{url('admin/user/subscribers')}}">Subscribers</a></li>
               {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
-              <li class="nav-item"> <a class="nav-link" href="{{url('admin/reported')}}">Reported</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{{url('admin/reported/user')}}">Reported</a></li>
+              {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
+            </ul>
+          </div>
+        </li> 
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="collapse" href="#content-basic" aria-expanded="false" aria-controls="content-basic">
+            <span class="menu-title">Content</span>
+            <i class="menu-arrow"></i>
+            <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+          </a>
+          <div class="collapse" id="content-basic">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{{url('admin/reported/content')}}">Reported</a></li>
               {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li> --}}
             </ul>
           </div>

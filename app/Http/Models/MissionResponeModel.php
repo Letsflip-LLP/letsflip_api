@@ -18,9 +18,15 @@ class MissionResponeModel extends Model
         "id", "user_id", "mission_id", "title", "text", "default_content_id", "image_path", "image_file", "status", "type", "created_at", "updated_at", "deleted_at"
     ];   
 
+    // Typo, but don't know if it was used
     public function MissionContent()
     {
         return $this->hasMany('App\Http\Models\MissionResponeContentModel','mission_respone_id','id');
+    }
+
+    public function ResponseContent()
+    {
+        return $this->hasMany('App\Http\Models\MissionResponeContentModel','mission_response_id','id');
     }
 
     public function MissionContentDefault()

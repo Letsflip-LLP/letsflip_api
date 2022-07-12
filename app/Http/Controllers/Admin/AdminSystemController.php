@@ -15,12 +15,16 @@ use App\Http\Models\MissionModel;
 use App\Http\Models\MissionQuestionModel;
 use App\Http\Models\MissionReportModel;
 use App\Http\Models\MissionResponeModel;
+use App\Http\Models\UserBlockModel;
 use Carbon\Carbon;
+use Google\Service\CloudSearch\Id;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\Continue_;
 use Ramsey\Uuid\Uuid;
-
+use Illuminate\Support\Facades\Storage;
+use SebastianBergmann\Environment\Console;
 
 class AdminSystemController extends Controller
 {
@@ -168,7 +172,7 @@ class AdminSystemController extends Controller
 
         // return view('emails.subscribe-invitation-has-acount',['account_type'=> 'Private Account', 'email' => 'email@email.com']);
 
-        return view('admin.dashboard.user.list', $data);
+        return view('admin.user.list', $data);
     }
 
     public function userEdit($key)
@@ -195,7 +199,7 @@ class AdminSystemController extends Controller
             "company" => $company
         ];
 
-        return view('admin.dashboard.user.edit', $data);
+        return view('admin.user.edit', $data);
     }
 
     public function userSubmitEdit(Request $request)
@@ -243,7 +247,7 @@ class AdminSystemController extends Controller
             "missionResponseExist" => $missionResponses,
         ];
 
-        return view('admin.dashboard.user.mission', $data);
+        return view('admin.user.mission', $data);
     }
 
     public function missionQuestion($key)
@@ -329,7 +333,7 @@ class AdminSystemController extends Controller
         return view('admin.dashboard.mission.response.response-comment', $data);
     }
 
-    public function reportedList(Request $request)
+    public function contentReportedList(Request $request)
     {
         $fetch = new MissionReportModel;
 
@@ -340,18 +344,21 @@ class AdminSystemController extends Controller
                 $typeID = 'classroom_id';
             elseif ($request->type == 'Response')
                 $typeID = 'mission_respone_id';
+            elseif ($request->type == 'MissionComment')
+                $typeID = 'mission_comment_id';
             else
                 goto all;
-            $fetch = $fetch->whereHas($request->type)->groupBy($typeID);
+            $fetch = $fetch->groupBy($typeID)->whereHas($request->type)->paginate($request->input('per_page', 10));
         } else {
             all:
             $fetch = $fetch
+                ->orderBy('updated_at', 'DESC')
                 ->whereHas('Classroom')->groupBy('classroom_id')
                 ->orWhereHas('Mission')->groupBy('mission_id')
-                ->orWhereHas('Response')->groupBy('mission_respone_id');
+                ->orWhereHas('Response')->groupBy('mission_respone_id')
+                ->orWhereHas('MissionComment')->groupBy('mission_comment_id');
+            $fetch = $fetch->paginate($request->input('per_page', 10));
         }
-
-        $fetch = $fetch->orderBy('updated_at', 'DESC')->paginate($request->input('per_page', 10));
 
         $data  = [
             "page" => "Reported",
@@ -366,6 +373,91 @@ class AdminSystemController extends Controller
             "report" => $fetch,
         ];
 
-        return view('admin.dashboard.reported.list', $data);
+        return view('admin.content.reported.list', $data);
+        // return dump($fetch);
+    }
+
+    public function openContent($key)
+    {
+        $openContent = new MissionReportModel;
+
+        $openContent = $openContent->whereHas('Mission', function ($q) use ($key) {
+            $q->whereHas('MissionContent', function ($q2) use ($key) {
+                $q2->where('mission_id', $key);
+            });
+        })->orWhereHas('Response', function ($q) use ($key) {
+            $q->whereHas('ResponseContent', function ($q2) use ($key) {
+                $q2->where('mission_respone_id', $key);
+            });
+        });
+        $openContent = $openContent->first();
+
+        if ($openContent->Mission)
+            $redirect_url   = Storage::disk('gcs')->url($openContent->Mission->MissionContent[0]['file_path'] . '/' . $openContent->Mission->MissionContent[0]['file_name']);
+        elseif ($openContent->Response)
+            $redirect_url   = Storage::disk('gcs')->url($openContent->Response->ResponseContent[0]['file_path'] . '/' . $openContent->Response->ResponseContent[0]['file_name']);
+
+        return redirect()->to($redirect_url);
+    }
+
+    public function reportedDetails($key)
+    {
+        $details = new MissionReportModel;
+
+        $details = $details
+            ->where('mission_id', $key)
+            ->orWhere('classroom_id', $key)
+            ->orWhere('mission_respone_id', $key)
+            ->orWhere('mission_comment_id', $key);
+
+        $details = $details->orderBy('updated_at', 'DESC')->get();
+        $data = [
+            "page" => "Reported",
+            "breadcrumbs" => [
+                ["name" => "Users", "url" => url('/admin/user/users')],
+                ["name" => "Reported", "url" => url('/admin/reported')],
+            ],
+            "default" => [
+                "start_date" =>  Carbon::now()->format('Y-m-d'),
+                "end_date"   =>  Carbon::now()->add('years', 1)->format('Y-m-d'),
+            ],
+            "details" => $details,
+        ];
+
+        // return dump($data);
+        return view('admin.content.reported.details', $data);
+    }
+
+    public function blockUserAction($key)
+    {
+        $user = $key;
+
+        // $action = 'add';
+
+        // $check = UserBlockModel::where([
+        //     "user_id_from" => $user->id,
+        //     "user_id_to"   => $key,
+        // ])->first();
+
+        // if ($check != null) {
+        //     $action = 'delete';
+        //     $check->destroy($check->id);
+        // } else {
+        //     $follow = UserBlockModel::insert([
+        //         "id" => Uuid::uuid4(),
+        //         "user_id_from" => $user->id,
+        //         "user_id_to"   => $key,
+        //         "created_at" => date('Y-m-d H:i:s'),
+        //         "updated_at" => date('Y-m-d H:i:s')
+        //     ]);
+        // };
+
+
+        $data = [
+            "userId" => $key,
+            "adminId" => Auth::id(),
+        ];
+
+        return dump($data);
     }
 }

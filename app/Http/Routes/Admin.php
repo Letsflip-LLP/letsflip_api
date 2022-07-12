@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\AdminCompanyController;
+use App\Http\Controllers\Admin\AdminMissionController;
 use App\Http\Controllers\Admin\AdminSystemController;
 
 /*
@@ -45,7 +46,7 @@ $router->group(['middleware' => ['admin_dashboard']], function ($router) {
             Route::get('/responses/{id}', [AdminSystemController::class, 'missionResponse']);
             Route::get('/responsecomments/{id}', [AdminSystemController::class, 'missionResponseComment']);
         });
-
+        
         Route::get('/subscribers', [AdminSubscriberController::class, 'subscriberList']);
         Route::post('/subscribers', [AdminSubscriberController::class, 'inviteSubscriber']);
 
@@ -56,7 +57,16 @@ $router->group(['middleware' => ['admin_dashboard']], function ($router) {
     });
 
     $router->group(['prefix' => 'reported'], function ($router) {
-        Route::get('/', [AdminSystemController::class, 'reportedList']);
+        // Reported Content
+        Route::get('/content', [AdminSystemController::class, 'contentReportedList']);
+        Route::get('/open-content/{id}', [AdminSystemController::class, 'openContent']);
+        Route::get('/details/{id}', [AdminSystemController::class, 'reportedDetails']);
+        Route::get('/take-down/{id}', [AdminMissionController::class, 'takeDown']);
+
+        // Reported User
+        Route::get('/user', [AdminSubscriberController::class, 'userReportedList']);
+        Route::get('/user/details/{id}', [AdminSubscriberController::class, 'userReportedDetails']);
+        // Route::get('/user/block/{id}', [AdminSystemController::class, 'blockUserAction']);
     });
 
     $router->group(['prefix' => 'company'], function ($router) {
