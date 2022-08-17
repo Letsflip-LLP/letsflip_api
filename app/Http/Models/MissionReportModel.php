@@ -4,10 +4,12 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MissionReportModel extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     public $incrementing = false;
     protected $table = 'content_reports';
 

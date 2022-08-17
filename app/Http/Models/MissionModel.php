@@ -71,6 +71,11 @@ class MissionModel extends Model
         return $this->belongsToMany('App\Http\Models\User','tags','module_id','foreign_id')->where('tags.type',2)->where('module','mission');
     }
 
+    public function Tags()
+    {
+        return $this->hasMany('App\Http\Models\TagModel', 'module_id', 'id')->where('module', 'mission');
+    }
+
     public function QuickScores()
     {
         return $this->hasMany('App\Http\Models\MissionQuestionModel','mission_id','id');
@@ -81,4 +86,8 @@ class MissionModel extends Model
         return $this->hasMany('App\Http\Models\MissionUserTimerModel','mission_id','id')->whereNull('response_id');
     }
 
+    public function OwnerPoints($id)
+    {
+        return $this->hasMany('App\Http\Models\UserPointsModel', 'mission_id', 'id')->where('user_id_to', $id);
+    }
 }

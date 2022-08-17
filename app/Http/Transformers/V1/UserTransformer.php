@@ -26,6 +26,7 @@ class UserTransformer {
         $temp->total_follower   = $model->Follower ? $model->Follower->count() : 0;
         $temp->total_following  = $model->Followed ? $model->Followed->count() : 0;
         $temp->total_classroom   = $model->ClassRoom ? $model->ClassRoom->count() : 0;
+        $temp->total_mission  = $model->Mission ? $model->Mission->count() : 0;
 
         if($model->Company && $model->Company->id && $model->Company->title){
             $temp->company  = [

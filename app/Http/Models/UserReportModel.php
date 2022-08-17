@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class UserReportModel extends Model
 {
     use HasFactory; 
-
+    use SoftDeletes;
     public $incrementing = false; 
     protected $table = 'user_reported';   
 

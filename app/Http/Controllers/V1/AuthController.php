@@ -16,6 +16,7 @@ use App\Http\Libraries\RedisSocket\RedisSocketManager;
 use Validator;
 use Ramsey\Uuid\Uuid;
 use Jenssegers\Agent\Agent;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\MessageBag;
@@ -25,6 +26,11 @@ use App\Mail\verificationUserRegister;
 use App\Http\Models\UserDeviceModel;
 use App\Http\Transformers\V1\UserTransformer;
 use App\Http\Models\SubscriberModel;
+use Error;
+use PDO;
+use phpDocumentor\Reflection\Types\Null_;
+
+use function GuzzleHttp\Promise\each;
 
 class AuthController extends Controller
 {
@@ -122,15 +128,25 @@ class AuthController extends Controller
     {
         DB::beginTransaction();
         try {
-
             $email = User::where('email', $request->email)->orWhere('username', $request->email)->first();
 
-            if ($email == null) return (new ResponseTransformer)->toJson(400, __('passwords.failed'), false);
-
-            $loginData = [
-                'email' => $email->email,
-                'password' => $request->password
-            ];
+            if ($email == null) {
+                $userNotExpired = User::onlyTrashed()->where('email', $request->email)->orWhere('username', $request->email)->where('deleted_at', '>=', Carbon::now()->subDays(30))->first();
+                if ($userNotExpired == null) {
+                    return (new ResponseTransformer)->toJson(400, __('passwords.failed'), false);
+                } else {
+                    $restoreUser = $this->restoreUser($userNotExpired);
+                    $loginData = [
+                        'email' => $restoreUser->email,
+                        'password' => $request->password
+                    ];
+                }
+            } else {
+                $loginData = [
+                    'email' => $email->email,
+                    'password' => $request->password
+                ];
+            }
 
             if (!$token = auth('api')->attempt($loginData))
                 return (new ResponseTransformer)->toJson(400, __('validation.password'), false);
@@ -157,6 +173,225 @@ class AuthController extends Controller
             DB::commit();
 
             return (new UserTransformer)->detail(200, __("messages.200"), $user);
+        } catch (\exception $exception) {
+            DB::rollBack();
+            return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);
+        }
+    }
+
+    private function restoreUser(User $user)
+    {
+        DB::beginTransaction();
+        try {
+
+            $restoreUserRelations = User::onlyTrashed()->where('email', $user->email)->first();
+
+            $restoreUserRelations->Mission()->onlyTrashed()->where('missions.deleted_at', $user->deleted_at)->each(function ($q1) use ($user) {
+                $q1->MissionContent()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->Comment()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) use ($user) {
+                    $q2->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+
+                    $q2->restore();
+                });
+                $q1->Report()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->Respone()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) use ($user) {
+                    $q2->ResponseContent()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->Comment()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) use ($user) {
+                        $q3->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q4) {
+                            $q4->restore();
+                        });
+
+                        $q3->restore();
+                    });
+                    $q2->Report()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->Tags()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->GradeOverview()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+
+                    $q2->restore();
+                });
+                $q1->Tags()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->QuickScores()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->ActiveTimer()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+
+                $q1->restore();
+            });
+            $restoreUserRelations->ClassRoom()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) use ($user) {
+                $q1->Mission()->onlyTrashed()->where('missions.deleted_at', $user->deleted_at)->each(function ($q2) use ($user) {
+                    $q2->MissionContent()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->Comment()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) use ($user) {
+                        $q3->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q4) {
+                            $q4->restore();
+                        });
+
+                        $q3->restore();
+                    });
+                    $q2->Report()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->Respone()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) use ($user) {
+                        $q3->ResponseContent()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q4) {
+                            $q4->restore();
+                        });
+                        $q3->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q4) {
+                            $q4->restore();
+                        });
+                        $q3->Comment()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q4) use ($user) {
+                            $q4->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q5) {
+                                $q5->restore();
+                            });
+                            $q4->restore();
+                        });
+                        $q3->Report()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q4) {
+                            $q4->restore();
+                        });
+                        $q3->Tags()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q4) {
+                            $q4->restore();
+                        });
+                        $q3->GradeOverview()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q4) {
+                            $q4->restore();
+                        });
+
+
+                        $q3->restore();
+                    });
+                    $q2->Tags()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->QuickScores()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->ActiveTimer()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+                    $q2->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+
+                    $q2->restore();
+                });
+                $q1->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) use ($user) {
+                    $q2->restore();
+                });
+                $q1->PremiumUserAccess()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) use ($user) {
+                    $q2->restore();
+                });
+                $q1->Report()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) use ($user) {
+                    $q2->restore();
+                });
+
+                $q1->restore();
+            });
+            $restoreUserRelations->Comment()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) use ($user) {
+                $q1->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+
+                $q1->restore();
+            });
+            $restoreUserRelations->ResponseComment()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) use ($user) {
+                $q1->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+
+                $q1->restore();
+            });
+            $restoreUserRelations->Point()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->Response()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) use ($user) {
+                $q1->ResponseContent()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->Comment()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) use ($user) {
+                    $q2->Like()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q3) {
+                        $q3->restore();
+                    });
+
+                    $q2->restore();
+                });
+                $q1->Report()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->Tags()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+                $q1->GradeOverview()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q2) {
+                    $q2->restore();
+                });
+
+                $q1->restore();
+            });
+            $restoreUserRelations->PremiumClassRoomAccess()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->UserReporting()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->UserReported()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->Notifications()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->timestamps = false;
+                $q1->restore();
+            });
+            $restoreUserRelations->NotificationsFrom()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->timestamps = false;
+                $q1->restore();
+            });
+            $restoreUserRelations->Followed()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->Follower()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->BlockedTo()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->BlockedFrom()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+            $restoreUserRelations->ContentReports()->onlyTrashed()->where('deleted_at', $user->deleted_at)->each(function ($q1) {
+                $q1->restore();
+            });
+
+            $restoreUser = User::onlyTrashed()->where('email', $user->email)->restore();
+            $getRestoredUser = User::where('email', $user->email)->first();
+            DB::commit();
+            return $getRestoredUser;
         } catch (\exception $exception) {
             DB::rollBack();
             return (new ResponseTransformer)->toJson(500, $exception->getMessage(), false);

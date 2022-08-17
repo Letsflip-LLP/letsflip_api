@@ -26,7 +26,7 @@ use App\Http\Models\ClassroomAccessModel;
 use App\Http\Libraries\Notification\NotificationManager;
 use App\Http\Models\UserReportModel;
 use Illuminate\Support\Facades\Auth;
-
+use SebastianBergmann\Environment\Console;
 
 class UserController extends Controller
 {
@@ -173,7 +173,8 @@ class UserController extends Controller
 
             if ($check != null) {
                 $action = 'delete';
-                $check->destroy($check->id);
+                // $check->destroy($check->id);
+                $check->forceDelete();
             } else {
                 $follow = UserFollowModel::insert([
                     "id" => Uuid::uuid4(),
@@ -278,11 +279,283 @@ class UserController extends Controller
             if (!$token = auth('api')->attempt($loginData))
                 return (new ResponseTransformer)->toJson(400, __('validation.password'), false);
 
-            $user->request_deleted_at = Carbon::now()->add('days', 30);
-            $user->save();
+            $timeDeleted = Carbon::now();
+
+            $expiredAccountRelationship = User::where('email', $user->email)->first();
+
+            $expiredAccountRelationship->Mission()->each(function ($q1) use ($timeDeleted) {
+                $q1->MissionContent()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Comment()->each(function ($q2) use ($timeDeleted) {
+                    $q2->Like()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Report()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Respone()->each(function ($q2) use ($timeDeleted) {
+                    $q2->ResponseContent()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Like()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Comment()->each(function ($q3) use ($timeDeleted) {
+                        $q3->Like()->each(function ($q4) use ($timeDeleted) {
+                            $q4->deleted_at = $timeDeleted;
+                            $q4->save();
+                        });
+
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Report()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Tags()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->GradeOverview()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Tags()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->QuickScores()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->ActiveTimer()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Like()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->ClassRoom()->each(function ($q1) use ($timeDeleted) {
+                $q1->Mission()->each(function ($q2) use ($timeDeleted) {
+                    $q2->MissionContent()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Comment()->each(function ($q3) use ($timeDeleted) {
+                        $q3->Like()->each(function ($q4) use ($timeDeleted) {
+                            $q4->deleted_at = $timeDeleted;
+                            $q4->save();
+                        });
+
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Report()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Respone()->each(function ($q3) use ($timeDeleted) {
+                        $q3->ResponseContent()->each(function ($q4) use ($timeDeleted) {
+                            $q4->deleted_at = $timeDeleted;
+                            $q4->save();
+                        });
+                        $q3->Like()->each(function ($q4) use ($timeDeleted) {
+                            $q4->deleted_at = $timeDeleted;
+                            $q4->save();
+                        });
+                        $q3->Comment()->each(function ($q4) use ($timeDeleted) {
+                            $q4->Like()->each(function ($q5) use ($timeDeleted) {
+                                $q5->deleted_at = $timeDeleted;
+                                $q5->save();
+                            });
+
+                            $q4->deleted_at = $timeDeleted;
+                            $q4->save();
+                        });
+                        $q3->Report()->each(function ($q4) use ($timeDeleted) {
+                            $q4->deleted_at = $timeDeleted;
+                            $q4->save();
+                        });
+                        $q3->Tags()->each(function ($q4) use ($timeDeleted) {
+                            $q4->deleted_at = $timeDeleted;
+                            $q4->save();
+                        });
+                        $q3->GradeOverview()->each(function ($q4) use ($timeDeleted) {
+                            $q4->deleted_at = $timeDeleted;
+                            $q4->save();
+                        });
+
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Tags()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->QuickScores()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->ActiveTimer()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+                    $q2->Like()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+
+
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Like()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->PremiumUserAccess()->each(function ($q2) use ($timeDeleted, $q1) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Report()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->Comment()->each(function ($q1) use ($timeDeleted) {
+                $q1->Like()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->ResponseComment()->each(function ($q1) use ($timeDeleted) {
+                $q1->Like()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->Point()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->Like()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->Response()->each(function ($q1) use ($timeDeleted) {
+                $q1->ResponseContent()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Like()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Comment()->each(function ($q2) use ($timeDeleted) {
+                    $q2->Like()->each(function ($q3) use ($timeDeleted) {
+                        $q3->deleted_at = $timeDeleted;
+                        $q3->save();
+                    });
+
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Report()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->Tags()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+                $q1->GradeOverview()->each(function ($q2) use ($timeDeleted) {
+                    $q2->deleted_at = $timeDeleted;
+                    $q2->save();
+                });
+
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->PremiumClassRoomAccess()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->UserReporting()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->UserReported()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->Notifications()->each(function ($q1) use ($timeDeleted) {
+                $q1->timestamps = false;
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->NotificationsFrom()->each(function ($q1) use ($timeDeleted) {
+                $q1->timestamps = false;
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->Device()->each(function ($q1) use ($timeDeleted) {
+                $q1->delete();
+            });
+            $expiredAccountRelationship->Followed()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->Follower()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->BlockedTo()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->BlockedFrom()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+            $expiredAccountRelationship->ContentReports()->each(function ($q1) use ($timeDeleted) {
+                $q1->deleted_at = $timeDeleted;
+                $q1->save();
+            });
+
+            $expiredAccount = User::where('email', $user->email)->first();
+            $expiredAccount->deleted_at = $timeDeleted;
+            $expiredAccount->save();
 
             DB::commit();
-
             return (new ResponseTransformer)->toJson(200, __('validation.custom.success-delete-account'), true);
         } catch (\exception $exception) {
             DB::rollBack();
@@ -587,7 +860,8 @@ class UserController extends Controller
 
             if ($check != null) {
                 $action = 'delete';
-                $check->destroy($check->id);
+                // $check->destroy($check->id);
+                $check->forceDelete();
             } else {
                 $follow = UserBlockModel::insert([
                     "id" => Uuid::uuid4(),

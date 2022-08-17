@@ -58,4 +58,5 @@ class ClassRoomModel extends Model
     {
         return $this->hasMany('App\Http\Models\MissionReportModel', 'classroom_id', 'id');
     }
+    
 }

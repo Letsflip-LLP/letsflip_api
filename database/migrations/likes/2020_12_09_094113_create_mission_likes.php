@@ -20,6 +20,7 @@ class CreateMissionLikes extends Migration
             $table->uuid('mission_comment_id')->nullable()->index();
             $table->uuid('mission_respone_id')->nullable()->index();
             $table->timestamps(); 
+            $table->softDeletes();
         });
     }
 

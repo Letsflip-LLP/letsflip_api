@@ -44,6 +44,7 @@ return [
         24 => "Oooh, :user_name_from just kicked you out of their classroom!! Click here to request access again",
         25 => ":user_name_from is following you, Check it out here!",
         // 26 => ":user_name created a mission in your :type. Click here to view or Accept/Reject it now."
+        26 => 'The :classroom_title classroom you were part of got deleted by the educator. All cool though as you still keep your points. Take another mission',
     ],
     "TYPE" => [
         1 => "Someone responded to you!", // "New Response in My Mission",
@@ -72,5 +73,6 @@ return [
         24 => "Oooh, Someone kicked you out of their classroom!!",
         25 => "Someone is following you",
         // 26 => "One More Thing…"
+        26 => "Classroom deleted",
     ]
 ];

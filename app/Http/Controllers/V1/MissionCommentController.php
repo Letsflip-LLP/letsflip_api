@@ -60,7 +60,7 @@ class MissionCommentController extends Controller
             if($model == null)
                 return (new ResponseTransformer)->toJson(400,__('messages.204'), false);
 
-            if(!$model->delete())
+            if(!$model->forceDelete())
                 return (new ResponseTransformer)->toJson(400,__('messages.500'), false);
 
 
@@ -157,7 +157,7 @@ class MissionCommentController extends Controller
             if($model == null)
                 return (new ResponseTransformer)->toJson(400,__('messages.204'), false);
 
-            if(!$model->delete())
+            if(!$model->forceDelete())
                 return (new ResponseTransformer)->toJson(400,__('messages.500'), false);
 
 

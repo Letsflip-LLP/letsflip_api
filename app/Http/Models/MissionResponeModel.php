@@ -80,7 +80,17 @@ class MissionResponeModel extends Model
 
     public function UserTag()
     {
+        // foreign_id = id of user, module_id = id of response
         return $this->belongsToMany('App\Http\Models\User','tags','module_id','foreign_id')->where('tags.type',2)->where('module','response');
     }
 
+    public function Tags()
+    {
+        return $this->hasMany('App\Http\Models\TagModel', 'module_id', 'id')->where('module', 'response');
+    }
+
+    public function OwnerPoints($id)
+    {
+        return $this->hasMany('App\Http\Models\UserPointsModel', 'respone_id', 'id')->where('user_id_to', $id);
+    }
 }

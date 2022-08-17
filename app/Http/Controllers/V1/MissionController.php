@@ -735,7 +735,7 @@ class MissionController extends Controller
                 $model2->save();
                 $action = "add";
             } else {
-                $model1->delete();
+                $model1->forceDelete();
                 $action = "delete";
             }
 

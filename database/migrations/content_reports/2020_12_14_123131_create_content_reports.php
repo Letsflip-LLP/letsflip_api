@@ -22,6 +22,7 @@ class CreateContentReports extends Migration
             $table->string('title',255)->nullable();
             $table->text('text')->nullable();
             $table->timestamps(); 
+            $table->softDeletes();
         });
     }
 

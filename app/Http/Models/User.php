@@ -13,8 +13,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable ;
-    use SoftDeletes; 
+    use HasFactory, Notifiable;
+    use SoftDeletes;
 
     public $incrementing = false;
 
@@ -57,7 +57,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-    ]; 
+    ];
 
 
 
@@ -66,7 +66,8 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return mixed
      */
-    public function getJWTIdentifier() {
+    public function getJWTIdentifier()
+    {
         return $this->getKey();
     }
 
@@ -75,71 +76,117 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array
      */
-    public function getJWTCustomClaims() {
+    public function getJWTCustomClaims()
+    {
         return [];
-    }  
+    }
 
 
     public function Device()
     {
-        return $this->hasMany('App\Http\Models\UserDeviceModel','user_id','id');
+        return $this->hasMany('App\Http\Models\UserDeviceModel', 'user_id', 'id');
     }
 
     public function Point()
     {
-        return $this->hasMany('App\Http\Models\UserPointsModel','user_id_to','id')->where('status',1);
+        return $this->hasMany('App\Http\Models\UserPointsModel', 'user_id_to', 'id')->where('status', 1);
     }
 
     public function Followed()
     {
-        return $this->hasMany('App\Http\Models\UserFollowModel','user_id_from','id');
+        return $this->hasMany('App\Http\Models\UserFollowModel', 'user_id_from', 'id');
     }
 
     public function BlockedTo()
     {
-        return $this->hasMany('App\Http\Models\UserBlockModel','user_id_to','id');
+        return $this->hasMany('App\Http\Models\UserBlockModel', 'user_id_to', 'id');
     }
 
     public function BlockedFrom()
     {
-        return $this->hasMany('App\Http\Models\UserBlockModel','user_id_from','id');
+        return $this->hasMany('App\Http\Models\UserBlockModel', 'user_id_from', 'id');
     }
 
     public function Follower()
     {
-        return $this->hasMany('App\Http\Models\UserFollowModel','user_id_to','id');
+        return $this->hasMany('App\Http\Models\UserFollowModel', 'user_id_to', 'id');
     }
 
     public function ClassRoom()
     {
-        return $this->hasMany('App\Http\Models\ClassRoomModel','user_id','id');
+        return $this->hasMany('App\Http\Models\ClassRoomModel', 'user_id', 'id');
     }
 
     public function Subscribe()
     {
-        return $this->hasOne('App\Http\Models\SubscriberModel','user_id','id')
-                ->where('date_start','<=',date('Y-m-d H:i:s'))
-                ->where('date_end','>=',date('Y-m-d H:i:s'))
-                ->where('status',1);
+        return $this->hasOne('App\Http\Models\SubscriberModel', 'user_id', 'id')
+            ->where('date_start', '<=', date('Y-m-d H:i:s'))
+            ->where('date_end', '>=', date('Y-m-d H:i:s'))
+            ->where('status', 1);
     }
 
     public function PremiumClassRoomAccess()
     {
-        return $this->hasMany('App\Http\Models\ClassroomAccessModel','user_id','id');
+        return $this->hasMany('App\Http\Models\ClassroomAccessModel', 'user_id', 'id');
     }
 
     public function Mission()
     {
-        return $this->hasMany('App\Http\Models\MissionModel','user_id','id');
+        return $this->hasMany('App\Http\Models\MissionModel', 'user_id', 'id');
     }
 
     public function AccessClassrooms()
     {
-        return $this->belongsToMany('App\Http\Models\ClassRoomModel','classroom_accesses','user_id','classroom_id');
+        return $this->belongsToMany('App\Http\Models\ClassRoomModel', 'classroom_accesses', 'user_id', 'classroom_id');
     }
 
     public function Company()
     {
-        return $this->hasOne('App\Http\Models\CompanyModel','id','company_id');
+        return $this->hasOne('App\Http\Models\CompanyModel', 'id', 'company_id');
+    }
+
+    public function Comment()
+    {
+        return $this->hasMany('App\Http\Models\MissionCommentModel', 'user_id', 'id');
+    }
+
+    public function ResponseComment()
+    {
+        return $this->hasMany('App\Http\Models\MissionCommentResponeModel', 'user_id', 'id');
+    }
+
+    public function Like()
+    {
+        return $this->hasMany('App\Http\Models\LikeModel', 'user_id', 'id');
+    }
+
+    public function Response()
+    {
+        return $this->hasMany('App\Http\Models\MissionResponeModel', 'user_id', 'id');
+    }
+
+    public function UserReporting()
+    {
+        return $this->hasMany('App\Http\Models\UserReportModel', 'user_id_from', 'id');
+    }
+
+    public function UserReported()
+    {
+        return $this->hasMany('App\Http\Models\UserReportModel', 'user_id_to', 'id');
+    }
+
+    public function Notifications()
+    {
+        return $this->hasMany('App\Http\Models\NotificationModel', 'user_id_to', 'id');
+    }
+
+    public function NotificationsFrom()
+    {
+        return $this->hasMany('App\Http\Models\NotificationModel', 'user_id_from', 'id');
+    }
+
+    public function ContentReports()
+    {
+        return $this->hasMany('App\Http\Models\MissionReportModel', 'user_id', 'id');
     }
 }

@@ -62,7 +62,7 @@ class NotificationTransformer
                         "status_name" => statusRequestName($piv_status)
                     ];
                 }
-            } 
+            }
         }
         if ($model->type ==  3 || $model->type ==  4) {
             if ($model->type == 3)
@@ -116,6 +116,9 @@ class NotificationTransformer
 
         if ($model->type == 25)
             $temp->text  =  __('notification.TEXT.' . $model->type, ['user_name_from' => $model->UserFrom->first_name . ' ' . $model->UserFrom->last_name]);
+
+        if ($model->type == 26)
+            $temp->text  =  __('notification.TEXT.' . $model->type, ['classroom_title' => $model->ClassRoom()->onlyTrashed()->value('title') ? '"'.$model->ClassRoom()->onlyTrashed()->value('title').'"':'']);
 
         $temp->title        =   __('notification.TYPE.' . $model->type);
         $temp->user         =   $model->UserFrom ? UserTransformer::item($model->UserFrom) : UserTransformer::item($model->UserTo);
