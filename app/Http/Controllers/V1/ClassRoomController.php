@@ -243,7 +243,7 @@ class ClassRoomController extends Controller
                 $class_room = $class_room->whereIn('type', [1, 2]);
             }
 
-            if ($request->filled('user_id') && $request->module != 'response')
+            if ($request->filled('user_id') && $request->module != 'response' && $request->module != 'collaborate')
                 $class_room = $class_room->where('user_id', $request->user_id);
 
             if ($request->filled('module')) {
@@ -261,6 +261,12 @@ class ClassRoomController extends Controller
                             $q2->where('user_id', $request->user_id);
                         });
                     });
+                }
+
+                if ($request->module == 'collaborate'){
+                    $class_room = $class_room->whereHas('Mission', function ($q) use ($request){
+                        $q->where('user_id', $request->user_id);
+                    })->where('user_id', '!=', $request->user_id);
                 }
             }
 
